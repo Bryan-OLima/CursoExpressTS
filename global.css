@@ -746,7 +746,8 @@ section summary:before,
 }
 
 .metric,
-.stat {
+.stat,
+.hero-stat {
   background: linear-gradient(180deg, var(--panel2), var(--panel));
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -755,14 +756,16 @@ section summary:before,
 }
 
 .metric strong,
-.stat strong {
+.stat strong,
+.hero-stat strong {
   display: block;
   font-size: 1.6rem;
   color: var(--accent);
 }
 
 .metric span,
-.stat span {
+.stat span,
+.hero-stat span {
   color: var(--muted);
   font-size: 0.82rem;
 }
@@ -995,7 +998,8 @@ footer,
     padding: 24px 16px 60px;
   }
 
-  .theme-block {
+  .theme-block,
+  .phase > section {
     padding: 20px;
   }
 
@@ -1015,7 +1019,8 @@ footer,
     padding: 18px 12px 50px;
   }
 
-  .theme-block {
+  .theme-block,
+  .phase > section {
     padding: 16px;
   }
 

@@ -204,6 +204,8 @@
     const anchors = ids.map((id) => document.getElementById(id)).filter(Boolean);
 
     anchors.forEach((el, index) => {
+      if (el.tagName === "SECTION") return; // já é seu próprio cartão, não precisa de outro por cima
+
       const next = anchors[index + 1];
       const parent = el.parentNode;
       if (!parent) return;
@@ -230,9 +232,9 @@
     ids.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
-      const wrapper = el.closest(".theme-block") || el.parentElement;
+      const container = el.tagName === "SECTION" ? el : el.closest(".theme-block") || el.parentElement;
       const checkbox = buildThemeCheckbox(state, faseId, id, data);
-      wrapper.appendChild(checkbox);
+      container.appendChild(checkbox);
     });
   }
 
