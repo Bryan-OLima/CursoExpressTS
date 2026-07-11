@@ -210,6 +210,12 @@
       const parent = el.parentNode;
       if (!parent) return;
 
+      // Se o próximo tema não é irmão direto deste (está aninhado em outro
+      // elemento, como um .phase separado), a varredura por nextSibling
+      // arrastaria esse elemento inteiro para dentro do wrapper por engano.
+      // Mais seguro não envolver do que envolver errado.
+      if (next && next.parentNode !== parent) return;
+
       const wrapper = document.createElement("div");
       wrapper.className = "theme-block";
       parent.insertBefore(wrapper, el);
@@ -232,9 +238,23 @@
     ids.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
-      const container = el.tagName === "SECTION" ? el : el.closest(".theme-block") || el.parentElement;
       const checkbox = buildThemeCheckbox(state, faseId, id, data);
-      container.appendChild(checkbox);
+
+      if (el.tagName === "SECTION") {
+        el.appendChild(checkbox);
+        return;
+      }
+
+      const wrapper = el.closest(".theme-block");
+      if (wrapper) {
+        wrapper.appendChild(checkbox);
+        return;
+      }
+
+      // Não foi envolvido (ex.: header cujo próximo tema mora dentro de outro
+      // elemento) — coloca o checkbox logo depois do próprio elemento, não no
+      // fim do pai inteiro.
+      el.parentNode.insertBefore(checkbox, el.nextSibling);
     });
   }
 
