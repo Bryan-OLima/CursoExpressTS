@@ -605,6 +605,24 @@ pre .comment {
   border-color: var(--accent2);
 }
 
+.callout.warn,
+.callout.warning {
+  background: rgba(246, 200, 95, 0.08);
+  border-color: var(--warn);
+}
+
+.callout.bad,
+.callout.danger {
+  background: rgba(252, 129, 129, 0.08);
+  border-color: var(--danger);
+}
+
+.callout.good,
+.callout.ok {
+  background: rgba(104, 211, 145, 0.08);
+  border-color: var(--accent);
+}
+
 .warning {
   background: rgba(246, 200, 95, 0.08);
   border-color: var(--warn);
@@ -792,11 +810,25 @@ section summary:before,
   margin: 18px 0;
 }
 
-.flow div {
+.flow div,
+.flow span {
   padding: 12px 14px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--panel);
+}
+
+/* Variante inline (passos como <span> separados por <b>→</b>, em vez de <div> empilhados) */
+.flow:has(span) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.flow b {
+  color: var(--accent2);
+  font-weight: 900;
 }
 
 /* ===== Diagrama de pipeline (ASCII) ===== */
