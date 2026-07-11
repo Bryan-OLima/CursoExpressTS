@@ -197,23 +197,42 @@
     return label;
   }
 
+  function wrapThemeBlocks(faseId) {
+    const ids = MANIFEST[faseId];
+    if (!ids || !ids.length) return;
+
+    const anchors = ids.map((id) => document.getElementById(id)).filter(Boolean);
+
+    anchors.forEach((el, index) => {
+      const next = anchors[index + 1];
+      const parent = el.parentNode;
+      if (!parent) return;
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "theme-block";
+      parent.insertBefore(wrapper, el);
+
+      let node = el;
+      while (node && node !== next) {
+        const following = node.nextSibling;
+        wrapper.appendChild(node);
+        node = following;
+      }
+    });
+  }
+
   function injectThemeChecks(state, faseId) {
     const ids = MANIFEST[faseId];
     if (!ids || !ids.length) return;
 
     const data = state[faseId] || (state[faseId] = {});
-    const anchors = ids.map((id) => ({ id, el: document.getElementById(id) })).filter((a) => a.el);
 
-    anchors.forEach((anchor, index) => {
-      const checkbox = buildThemeCheckbox(state, faseId, anchor.id, data);
-      const next = anchors[index + 1];
-
-      if (next && next.el.parentNode) {
-        next.el.parentNode.insertBefore(checkbox, next.el);
-      } else {
-        const container = anchor.el.tagName === "SECTION" ? anchor.el : anchor.el.closest("section") || anchor.el.parentElement;
-        if (container) container.appendChild(checkbox);
-      }
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const wrapper = el.closest(".theme-block") || el.parentElement;
+      const checkbox = buildThemeCheckbox(state, faseId, id, data);
+      wrapper.appendChild(checkbox);
     });
   }
 
@@ -222,12 +241,44 @@
     document.querySelectorAll("aside > .progress").forEach((el) => el.remove());
   }
 
+  function injectSidebarToggle() {
+    const layout = document.querySelector(".layout, .page");
+    if (!layout) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "sidebar-toggle";
+    btn.setAttribute("aria-label", "Mostrar ou esconder o menu");
+
+    function refresh() {
+      btn.textContent = layout.classList.contains("sidebar-collapsed") ? "☰" : "✕";
+    }
+
+    if (localStorage.getItem("sidebarCollapsed") === "1") {
+      layout.classList.add("sidebar-collapsed");
+    }
+    refresh();
+
+    btn.addEventListener("click", () => {
+      layout.classList.toggle("sidebar-collapsed");
+      try {
+        localStorage.setItem("sidebarCollapsed", layout.classList.contains("sidebar-collapsed") ? "1" : "0");
+      } catch {
+        /* localStorage indisponível */
+      }
+      refresh();
+    });
+
+    document.body.appendChild(btn);
+  }
+
   function initFasePage(state, faseId) {
     const index = FASES.findIndex((f) => f.id === faseId);
     if (index === -1) return;
 
     removeLegacyStubs();
     injectPageNav(index, faseId);
+    wrapThemeBlocks(faseId);
     injectThemeChecks(state, faseId);
     saveState(state);
 
@@ -270,12 +321,7 @@
       row.appendChild(input);
       row.appendChild(span);
 
-      const meta = section.querySelector(".meta");
-      if (meta && meta.parentElement) {
-        meta.parentElement.insertBefore(row, meta.nextSibling);
-      } else {
-        section.insertBefore(row, section.firstChild);
-      }
+      section.appendChild(row);
     });
   }
 
@@ -343,6 +389,8 @@
   document.addEventListener("DOMContentLoaded", () => {
     const state = loadState();
     const faseId = getFaseIdFromPath();
+
+    injectSidebarToggle();
 
     if (faseId && MANIFEST[faseId]) {
       initFasePage(state, faseId);
