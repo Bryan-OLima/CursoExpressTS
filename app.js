@@ -321,7 +321,12 @@
       row.appendChild(input);
       row.appendChild(span);
 
-      section.appendChild(row);
+      const footer = section.querySelector(".card-footer");
+      if (footer) {
+        footer.appendChild(row);
+      } else {
+        section.appendChild(row);
+      }
     });
   }
 
