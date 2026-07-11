@@ -79,6 +79,16 @@ aside h1 {
   margin: 0;
 }
 
+.brand small,
+.brand strong {
+  display: block;
+}
+
+.brand small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
 .brand-mark {
   display: inline-flex;
   align-items: center;
