@@ -251,10 +251,11 @@
         return;
       }
 
-      // Não foi envolvido (ex.: header cujo próximo tema mora dentro de outro
-      // elemento) — coloca o checkbox logo depois do próprio elemento, não no
-      // fim do pai inteiro.
-      el.parentNode.insertBefore(checkbox, el.nextSibling);
+      // Não foi envolvido em .theme-block (ex.: header cujo próximo tema mora
+      // dentro de outro elemento) — o próprio elemento já é um cartão
+      // (tag, título, texto...), então o checkbox entra dentro dele, no final,
+      // igual a qualquer outro tema.
+      el.appendChild(checkbox);
     });
   }
 
