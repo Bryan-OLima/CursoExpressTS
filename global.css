@@ -714,7 +714,7 @@ section summary:before,
 }
 
 .hero-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   margin-top: 18px;
 }
 
@@ -1007,10 +1007,6 @@ footer,
     text-align: left;
     align-items: flex-start;
   }
-
-  .hero-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 /* ===== Celular: uma coluna em tudo, botões ocupam a largura toda ===== */
@@ -1028,7 +1024,6 @@ footer,
   .comparison,
   .definitions,
   .matrix,
-  .hero-grid,
   .grid.three,
   .cards3 {
     grid-template-columns: 1fr;
