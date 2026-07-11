@@ -512,7 +512,7 @@ GET /health/ready  // banco e dependências essenciais estão prontos</code></pr
 <button class="menu-btn" id="menuBtn">Conteúdo</button>
 <script>
 const sidebar=document.getElementById('sidebar');document.getElementById('menuBtn').onclick=()=>sidebar.classList.toggle('open');
-const links=[...document.querySelectorAll('#nav a')];const targets=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-15% 0px -75% 0px'});targets.forEach(t=>obs.observe(t));
+const links=[...document.querySelectorAll('#nav a')];const targets=links.map(a=>document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-15% 0px -75% 0px'});targets.forEach(t=>obs.observe(t));
 links.forEach(a=>a.onclick=()=>sidebar.classList.remove('open'));
 document.querySelectorAll('.copy').forEach(b=>b.onclick=async()=>{await navigator.clipboard.writeText(b.parentElement.innerText.replace('Copiar','').trim());const old=b.textContent;b.textContent='Copiado';setTimeout(()=>b.textContent=old,1200)});
 </script>

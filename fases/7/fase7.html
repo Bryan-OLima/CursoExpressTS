@@ -416,7 +416,7 @@ export const errorHandler: ErrorRequestHandler = (
 <script>
   const progress = document.querySelector('#progress');
   const links = [...document.querySelectorAll('nav a')];
-  const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const sections = links.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
   function update(){
     const max = document.documentElement.scrollHeight - innerHeight;
     progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';

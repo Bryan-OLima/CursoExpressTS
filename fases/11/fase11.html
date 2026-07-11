@@ -664,7 +664,7 @@ GET    /admin/audit</code></pre>
 </div>
 <script>
 const links=[...document.querySelectorAll('#toc a')];
-const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const sections=links.map(a=>document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
 const observer=new IntersectionObserver(entries=>{
   const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
   if(!visible)return;

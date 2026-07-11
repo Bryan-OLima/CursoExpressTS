@@ -802,7 +802,7 @@ POST   /events/:eventId/cancel</code></pre>
     <script>
       const links = [...document.querySelectorAll("#toc a")];
       const sections = links
-        .map((a) => document.querySelector(a.getAttribute("href")))
+        .map((a) => document.getElementById(a.getAttribute("href").slice(1)))
         .filter(Boolean);
       const observer = new IntersectionObserver(
         (entries) => {
