@@ -675,7 +675,8 @@ section summary:before,
   font-size: 1.05rem;
 }
 
-.metric {
+.metric,
+.stat {
   background: linear-gradient(180deg, var(--panel2), var(--panel));
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -683,13 +684,15 @@ section summary:before,
   text-align: center;
 }
 
-.metric strong {
+.metric strong,
+.stat strong {
   display: block;
   font-size: 1.6rem;
   color: var(--accent);
 }
 
-.metric span {
+.metric span,
+.stat span {
   color: var(--muted);
   font-size: 0.82rem;
 }
