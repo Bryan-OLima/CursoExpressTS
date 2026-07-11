@@ -30,6 +30,7 @@
       <div class="chips"><span class="chip">Express 5</span><span class="chip">TypeScript</span><span class="chip">AppError</span><span class="chip">HTTP</span><span class="chip">Observabilidade</span><span class="chip">Edge cases</span></div>
     </header>
 
+    <section class="phase" id="fase7">
     <section id="modelo-mental"><h2 class="section-title">1. O modelo mental</h2><p class="lead">Uma exceção nasce em algum ponto da aplicação. Ela deve subir até uma fronteira capaz de decidir três coisas: o que responder, o que registrar e se o processo continua saudável.</p>
       <div class="flow"><span>Route</span><b>→</b><span>Controller</span><b>→</b><span>Service</span><b>→</b><span>Repository</span><b>→</b><span>erro</span><b>→</b><span>Error handler</span><b>→</b><span>resposta + log</span></div>
       <div class="callout"><strong>Separação importante:</strong> a classe de erro representa o problema; o middleware traduz esse problema para HTTP. Assim, a regra de negócio não precisa conhecer <span class="inline">Response</span>.</div>
@@ -409,6 +410,7 @@ export const errorHandler: ErrorRequestHandler = (
       <li><strong>Livro:</strong> <em>Node.js Design Patterns</em>, de Mario Casciaro e Luciano Mammino — padrões de assíncrono, confiabilidade e arquitetura.</li>
       <li><strong>Livro:</strong> <em>Release It!</em>, de Michael T. Nygard — estabilidade, timeout, circuit breaker e falhas em produção.</li>
     </ul></section>
+    </section>
 
     <footer>Fase 7 · Erros — material de estudo da trilha Express 5 com TypeScript. A página é autocontida e não inclui navegação entre fases.</footer>
   </main>
