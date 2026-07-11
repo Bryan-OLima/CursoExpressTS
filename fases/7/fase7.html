@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Fase 7 — Tratamento de erros no Express 5 com TypeScript" />
+  <title>Fase 7 — Erros | Express 5 com TypeScript</title>
+  <style>
+    :root {
+      --bg:#090d18; --panel:#101728; --panel-2:#151f35; --text:#edf2ff; --muted:#9eaac4;
+      --line:#26324c; --brand:#8b5cf6; --brand-2:#22d3ee; --good:#34d399; --warn:#fbbf24; --bad:#fb7185;
+      --code:#070b13; --shadow:0 18px 50px rgba(0,0,0,.28); --radius:18px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:radial-gradient(circle at 70% -10%,rgba(139,92,246,.17),transparent 32%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7}
+    a{color:var(--brand-2);text-decoration:none} a:hover{text-decoration:underline}
+    .layout{display:grid;grid-template-columns:310px minmax(0,1fr);min-height:100vh}
+    aside{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:26px 20px;background:rgba(9,13,24,.93);backdrop-filter:blur(14px)}
+    .eyebrow{color:var(--brand-2);font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em}.brand h1{font-size:1.35rem;line-height:1.2;margin:.4rem 0}.brand p{color:var(--muted);font-size:.9rem;margin:0 0 22px}
+    .progress{height:7px;border-radius:99px;background:#1d2840;overflow:hidden;margin:12px 0 24px}.progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand-2));transition:width .2s}
+    nav strong{display:block;font-size:.74rem;color:#7f8aa6;text-transform:uppercase;letter-spacing:.12em;margin:22px 8px 8px}nav a{display:block;color:#cfd7ea;padding:8px 10px;border-radius:10px;font-size:.9rem}nav a:hover,nav a.active{background:rgba(139,92,246,.14);color:#fff;text-decoration:none}
+    main{width:min(1120px,100%);padding:58px clamp(24px,5vw,72px) 100px}.hero{padding:40px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,rgba(21,31,53,.96),rgba(12,18,32,.94));box-shadow:var(--shadow);margin-bottom:34px}.hero h2{font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.02;letter-spacing:-.045em;margin:12px 0 18px}.hero p{font-size:1.12rem;color:#c8d2e8;max-width:780px}.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.chip{border:1px solid #34415e;background:#121b2e;padding:6px 11px;border-radius:999px;color:#cbd5e1;font-size:.82rem}
+    section{scroll-margin-top:28px;margin:64px 0}h2.section-title{font-size:2rem;letter-spacing:-.03em;margin:0 0 10px}.lead{color:var(--muted);font-size:1.04rem;max-width:850px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{border:1px solid var(--line);background:var(--panel);padding:22px;border-radius:var(--radius)}.card h3{margin:0 0 8px;font-size:1.06rem}.card p{margin:0;color:var(--muted)}
+    .callout{border-left:4px solid var(--brand-2);background:rgba(34,211,238,.07);padding:18px 20px;border-radius:0 14px 14px 0;margin:22px 0}.callout.warn{border-color:var(--warn);background:rgba(251,191,36,.07)}.callout.bad{border-color:var(--bad);background:rgba(251,113,133,.07)}.callout.good{border-color:var(--good);background:rgba(52,211,153,.07)}
+    pre{position:relative;margin:18px 0 28px;padding:22px;overflow:auto;border:1px solid #202b42;border-radius:15px;background:var(--code);color:#dbeafe;font:14px/1.65 "SFMono-Regular",Consolas,monospace;box-shadow:inset 0 1px rgba(255,255,255,.03)}code{font-family:"SFMono-Regular",Consolas,monospace}.inline{background:#172036;border:1px solid #273450;border-radius:6px;padding:2px 6px;font-size:.9em}.copy{position:absolute;right:10px;top:10px;border:1px solid #34415d;background:#131c2e;color:#cdd6e7;border-radius:8px;padding:6px 9px;cursor:pointer}.copy:hover{background:#1c2943}
+    table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--panel);border-radius:14px;overflow:hidden}th,td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#dfe7f7;background:#141e33;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em}td{color:#b8c3da}
+    .flow{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:22px 0}.flow span{padding:9px 13px;border:1px solid #34415e;border-radius:10px;background:#111a2d}.flow b{color:var(--brand-2)}
+    .exercise{border:1px solid rgba(139,92,246,.45);background:linear-gradient(145deg,rgba(139,92,246,.1),rgba(16,23,40,.95));border-radius:18px;padding:24px;margin:20px 0}.exercise h3{margin-top:0}.checklist{list-style:none;padding:0}.checklist li{padding:7px 0 7px 28px;position:relative;color:#c1cbe0}.checklist li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:900}
+    details{border:1px solid var(--line);border-radius:13px;background:var(--panel);margin:12px 0;padding:14px 17px}summary{cursor:pointer;font-weight:750;color:#e7ecf7}details p{color:var(--muted)}
+    footer{border-top:1px solid var(--line);padding-top:30px;color:var(--muted);font-size:.9rem}.sources li{margin:8px 0}
+    @media(max-width:920px){.layout{display:block}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}nav{columns:2}main{padding-top:34px}.grid,.grid.three{grid-template-columns:1fr}}@media(max-width:560px){nav{columns:1}.hero{padding:26px}.hero h2{font-size:2.6rem}main{padding-inline:18px}table{font-size:.88rem}}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand"><div class="eyebrow">Express 5 + TypeScript</div><h1>Fase 7 · Erros</h1><p>Erros previsíveis para o cliente, informações úteis para quem opera a aplicação e nenhum vazamento acidental.</p></div>
+    <div class="progress" aria-label="Progresso de leitura"><span id="progress"></span></div>
+    <nav>
+      <strong>Fundamentos</strong>
+      <a href="#objetivo">Objetivo</a><a href="#modelo-mental">Modelo mental</a><a href="#categorias">Categorias de erro</a><a href="#throw">throw e Promise</a>
+      <strong>Express 5</strong>
+      <a href="#encaminhamento">Encaminhamento automático</a><a href="#middleware">Middleware de erro</a><a href="#ordem">Ordem de registro</a><a href="#headers">Headers enviados</a>
+      <strong>Arquitetura</strong>
+      <a href="#app-error">AppError</a><a href="#contrato">Contrato HTTP</a><a href="#mapeamento">Mapeamento de erros</a><a href="#seguranca">Ambientes e segurança</a><a href="#observabilidade">Logs e request ID</a>
+      <strong>Prática</strong>
+      <a href="#implementacao">Implementação completa</a><a href="#edge-cases">Edge cases</a><a href="#testes">Testes</a><a href="#mini-projeto">Mini projeto</a><a href="#checklist">Checklist</a><a href="#referencias">Referências</a>
+    </nav>
+  </aside>
+  <main>
+    <header class="hero" id="objetivo">
+      <div class="eyebrow">Fase 7</div><h2>Tratamento de erros no Express 5</h2>
+      <p>O objetivo não é “impedir que erros aconteçam”. É construir um caminho controlado para transformar falhas conhecidas em respostas úteis, registrar falhas inesperadas e preservar os detalhes internos que nunca deveriam chegar ao cliente.</p>
+      <div class="chips"><span class="chip">Express 5</span><span class="chip">TypeScript</span><span class="chip">AppError</span><span class="chip">HTTP</span><span class="chip">Observabilidade</span><span class="chip">Edge cases</span></div>
+    </header>
+
+    <section id="modelo-mental"><h2 class="section-title">1. O modelo mental</h2><p class="lead">Uma exceção nasce em algum ponto da aplicação. Ela deve subir até uma fronteira capaz de decidir três coisas: o que responder, o que registrar e se o processo continua saudável.</p>
+      <div class="flow"><span>Route</span><b>→</b><span>Controller</span><b>→</b><span>Service</span><b>→</b><span>Repository</span><b>→</b><span>erro</span><b>→</b><span>Error handler</span><b>→</b><span>resposta + log</span></div>
+      <div class="callout"><strong>Separação importante:</strong> a classe de erro representa o problema; o middleware traduz esse problema para HTTP. Assim, a regra de negócio não precisa conhecer <span class="inline">Response</span>.</div>
+    </section>
+
+    <section id="categorias"><h2 class="section-title">2. Erro operacional versus erro de programação</h2><p class="lead">Nem toda falha significa que o código está quebrado. Algumas situações são resultados esperados do funcionamento de uma API.</p>
+      <div class="grid">
+        <article class="card"><h3>Erro operacional</h3><p>A aplicação está funcionando, mas não consegue concluir aquela operação: recurso inexistente, horário ocupado, credencial inválida, timeout de uma dependência ou entrada inválida.</p></article>
+        <article class="card"><h3>Erro de programação</h3><p>Existe um defeito ou uma suposição falsa no código: acessar propriedade de <span class="inline">undefined</span>, esquecer um <span class="inline">await</span>, quebrar uma invariável ou enviar duas respostas.</p></article>
+      </div>
+      <table><thead><tr><th>Situação</th><th>Categoria típica</th><th>Resposta possível</th></tr></thead><tbody>
+        <tr><td>Agendamento não existe</td><td>Operacional</td><td>404 <span class="inline">APPOINTMENT_NOT_FOUND</span></td></tr>
+        <tr><td>Horário já ocupado</td><td>Operacional / domínio</td><td>409 <span class="inline">APPOINTMENT_CONFLICT</span></td></tr>
+        <tr><td>Body não satisfaz o schema</td><td>Operacional / entrada</td><td>422 <span class="inline">VALIDATION_ERROR</span></td></tr>
+        <tr><td><span class="inline">appointment.user.name</span> quando user é undefined</td><td>Programação</td><td>500 genérico + log completo</td></tr>
+        <tr><td>Banco indisponível</td><td>Infraestrutura; operacional para a aplicação</td><td>503 ou 500, conforme o contrato</td></tr>
+      </tbody></table>
+      <div class="callout warn"><strong>A categoria não é decidida apenas pela classe nativa.</strong> Um <span class="inline">TypeError</span> normalmente indica bug; um <span class="inline">Error</span> criado por você pode representar uma regra esperada. O significado vem do contexto e do contrato.</div>
+    </section>
+
+    <section id="throw"><h2 class="section-title">3. <code>throw</code>, retorno e rejeição</h2>
+      <p><span class="inline">throw</span> interrompe o fluxo atual. Em uma função síncrona, a exceção sobe pela pilha até um <span class="inline">catch</span>. Em uma função <span class="inline">async</span>, lançar um valor faz a Promise retornada ser rejeitada.</p>
+<pre><button class="copy">Copiar</button><code>function ensurePositive(value: number): void {
+  if (value &lt;= 0) {
+    throw new Error("O valor deve ser positivo.");
+  }
+}
+
+async function loadAppointment(id: string) {
+  const appointment = await repository.findById(id);
+
+  if (!appointment) {
+    // A Promise retornada por esta função será rejeitada.
+    throw new AppointmentNotFoundError(id);
+  }
+
+  return appointment;
+}</code></pre>
+      <h3>Você pode lançar qualquer valor, mas não deveria</h3>
+<pre><button class="copy">Copiar</button><code>throw "falhou";       // JavaScript permite
+throw { code: 123 }; // JavaScript também permite
+throw new Error("falhou"); // forma recomendada</code></pre>
+      <p>Lançar instâncias de <span class="inline">Error</span> preserva <span class="inline">name</span>, <span class="inline">message</span>, <span class="inline">stack</span> e pode preservar uma causa. O handler ainda precisa ser defensivo porque bibliotecas ou código legado podem rejeitar Promises com valores desconhecidos.</p>
+    </section>
+
+    <section id="encaminhamento"><h2 class="section-title">4. Encaminhamento automático no Express 5</h2><p class="lead">Handlers e middlewares que retornam uma Promise têm seus erros lançados e rejeições encaminhados ao fluxo de erro do router.</p>
+<pre><button class="copy">Copiar</button><code>app.get("/appointments/:id", async (request, response) =&gt; {
+  const appointment = await appointmentService.findById(
+    request.params.id,
+  );
+
+  return response.status(200).json(appointment);
+});</code></pre>
+      <p>Se <span class="inline">findById</span> lançar, você não precisa escrever um <span class="inline">try/catch</span> apenas para chamar <span class="inline">next(error)</span>. O Express 5 trata a rejeição como encaminhamento ao próximo middleware de erro.</p>
+      <div class="grid">
+        <div class="card"><h3>Express 4 — padrão frequente</h3><p><span class="inline">try/catch</span>, wrappers como <span class="inline">asyncHandler</span> ou bibliotecas auxiliares eram usados para encaminhar rejeições.</p></div>
+        <div class="card"><h3>Express 5</h3><p>Quando o callback retorna a Promise, uma rejeição é encaminhada automaticamente. Isso reduz código repetitivo, mas não substitui decisões locais de recuperação.</p></div>
+      </div>
+      <div class="callout bad"><strong>Armadilha:</strong> iniciar uma Promise sem retorná-la nem aguardá-la quebra o vínculo com o handler. Use <span class="inline">await</span> ou <span class="inline">return</span>.</div>
+<pre><button class="copy">Copiar</button><code>app.post("/jobs", async (request, response) =&gt; {
+  // Ruim: tarefa "solta"; uma rejeição pode escapar do ciclo da requisição.
+  queue.publish(request.body);
+
+  return response.status(202).end();
+});</code></pre>
+    </section>
+
+    <section id="middleware"><h2 class="section-title">5. Middleware de erro</h2><p>O Express identifica um middleware de erro pela assinatura com quatro parâmetros: <span class="inline">(error, request, response, next)</span>. Mesmo que <span class="inline">next</span> não seja usado no caminho principal, ele faz parte do contrato.</p>
+<pre><button class="copy">Copiar</button><code>import type { ErrorRequestHandler } from "express";
+
+export const errorHandler: ErrorRequestHandler = (
+  error,
+  request,
+  response,
+  next,
+) =&gt; {
+  console.error(error);
+
+  return response.status(500).json({
+    error: {
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Ocorreu um erro inesperado.",
+    },
+  });
+};</code></pre>
+      <div class="callout"><strong>O parâmetro <span class="inline">next</span> não é decorativo:</strong> ele será necessário quando os headers já tiverem sido enviados, pois nesse cenário o handler deve delegar ao tratamento padrão do Express.</div>
+    </section>
+
+    <section id="ordem"><h2 class="section-title">6. A ordem de registro</h2><p>O pipeline é executado na ordem em que foi registrado. O handler de erros deve aparecer depois das rotas e dos middlewares que podem falhar.</p>
+<pre><button class="copy">Copiar</button><code>app.use(express.json());
+app.use(requestId);
+app.use(routes);
+
+// 404 é criado depois que nenhuma rota respondeu.
+app.use(notFoundHandler);
+
+// O error handler é a última fronteira HTTP.
+app.use(errorHandler);</code></pre>
+      <p>Um 404 por rota inexistente não é, por si só, uma exceção automática. Significa apenas que o pipeline terminou sem encontrar um handler que enviasse a resposta. Por isso, é comum haver um middleware final que cria um erro de 404.</p>
+    </section>
+
+    <section id="headers"><h2 class="section-title">7. Erro depois de headers enviados</h2><p>Depois que a resposta começou a ser enviada, talvez já não seja possível trocar status, headers ou corpo por um JSON de erro. Tentar fazer isso costuma gerar o clássico problema “Cannot set headers after they are sent”.</p>
+<pre><button class="copy">Copiar</button><code>export const errorHandler: ErrorRequestHandler = (
+  error,
+  request,
+  response,
+  next,
+) =&gt; {
+  if (response.headersSent) {
+    return next(error);
+  }
+
+  // Ainda é seguro construir uma resposta HTTP.
+  return response.status(500).json({
+    error: {
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Ocorreu um erro inesperado.",
+    },
+  });
+};</code></pre>
+      <div class="callout warn">Em streaming e downloads, uma falha pode acontecer depois de parte do corpo ter sido transmitida. Nesse caso não existe uma resposta JSON limpa a ser “substituída”; a conexão pode precisar ser encerrada.</div>
+    </section>
+
+    <section id="app-error"><h2 class="section-title">8. Criando um erro de aplicação</h2><p class="lead">Uma classe base centraliza os dados necessários para classificar uma falha, sem acoplar services ao Express.</p>
+<pre><button class="copy">Copiar</button><code>export type ErrorDetails = ReadonlyArray&lt;{
+  field?: string;
+  message: string;
+}&gt;;
+
+type AppErrorOptions = {
+  code: string;
+  message: string;
+  statusCode: number;
+  details?: ErrorDetails;
+  cause?: unknown;
+};
+
+export class AppError extends Error {
+  readonly code: string;
+  readonly statusCode: number;
+  readonly details: ErrorDetails;
+  readonly isOperational = true;
+
+  constructor(options: AppErrorOptions) {
+    super(options.message, { cause: options.cause });
+    this.name = new.target.name;
+    this.code = options.code;
+    this.statusCode = options.statusCode;
+    this.details = options.details ?? [];
+  }
+}</code></pre>
+      <h3>Erros específicos</h3>
+<pre><button class="copy">Copiar</button><code>export class AppointmentNotFoundError extends AppError {
+  constructor(appointmentId: string) {
+    super({
+      code: "APPOINTMENT_NOT_FOUND",
+      message: "Agendamento não encontrado.",
+      statusCode: 404,
+      details: [{ field: "appointmentId", message: appointmentId }],
+    });
+  }
+}
+
+export class AppointmentConflictError extends AppError {
+  constructor() {
+    super({
+      code: "APPOINTMENT_CONFLICT",
+      message: "Este horário não está disponível.",
+      statusCode: 409,
+    });
+  }
+}</code></pre>
+      <div class="callout good"><strong>Critério útil:</strong> crie classes específicas quando o nome carregar significado para regras, testes ou mapeamento. Não crie uma classe diferente apenas para trocar uma frase.</div>
+    </section>
+
+    <section id="contrato"><h2 class="section-title">9. Formato previsível de resposta</h2>
+<pre><button class="copy">Copiar</button><code>{
+  "error": {
+    "code": "APPOINTMENT_CONFLICT",
+    "message": "Este horário não está disponível.",
+    "details": [],
+    "requestId": "req_01J..."
+  }
+}</code></pre>
+      <div class="grid three">
+        <div class="card"><h3>code</h3><p>Identificador estável para clientes, testes, tradução e métricas. Não dependa da mensagem humana.</p></div>
+        <div class="card"><h3>message</h3><p>Explicação segura e legível. Pode mudar; o cliente não deveria tomar decisões por ela.</p></div>
+        <div class="card"><h3>details</h3><p>Informação estruturada adicional, especialmente útil em validação de campos.</p></div>
+        <div class="card"><h3>requestId</h3><p>Permite correlacionar a resposta do cliente com logs internos.</p></div>
+        <div class="card"><h3>status HTTP</h3><p>Comunica a categoria do resultado no protocolo; não substitui o código de negócio.</p></div>
+        <div class="card"><h3>sem stack</h3><p>Stack trace é diagnóstico interno e não faz parte do contrato público em produção.</p></div>
+      </div>
+    </section>
+
+    <section id="mapeamento"><h2 class="section-title">10. Mapeando situações para HTTP</h2>
+      <table><thead><tr><th>Status</th><th>Use quando</th><th>Exemplo</th></tr></thead><tbody>
+        <tr><td>400 Bad Request</td><td>A requisição é malformada ou não pode ser interpretada como esperado.</td><td>JSON inválido.</td></tr>
+        <tr><td>401 Unauthorized</td><td>Falta autenticação válida.</td><td>Token ausente ou inválido.</td></tr>
+        <tr><td>403 Forbidden</td><td>A identidade é conhecida, mas não tem permissão.</td><td>Usuário comum tentando administrar contas.</td></tr>
+        <tr><td>404 Not Found</td><td>Rota ou recurso não existe.</td><td>Agendamento inexistente.</td></tr>
+        <tr><td>409 Conflict</td><td>O estado atual entra em conflito com a operação.</td><td>Horário já reservado; e-mail único duplicado.</td></tr>
+        <tr><td>422 Unprocessable Content</td><td>A estrutura foi entendida, mas os dados falham na validação semântica.</td><td>Data inválida ou campo obrigatório vazio.</td></tr>
+        <tr><td>429 Too Many Requests</td><td>Limite de requisições atingido.</td><td>Rate limit.</td></tr>
+        <tr><td>500 Internal Server Error</td><td>Falha inesperada ou bug sem mapeamento seguro.</td><td>Invariável quebrada.</td></tr>
+        <tr><td>502 Bad Gateway</td><td>Uma dependência respondeu de forma inválida.</td><td>Gateway recebeu resposta imprestável.</td></tr>
+        <tr><td>503 Service Unavailable</td><td>Serviço temporariamente indisponível.</td><td>Banco fora do ar ou manutenção.</td></tr>
+        <tr><td>504 Gateway Timeout</td><td>Uma dependência não respondeu dentro do prazo.</td><td>Timeout do provedor externo.</td></tr>
+      </tbody></table>
+      <div class="callout warn">Não existe mapeamento universal para toda arquitetura. Escolha conscientemente, documente o contrato e seja consistente.</div>
+    </section>
+
+    <section id="seguranca"><h2 class="section-title">11. Stack trace por ambiente e segurança</h2><p>Em desenvolvimento, stack traces aceleram o diagnóstico. Em produção, eles podem revelar caminhos de arquivos, nomes internos, consultas, dependências e partes da implementação.</p>
+<pre><button class="copy">Copiar</button><code>const isDevelopment = process.env.NODE_ENV === "development";
+
+const body = {
+  error: {
+    code: publicError.code,
+    message: publicError.message,
+    details: publicError.details,
+    requestId: response.locals.requestId,
+    ...(isDevelopment &amp;&amp; error instanceof Error
+      ? { stack: error.stack }
+      : {}),
+  },
+};</code></pre>
+      <p>O log interno pode conter stack e causa; a resposta pública deve conter apenas dados permitidos. Também evite registrar tokens, senhas, cookies, dados pessoais e bodies completos sem uma política explícita de redaction.</p>
+    </section>
+
+    <section id="observabilidade"><h2 class="section-title">12. Logs, contexto e request ID</h2><p class="lead">Uma mensagem genérica protege o cliente, mas alguém precisa conseguir investigar a causa real. O log deve ligar erro, requisição e dependências sem expor segredos.</p>
+<pre><button class="copy">Copiar</button><code>logger.error({
+  event: "request_failed",
+  requestId: response.locals.requestId,
+  method: request.method,
+  path: request.originalUrl,
+  statusCode,
+  errorName: normalizedError.name,
+  errorMessage: normalizedError.message,
+  stack: normalizedError.stack,
+  cause: normalizedError.cause,
+});</code></pre>
+      <p>Erros esperados podem ser registrados como <span class="inline">warn</span> ou até não gerar log em algumas rotas. Bugs e indisponibilidades merecem <span class="inline">error</span>, métricas e possivelmente alertas. “Logar tudo como erro” cria ruído e esconde o que realmente importa.</p>
+    </section>
+
+    <section id="implementacao"><h2 class="section-title">13. Implementação completa do handler</h2>
+<pre><button class="copy">Copiar</button><code>import type { ErrorRequestHandler } from "express";
+import { AppError } from "../errors/app-error.js";
+
+function normalizeError(value: unknown): Error {
+  if (value instanceof Error) {
+    return value;
+  }
+
+  return new Error("Um valor que não é Error foi lançado.", {
+    cause: value,
+  });
+}
+
+export const errorHandler: ErrorRequestHandler = (
+  thrownValue,
+  request,
+  response,
+  next,
+) =&gt; {
+  if (response.headersSent) {
+    return next(thrownValue);
+  }
+
+  const error = normalizeError(thrownValue);
+  const isAppError = error instanceof AppError;
+
+  const statusCode = isAppError ? error.statusCode : 500;
+  const code = isAppError
+    ? error.code
+    : "INTERNAL_SERVER_ERROR";
+  const message = isAppError
+    ? error.message
+    : "Ocorreu um erro inesperado.";
+  const details = isAppError ? error.details : [];
+
+  console.error({
+    requestId: response.locals.requestId,
+    method: request.method,
+    path: request.originalUrl,
+    statusCode,
+    error,
+  });
+
+  return response.status(statusCode).json({
+    error: {
+      code,
+      message,
+      details,
+      requestId: response.locals.requestId,
+      ...(process.env.NODE_ENV === "development"
+        ? { stack: error.stack }
+        : {}),
+    },
+  });
+};</code></pre>
+      <div class="callout"><strong>Por que normalizar?</strong> O parâmetro chega como desconhecido do ponto de vista de segurança. Ao converter qualquer valor lançado em uma instância de <span class="inline">Error</span>, o restante do handler trabalha com uma forma mínima consistente.</div>
+    </section>
+
+    <section id="edge-cases"><h2 class="section-title">14. Edge cases</h2><p class="lead">Edge cases são situações nos limites do fluxo normal. Eles importam porque erros geralmente aparecem exatamente quando estado, tempo, rede ou ciclo de resposta saem do caminho feliz.</p>
+      <details open><summary>14.1 Erro depois de headers enviados</summary><p>Verifique <span class="inline">response.headersSent</span> e delegue com <span class="inline">next(error)</span>. Não tente montar outro JSON.</p></details>
+      <details><summary>14.2 Erro do banco de dados</summary><p>Não exponha mensagens, SQL, nome de tabela ou código específico do driver. Traduza erros conhecidos — como violação de unicidade — para um erro de domínio; mantenha indisponibilidade como falha de infraestrutura e preserve a causa no log.</p></details>
+      <details><summary>14.3 Valor lançado que não é Error</summary><p>Normalize o valor. O handler deve tolerar strings, objetos e rejeições estranhas sem quebrar enquanto tenta tratar o primeiro erro.</p></details>
+      <details><summary>14.4 Promise rejeitada</summary><p>No Express 5, uma Promise retornada pelo handler é encaminhada. Promises “soltas”, callbacks de APIs antigas e eventos assíncronos podem exigir tratamento explícito.</p></details>
+      <details><summary>14.5 Timeout de serviço externo</summary><p>Use um timeout real, cancele a operação quando possível e traduza o resultado. Sem timeout, uma requisição pode ficar presa até limites externos encerrarem a conexão.</p></details>
+      <details><summary>14.6 O cliente cancelou a requisição</summary><p>O trabalho interno pode continuar mesmo depois que o cliente desconecta. Considere <span class="inline">AbortSignal</span> para propagar cancelamento a fetch, consultas e tarefas que suportem aborto.</p></details>
+      <details><summary>14.7 Falha dentro do próprio error handler</summary><p>Mantenha o handler simples. Serialização circular, logger quebrado ou acesso inseguro a propriedades pode produzir um segundo erro e esconder o original.</p></details>
+      <details><summary>14.8 Duas operações concorrentes passam na validação</summary><p>Checar “horário livre” antes de inserir não basta contra corrida. Garanta a regra no banco com constraint/transação e traduza a violação para 409.</p></details>
+      <details><summary>14.9 JSON inválido antes das rotas</summary><p><span class="inline">express.json()</span> pode gerar erro de parsing. O handler deve reconhecer a falha e devolver 400, em vez de um 500 genérico.</p></details>
+      <details><summary>14.10 Processo em estado potencialmente corrompido</summary><p>Capturar uma exceção não garante que o processo está saudável. Falhas fatais ou invariáveis quebradas podem justificar encerramento gracioso e reinício pelo orquestrador, não uma tentativa cega de continuar.</p></details>
+    </section>
+
+    <section id="testes"><h2 class="section-title">15. Como testar erros</h2>
+      <div class="grid"><div class="card"><h3>Teste unitário</h3><p>Confirme que o service lança o erro correto quando a regra falha, sem HTTP envolvido.</p></div><div class="card"><h3>Teste de integração</h3><p>Faça uma requisição real à aplicação e verifique status, código, detalhes e ausência de informações sensíveis.</p></div></div>
+<pre><button class="copy">Copiar</button><code>it("returns 409 when the time is already booked", async () =&gt; {
+  await repository.create({
+    professionalId: "pro_1",
+    startsAt: "2026-07-15T14:00:00.000Z",
+  });
+
+  const response = await request(app)
+    .post("/appointments")
+    .send({
+      professionalId: "pro_1",
+      startsAt: "2026-07-15T14:00:00.000Z",
+    });
+
+  expect(response.status).toBe(409);
+  expect(response.body).toMatchObject({
+    error: {
+      code: "APPOINTMENT_CONFLICT",
+      message: "Este horário não está disponível.",
+      details: [],
+    },
+  });
+  expect(response.body.error.stack).toBeUndefined();
+});</code></pre>
+      <div class="exercise"><h3>Exercício orientado</h3><ol><li>Crie um <span class="inline">AppError</span>.</li><li>Implemente erros de 404 e 409.</li><li>Adicione um middleware para rota inexistente.</li><li>Implemente o handler global.</li><li>Provoque um <span class="inline">TypeError</span> e confirme que o cliente recebe mensagem genérica.</li><li>Execute em desenvolvimento e produção e compare o campo <span class="inline">stack</span>.</li></ol></div>
+    </section>
+
+    <section id="mini-projeto"><h2 class="section-title">16. Mini projeto: API resiliente de agendamentos</h2><p>Expanda a API das fases anteriores com um catálogo explícito de erros.</p>
+      <div class="grid">
+        <article class="card"><h3>Requisitos funcionais</h3><ul><li>404 para agendamento ou profissional inexistente.</li><li>409 para colisão de horário.</li><li>422 para dados semanticamente inválidos.</li><li>401/403 em operações protegidas.</li></ul></article>
+        <article class="card"><h3>Requisitos técnicos</h3><ul><li>Classe base de erro.</li><li>Handler global e middleware de 404.</li><li>Request ID em resposta e log.</li><li>Stack apenas em desenvolvimento.</li><li>Teste de cada contrato de erro.</li></ul></article>
+      </div>
+      <h3>Estrutura sugerida</h3>
+<pre><button class="copy">Copiar</button><code>src/
+├── app.ts
+├── errors/
+│   ├── app-error.ts
+│   ├── appointment-conflict-error.ts
+│   └── appointment-not-found-error.ts
+├── middlewares/
+│   ├── error-handler.ts
+│   ├── not-found-handler.ts
+│   └── request-id.ts
+└── modules/
+    └── appointments/
+        ├── appointment.routes.ts
+        ├── appointment.controller.ts
+        ├── appointment.service.ts
+        └── appointment.repository.ts</code></pre>
+    </section>
+
+    <section id="checklist"><h2 class="section-title">17. Checklist de domínio</h2><ul class="checklist">
+      <li>Consigo explicar por que um 404 esperado não é igual a um bug.</li><li>Sei como <span class="inline">throw</span> se transforma em rejeição dentro de uma função async.</li><li>Entendo quando o Express 5 encaminha automaticamente uma rejeição.</li><li>Sei por que o middleware de erro tem quatro parâmetros e fica no final.</li><li>Não exponho stack trace, SQL, tokens ou mensagens internas em produção.</li><li>Uso códigos estáveis de erro além da mensagem humana.</li><li>Trato <span class="inline">headersSent</span> corretamente.</li><li>Sei traduzir erros conhecidos do banco sem acoplar toda a aplicação ao driver.</li><li>Tenho testes para 404, 409, 422 e 500.</li><li>Consigo correlacionar uma resposta de erro com logs usando request ID.</li>
+    </ul></section>
+
+    <section id="referencias"><h2 class="section-title">18. Referências e leituras</h2><ul class="sources">
+      <li><a href="https://expressjs.com/en/5x/guide/error-handling/" target="_blank" rel="noreferrer">Express 5 — Error handling</a>: fluxo de <span class="inline">next(error)</span>, Promises rejeitadas, handler padrão e <span class="inline">headersSent</span>.</li>
+      <li><a href="https://expressjs.com/en/5x/guide/writing-middleware/" target="_blank" rel="noreferrer">Express 5 — Writing middleware</a>: ciclo de middleware e encaminhamento de Promises.</li>
+      <li><a href="https://expressjs.com/en/5x/api/application/" target="_blank" rel="noreferrer">Express 5 API — Application</a>: assinatura de quatro argumentos do middleware de erro.</li>
+      <li><a href="https://nodejs.org/api/errors.html" target="_blank" rel="noreferrer">Node.js — Errors</a>: propriedades de <span class="inline">Error</span>, códigos e erros do runtime.</li>
+      <li><strong>Livro:</strong> <em>Node.js Design Patterns</em>, de Mario Casciaro e Luciano Mammino — padrões de assíncrono, confiabilidade e arquitetura.</li>
+      <li><strong>Livro:</strong> <em>Release It!</em>, de Michael T. Nygard — estabilidade, timeout, circuit breaker e falhas em produção.</li>
+    </ul></section>
+
+    <footer>Fase 7 · Erros — material de estudo da trilha Express 5 com TypeScript. A página é autocontida e não inclui navegação entre fases.</footer>
+  </main>
+</div>
+<script>
+  const progress = document.querySelector('#progress');
+  const links = [...document.querySelectorAll('nav a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  function update(){
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+    let current = sections[0];
+    for (const section of sections) if (section.getBoundingClientRect().top <= 120) current = section;
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id));
+  }
+  addEventListener('scroll', update, {passive:true}); update();
+  document.querySelectorAll('.copy').forEach(btn => btn.addEventListener('click', async () => {
+    const text = btn.nextElementSibling.innerText;
+    await navigator.clipboard.writeText(text);
+    const old = btn.textContent; btn.textContent = 'Copiado'; setTimeout(() => btn.textContent = old, 1200);
+  }));
+</script>
+</body>
+</html>

@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Fase 12 — Produção: observabilidade, Docker, deploy e OpenAPI em APIs Express 5 com TypeScript." />
+  <title>Fase 12 — Produção | Express 5 com TypeScript</title>
+  <style>
+    :root {
+      --bg: #08111f;
+      --panel: rgba(15, 27, 46, .84);
+      --panel-strong: #101d31;
+      --line: rgba(148, 163, 184, .18);
+      --text: #e8eef8;
+      --muted: #9cafc8;
+      --accent: #63e6be;
+      --accent-2: #7dd3fc;
+      --accent-3: #c4b5fd;
+      --warning: #fbbf24;
+      --danger: #fb7185;
+      --code: #07101c;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .34);
+      --radius: 18px;
+      --sidebar: 292px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 28px; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(99, 230, 190, .11), transparent 34rem),
+        radial-gradient(circle at 100% 20%, rgba(125, 211, 252, .10), transparent 30rem),
+        var(--bg);
+      font: 16px/1.72 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: inherit; }
+    .page { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100vh; }
+    aside {
+      position: sticky; top: 0; height: 100vh; overflow: auto;
+      padding: 26px 18px 34px;
+      border-right: 1px solid var(--line);
+      background: rgba(7, 15, 27, .78);
+      backdrop-filter: blur(16px);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 11px;
+      font-weight: 800; letter-spacing: -.02em;
+      margin: 0 8px 24px;
+    }
+    .brand-mark {
+      width: 38px; height: 38px; border-radius: 12px;
+      display: grid; place-items: center;
+      color: #07111d; font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 30px rgba(99,230,190,.18);
+    }
+    .phase-label { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .14em; }
+    nav details { border-top: 1px solid var(--line); padding: 10px 4px; }
+    nav details:last-child { border-bottom: 1px solid var(--line); }
+    nav summary {
+      cursor: pointer; list-style: none; font-size: .83rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .08em; color: #d9e6f5;
+      padding: 4px 8px;
+    }
+    nav summary::-webkit-details-marker { display:none; }
+    nav summary::after { content: "＋"; float:right; color: var(--accent); }
+    nav details[open] summary::after { content: "−"; }
+    nav a {
+      display: block; text-decoration: none; color: var(--muted);
+      font-size: .88rem; line-height: 1.35; padding: 7px 9px; border-radius: 9px;
+      margin-top: 2px;
+    }
+    nav a:hover, nav a.active { color: var(--text); background: rgba(99,230,190,.09); }
+    main { min-width: 0; }
+    .content { width: min(980px, calc(100% - 48px)); margin: 0 auto; padding: 50px 0 100px; }
+    .hero {
+      position: relative; overflow: hidden;
+      padding: 54px 54px 48px; border: 1px solid var(--line); border-radius: 26px;
+      background: linear-gradient(145deg, rgba(18,34,56,.92), rgba(10,20,35,.92));
+      box-shadow: var(--shadow);
+      margin-bottom: 34px;
+    }
+    .hero::before {
+      content: ""; position: absolute; width: 330px; height: 330px; border-radius: 50%;
+      right: -120px; top: -170px; background: rgba(99,230,190,.13); filter: blur(2px);
+    }
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:8px; padding: 7px 11px;
+      border: 1px solid rgba(99,230,190,.26); border-radius: 999px;
+      color: var(--accent); background: rgba(99,230,190,.07);
+      font-size: .77rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    }
+    h1 { margin: 20px 0 14px; font-size: clamp(2.55rem, 6vw, 5rem); line-height: .98; letter-spacing: -.065em; }
+    h1 span { color: var(--accent); }
+    .hero p { max-width: 720px; font-size: 1.1rem; color: #b8c8dc; margin: 0; }
+    .hero-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top: 30px; }
+    .hero-stat { padding: 15px; border:1px solid var(--line); background:rgba(4,12,23,.4); border-radius:14px; }
+    .hero-stat strong { display:block; color:var(--accent-2); font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; }
+    .hero-stat span { color:var(--muted); font-size:.9rem; }
+    section {
+      padding: 34px 36px; margin: 20px 0;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 15px 45px rgba(0,0,0,.16);
+    }
+    section[id] { scroll-margin-top: 22px; }
+    h2 { margin: 0 0 14px; font-size: 1.75rem; letter-spacing: -.035em; line-height:1.2; }
+    h3 { margin: 28px 0 9px; font-size: 1.18rem; color: #dce9f7; }
+    h4 { margin: 22px 0 7px; color: var(--accent-2); }
+    p { color: #bdcadd; }
+    strong { color: #f4f8fd; }
+    code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+    :not(pre) > code {
+      color: #b9f6e4; background: rgba(99,230,190,.08);
+      border: 1px solid rgba(99,230,190,.13); border-radius: 6px; padding: .12rem .35rem;
+    }
+    pre {
+      position: relative; overflow:auto; margin: 18px 0;
+      padding: 22px; border: 1px solid rgba(125,211,252,.14); border-radius: 14px;
+      background: var(--code); color: #d6e7f5; line-height:1.6; font-size:.88rem;
+      box-shadow: inset 0 1px rgba(255,255,255,.025);
+    }
+    pre::before {
+      content: attr(data-lang); display:block; color:#6e859f; font-size:.7rem;
+      text-transform:uppercase; letter-spacing:.12em; margin-bottom:11px;
+    }
+    ul, ol { color:#bdcadd; padding-left: 1.35rem; }
+    li { margin: .35rem 0; }
+    .lead { font-size:1.05rem; color:#cbd8e7; }
+    .callout {
+      margin: 20px 0; padding: 17px 19px; border-left: 4px solid var(--accent);
+      background: rgba(99,230,190,.065); border-radius: 0 12px 12px 0;
+    }
+    .callout.warning { border-left-color: var(--warning); background:rgba(251,191,36,.07); }
+    .callout.danger { border-left-color: var(--danger); background:rgba(251,113,133,.07); }
+    .callout strong { display:block; margin-bottom:3px; }
+    .grid-2, .grid-3 { display:grid; gap:14px; margin:18px 0; }
+    .grid-2 { grid-template-columns:repeat(2,1fr); }
+    .grid-3 { grid-template-columns:repeat(3,1fr); }
+    .card { padding:18px; border:1px solid var(--line); border-radius:14px; background:rgba(4,12,23,.38); }
+    .card h3, .card h4 { margin-top:0; }
+    .card p:last-child { margin-bottom:0; }
+    .flow {
+      white-space: pre-wrap; font-family: "SFMono-Regular", Consolas, monospace;
+      padding: 18px; border-radius:14px; color:#b7d8eb;
+      background:rgba(4,12,23,.5); border:1px dashed rgba(125,211,252,.24);
+    }
+    .tag { display:inline-block; margin:3px; padding:4px 9px; border-radius:999px; font-size:.76rem; color:#baf5e4; background:rgba(99,230,190,.08); border:1px solid rgba(99,230,190,.18); }
+    .checklist { list-style:none; padding-left:0; columns:2; column-gap:32px; }
+    .checklist li { break-inside:avoid; padding-left:1.7rem; position:relative; }
+    .checklist li::before { content:"□"; position:absolute; left:0; color:var(--accent); font-weight:900; }
+    .ref-list a { color:var(--accent-2); text-underline-offset:3px; }
+    .footer {
+      color:#8093ab; text-align:center; font-size:.85rem; margin-top:34px;
+    }
+    .top-button {
+      position:fixed; right:24px; bottom:24px; width:44px; height:44px;
+      border:1px solid var(--line); border-radius:14px; background:rgba(16,29,49,.92);
+      color:var(--accent); cursor:pointer; display:grid; place-items:center; text-decoration:none;
+      box-shadow:var(--shadow);
+    }
+    @media (max-width: 980px) {
+      .page { grid-template-columns:1fr; }
+      aside { position:relative; height:auto; border-right:0; border-bottom:1px solid var(--line); }
+      nav { display:grid; grid-template-columns:repeat(2,1fr); gap:0 16px; }
+      .content { width:min(100% - 28px, 900px); padding-top:28px; }
+    }
+    @media (max-width: 680px) {
+      nav { grid-template-columns:1fr; }
+      .hero { padding:36px 24px; }
+      .hero-grid, .grid-2, .grid-3 { grid-template-columns:1fr; }
+      section { padding:26px 22px; }
+      .checklist { columns:1; }
+      h1 { font-size:3rem; }
+    }
+    @media print {
+      aside, .top-button { display:none; }
+      .page { display:block; }
+      body { background:#fff; color:#111; }
+      .content { width:100%; padding:0; }
+      .hero, section { box-shadow:none; break-inside:avoid; background:#fff; color:#111; border-color:#ddd; }
+      p, li { color:#333; }
+      h1 span { color:#087f5b; }
+      pre { white-space:pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <aside>
+    <div class="brand">
+      <div class="brand-mark">12</div>
+      <div><div class="phase-label">Express 5 + TypeScript</div>Produção</div>
+    </div>
+    <nav>
+      <details open><summary>Fundamentos</summary>
+        <a href="#producao">O que é produção</a>
+        <a href="#observabilidade">Observabilidade</a>
+        <a href="#logs">Logs estruturados</a>
+        <a href="#niveis">Níveis de log</a>
+        <a href="#request-id">Request ID</a>
+      </details>
+      <details open><summary>Sinais operacionais</summary>
+        <a href="#metricas">Métricas</a>
+        <a href="#health">Health check</a>
+        <a href="#liveness">Liveness</a>
+        <a href="#readiness">Readiness</a>
+        <a href="#startup">Startup check</a>
+      </details>
+      <details open><summary>Processo</summary>
+        <a href="#shutdown">Graceful shutdown</a>
+        <a href="#process-errors">Erros de processo</a>
+        <a href="#config">Configuração</a>
+      </details>
+      <details open><summary>Infraestrutura</summary>
+        <a href="#docker">Docker</a>
+        <a href="#compose">Docker Compose</a>
+        <a href="#build">Build</a>
+        <a href="#deploy">Deploy</a>
+        <a href="#migrations">Migrations</a>
+      </details>
+      <details open><summary>Contrato e prática</summary>
+        <a href="#openapi">OpenAPI e Swagger</a>
+        <a href="#arquitetura">Arquitetura</a>
+        <a href="#edge-cases">Edge cases</a>
+        <a href="#exercicios">Exercícios</a>
+        <a href="#mini-projeto">Mini projeto</a>
+        <a href="#checklist">Checklist</a>
+        <a href="#referencias">Referências</a>
+      </details>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="content" id="topo">
+      <header class="hero">
+        <span class="eyebrow">Fase 12 · Operação real</span>
+        <h1>Produção<span>.</span></h1>
+        <p>Como transformar uma API Express que funciona localmente em um serviço observável, configurável, documentado, empacotado e preparado para deploy.</p>
+        <div class="hero-grid">
+          <div class="hero-stat"><strong>Observar</strong><span>logs, métricas e correlação</span></div>
+          <div class="hero-stat"><strong>Operar</strong><span>health checks e shutdown</span></div>
+          <div class="hero-stat"><strong>Publicar</strong><span>Docker, deploy e OpenAPI</span></div>
+        </div>
+      </header>
+
+      <section id="producao">
+        <h2>1. O que significa colocar uma API em produção</h2>
+        <p class="lead">Executar <code>npm run dev</code> em outra máquina não é uma estratégia de produção.</p>
+        <p>Em desenvolvimento, temos um terminal aberto, poucas requisições e liberdade para reiniciar tudo. Em produção, a aplicação atende usuários, depende de recursos remotos e precisa explicar o próprio comportamento sem que alguém esteja olhando diretamente para ela.</p>
+        <div class="grid-2">
+          <div class="card"><h3>Desenvolvimento</h3><ul><li>feedback rápido;</li><li>logs legíveis;</li><li>hot reload;</li><li>dados descartáveis;</li><li>uma instância local.</li></ul></div>
+          <div class="card"><h3>Produção</h3><ul><li>previsibilidade;</li><li>segurança;</li><li>diagnóstico;</li><li>recuperação;</li><li>mudanças controladas.</li></ul></div>
+        </div>
+        <div class="callout"><strong>Ideia central</strong>Uma API pronta para produção não é a que nunca falha. É a que falha de maneira visível, controlada e recuperável.</div>
+      </section>
+
+      <section id="observabilidade">
+        <h2>2. Observabilidade</h2>
+        <p>Observabilidade é a capacidade de compreender o estado interno do sistema a partir dos sinais que ele produz. Os três sinais tradicionais são <strong>logs</strong>, <strong>métricas</strong> e <strong>traces</strong>.</p>
+        <div class="grid-3">
+          <div class="card"><h3>Logs</h3><p>Eventos individuais, com contexto e detalhes de execução.</p></div>
+          <div class="card"><h3>Métricas</h3><p>Valores agregados: volume, erro, latência e saturação.</p></div>
+          <div class="card"><h3>Traces</h3><p>Caminho de uma operação entre serviços e dependências.</p></div>
+        </div>
+        <h3>Monitoramento não é exatamente observabilidade</h3>
+        <p>Monitoramento responde perguntas já conhecidas, como “a CPU está alta?”. Observabilidade ajuda a investigar perguntas novas, como “por que apenas requisições de uma rota ficaram lentas depois do deploy?”.</p>
+      </section>
+
+      <section id="logs">
+        <h2>3. Logs estruturados</h2>
+        <p>Um log estruturado usa campos previsíveis, normalmente em JSON. Isso permite indexação, busca, contagem, dashboards e alertas.</p>
+        <pre data-lang="TypeScript"><code>logger.info({
+  event: "user.created",
+  userId: user.id,
+  requestId,
+});</code></pre>
+        <pre data-lang="JSON"><code>{
+  "level": "info",
+  "time": "2026-07-10T20:15:30.421Z",
+  "event": "user.created",
+  "userId": "usr_123",
+  "requestId": "91b0c5..."
+}</code></pre>
+        <h3>Registre eventos, não frases vagas</h3>
+        <div class="grid-2">
+          <div class="card"><h4>Ruim</h4><code>deu erro</code><br><code>entrou aqui</code><br><code>teste</code></div>
+          <div class="card"><h4>Melhor</h4><code>database.connection.failed</code><br><code>http.request.completed</code><br><code>server.shutdown.started</code></div>
+        </div>
+        <div class="callout danger"><strong>Dados sensíveis</strong>Nunca registre senha, token, cookie, segredo, cabeçalho Authorization ou body inteiro por padrão.</div>
+        <h3>Pino</h3>
+        <pre data-lang="bash"><code>npm install pino pino-http
+npm install -D pino-pretty</code></pre>
+        <pre data-lang="TypeScript"><code>import pino from "pino";
+
+const isDevelopment =
+  process.env.NODE_ENV === "development";
+
+export const logger = pino({
+  level: process.env.LOG_LEVEL ?? "info",
+  transport: isDevelopment
+    ? {
+        target: "pino-pretty",
+        options: { colorize: true },
+      }
+    : undefined,
+  redact: {
+    paths: [
+      "req.headers.authorization",
+      "req.headers.cookie",
+      "password",
+      "accessToken",
+      "refreshToken",
+    ],
+    censor: "[REDACTED]",
+  },
+});</code></pre>
+      </section>
+
+      <section id="niveis">
+        <h2>4. Níveis de log</h2>
+        <div class="grid-3">
+          <div class="card"><h3>trace</h3><p>Detalhe extremo. Quase sempre desativado em produção.</p></div>
+          <div class="card"><h3>debug</h3><p>Diagnóstico técnico durante investigação.</p></div>
+          <div class="card"><h3>info</h3><p>Evento normal e relevante.</p></div>
+          <div class="card"><h3>warn</h3><p>Situação inesperada, mas recuperável.</p></div>
+          <div class="card"><h3>error</h3><p>Uma operação falhou.</p></div>
+          <div class="card"><h3>fatal</h3><p>O processo não pode continuar com segurança.</p></div>
+        </div>
+        <p>Não transforme tudo em <code>error</code>. Se todo evento é urgente, nenhum é urgente.</p>
+      </section>
+
+      <section id="request-id">
+        <h2>5. Request ID</h2>
+        <p>O Request ID identifica uma requisição e permite juntar logs produzidos por middlewares, controllers, services e repositories.</p>
+        <div class="flow">cliente
+  ↓  x-request-id
+middleware
+  ↓
+controller
+  ↓
+service
+  ↓
+repository
+  ↓
+resposta</div>
+        <pre data-lang="TypeScript"><code>import { randomUUID } from "node:crypto";
+import type { RequestHandler } from "express";
+
+export const requestIdMiddleware: RequestHandler = (
+  request,
+  response,
+  next,
+) => {
+  const incomingRequestId =
+    request.header("x-request-id");
+
+  const requestId =
+    incomingRequestId ?? randomUUID();
+
+  response.locals.requestId = requestId;
+  response.setHeader("x-request-id", requestId);
+
+  next();
+};</code></pre>
+        <h3>Log HTTP</h3>
+        <pre data-lang="TypeScript"><code>export const httpLogger: RequestHandler = (
+  request,
+  response,
+  next,
+) => {
+  const startedAt = performance.now();
+
+  response.on("finish", () => {
+    const durationMs =
+      performance.now() - startedAt;
+
+    logger.info({
+      event: "http.request.completed",
+      requestId: response.locals.requestId,
+      method: request.method,
+      path: request.originalUrl,
+      statusCode: response.statusCode,
+      durationMs: Number(durationMs.toFixed(2)),
+    });
+  });
+
+  next();
+};</code></pre>
+        <h3>AsyncLocalStorage</h3>
+        <p>Quando passar o contexto manualmente por todas as funções se torna inconveniente, <code>AsyncLocalStorage</code> pode manter o Request ID ao longo da cadeia assíncrona.</p>
+        <pre data-lang="TypeScript"><code>import { AsyncLocalStorage } from "node:async_hooks";
+
+type RequestContext = {
+  requestId: string;
+};
+
+export const requestContext =
+  new AsyncLocalStorage&lt;RequestContext&gt;();</code></pre>
+      </section>
+
+      <section id="metricas">
+        <h2>6. Métricas</h2>
+        <p>Logs descrevem eventos individuais. Métricas representam valores agregados ao longo do tempo.</p>
+        <div class="grid-3">
+          <div class="card"><h3>Counter</h3><p>Só cresce: requisições totais, falhas totais.</p></div>
+          <div class="card"><h3>Gauge</h3><p>Sobe e desce: conexões ativas, tamanho da fila.</p></div>
+          <div class="card"><h3>Histogram</h3><p>Distribuição: duração das requisições.</p></div>
+        </div>
+        <h3>Alta cardinalidade</h3>
+        <div class="callout warning"><strong>Não use IDs únicos como labels</strong><code>requestId</code>, <code>userId</code>, e-mail e URLs completas criam séries demais. Use rota normalizada, método e status.</div>
+        <pre data-lang="bash"><code>npm install prom-client</code></pre>
+        <pre data-lang="TypeScript"><code>import {
+  collectDefaultMetrics,
+  Counter,
+  Histogram,
+  Registry,
+} from "prom-client";
+
+export const metricsRegistry = new Registry();
+
+collectDefaultMetrics({
+  register: metricsRegistry,
+});
+
+export const httpRequestsTotal = new Counter({
+  name: "http_requests_total",
+  help: "Total de requisições HTTP",
+  labelNames: ["method", "route", "status_code"],
+  registers: [metricsRegistry],
+});
+
+export const httpRequestDurationSeconds =
+  new Histogram({
+    name: "http_request_duration_seconds",
+    help: "Duração das requisições HTTP",
+    labelNames: ["method", "route", "status_code"],
+    buckets: [
+      0.005, 0.01, 0.025, 0.05,
+      0.1, 0.25, 0.5, 1, 2.5,
+    ],
+    registers: [metricsRegistry],
+  });</code></pre>
+        <p>O endpoint <code>/metrics</code> normalmente deve ficar protegido por rede, autenticação ou infraestrutura.</p>
+      </section>
+
+      <section id="health">
+        <h2>7. Health check</h2>
+        <p>Health checks são endpoints operacionais. Eles não devem expor credenciais, stack traces ou detalhes internos desnecessários.</p>
+        <div class="flow">GET /health/live
+→ O processo está vivo?
+
+GET /health/ready
+→ Banco e dependências estão prontos?</div>
+      </section>
+
+      <section id="liveness">
+        <h2>8. Liveness</h2>
+        <p>Liveness responde apenas se o processo está vivo.</p>
+        <pre data-lang="TypeScript"><code>app.get("/health/live", (_request, response) => {
+  return response.status(200).json({
+    status: "alive",
+  });
+});</code></pre>
+        <div class="callout"><strong>Não consulte o banco aqui</strong>Se o banco cair, reiniciar todas as instâncias da API repetidamente pode piorar o incidente.</div>
+      </section>
+
+      <section id="readiness">
+        <h2>9. Readiness</h2>
+        <p>Readiness indica se a aplicação deve receber tráfego. Ela pode verificar banco, cache obrigatório, fila essencial, inicialização e estado de shutdown.</p>
+        <pre data-lang="TypeScript"><code>app.get("/health/ready", async (
+  _request,
+  response,
+) => {
+  if (applicationState.shuttingDown) {
+    return response.status(503).json({
+      status: "not_ready",
+    });
+  }
+
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+
+    return response.status(200).json({
+      status: "ready",
+    });
+  } catch {
+    return response.status(503).json({
+      status: "not_ready",
+    });
+  }
+});</code></pre>
+        <h3>Resultado esperado</h3>
+        <div class="grid-2">
+          <div class="card"><h4>Banco disponível</h4><p><code>200</code> — a instância pode receber tráfego.</p></div>
+          <div class="card"><h4>Banco indisponível</h4><p><code>503</code> — a instância permanece viva, mas não pronta.</p></div>
+        </div>
+        <p>Use operações baratas e timeouts curtos. Uma verificação pesada executada frequentemente pode causar o próprio problema.</p>
+      </section>
+
+      <section id="startup">
+        <h2>10. Startup check</h2>
+        <p>Uma aplicação pode estar viva, mas ainda inicializando. Startup checks evitam que uma inicialização lenta seja confundida com falha permanente.</p>
+        <p>São úteis quando o processo precisa carregar configuração, conectar dependências, aquecer cache ou preparar modelos antes de atender tráfego.</p>
+      </section>
+
+      <section id="shutdown">
+        <h2>11. Graceful shutdown</h2>
+        <p>Quando a infraestrutura envia <code>SIGTERM</code> ou <code>SIGINT</code>, a aplicação deve parar de receber novas requisições, concluir o que estiver em andamento e fechar recursos.</p>
+        <div class="flow">sinal recebido
+  ↓
+readiness = false
+  ↓
+parar novas conexões
+  ↓
+concluir operações em andamento
+  ↓
+fechar banco e filas
+  ↓
+encerrar processo</div>
+        <pre data-lang="TypeScript"><code>const shutdownTimeoutMs = 10_000;
+let isShuttingDown = false;
+
+async function shutdown(signal: string): Promise&lt;void&gt; {
+  if (isShuttingDown) return;
+
+  isShuttingDown = true;
+  applicationState.shuttingDown = true;
+
+  logger.info({
+    event: "server.shutdown.started",
+    signal,
+  });
+
+  const timer = setTimeout(() => {
+    logger.fatal({
+      event: "server.shutdown.timeout",
+    });
+
+    process.exit(1);
+  }, shutdownTimeoutMs);
+
+  timer.unref();
+
+  server.close(async (error) => {
+    await prisma.$disconnect();
+
+    clearTimeout(timer);
+
+    logger.info({
+      event: "server.shutdown.completed",
+    });
+
+    process.exit(error ? 1 : 0);
+  });
+}
+
+process.on("SIGTERM", () => {
+  void shutdown("SIGTERM");
+});
+
+process.on("SIGINT", () => {
+  void shutdown("SIGINT");
+});</code></pre>
+        <p><code>server.close()</code> para de aceitar novas conexões e aguarda o encerramento das conexões atendidas, mas filas, WebSockets, timers e outros recursos precisam de tratamento próprio.</p>
+      </section>
+
+      <section id="process-errors">
+        <h2>12. Exceções e rejeições não tratadas</h2>
+        <pre data-lang="TypeScript"><code>process.on("uncaughtException", (error) => {
+  logger.fatal({
+    event: "process.uncaught_exception",
+    error,
+  });
+
+  void shutdown("uncaughtException");
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.fatal({
+    event: "process.unhandled_rejection",
+    reason,
+  });
+
+  void shutdown("unhandledRejection");
+});</code></pre>
+        <div class="callout danger"><strong>Última linha de defesa</strong>Esses handlers não substituem o tratamento normal. Depois de uma exceção não tratada, o processo pode estar inconsistente; registre, encerre e permita que a infraestrutura o substitua.</div>
+      </section>
+
+      <section id="config">
+        <h2>13. Configuração por ambiente</h2>
+        <p>Configuração é tudo que muda entre ambientes sem exigir alteração do código: porta, banco, nível de log, CORS, segredo, timeout e endereços de serviços.</p>
+        <pre data-lang="TypeScript"><code>import { z } from "zod";
+
+const envSchema = z.object({
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
+  PORT: z.coerce.number().int().positive()
+    .default(3333),
+  LOG_LEVEL: z
+    .enum([
+      "trace", "debug", "info",
+      "warn", "error", "fatal",
+    ])
+    .default("info"),
+  DATABASE_URL: z.string().min(1),
+  CORS_ORIGIN: z.string().url(),
+});
+
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error(
+    "Invalid environment configuration",
+    parsed.error.flatten().fieldErrors,
+  );
+
+  process.exit(1);
+}
+
+export const env = parsed.data;</code></pre>
+        <div class="callout"><strong>Fail fast</strong>É melhor recusar a inicialização do que iniciar parcialmente com segredo ausente ou URL inválida.</div>
+        <p>O arquivo <code>.env</code> é conveniente localmente. Em produção, segredos devem ser injetados pela plataforma ou por um secret manager — nunca copiados para a imagem.</p>
+      </section>
+
+      <section id="docker">
+        <h2>14. Docker</h2>
+        <p>Docker empacota a aplicação e suas dependências em uma imagem reproduzível.</p>
+        <p>
+          <span class="tag">Dockerfile</span>
+          <span class="tag">imagem</span>
+          <span class="tag">container</span>
+          <span class="tag">registry</span>
+          <span class="tag">volume</span>
+          <span class="tag">network</span>
+        </p>
+        <h3>Dockerfile multi-stage</h3>
+        <pre data-lang="Dockerfile"><code># syntax=docker/dockerfile:1
+
+FROM node:24-alpine AS dependencies
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM node:24-alpine AS build
+WORKDIR /app
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY package.json package-lock.json tsconfig.json ./
+COPY prisma ./prisma
+COPY src ./src
+RUN npm run build
+RUN npm prune --omit=dev
+
+FROM node:24-alpine AS production
+ENV NODE_ENV=production
+WORKDIR /app
+
+RUN addgroup -S nodeapp \
+  &amp;&amp; adduser -S nodeapp -G nodeapp
+
+COPY --from=build --chown=nodeapp:nodeapp \
+  /app/package.json ./
+COPY --from=build --chown=nodeapp:nodeapp \
+  /app/node_modules ./node_modules
+COPY --from=build --chown=nodeapp:nodeapp \
+  /app/dist ./dist
+COPY --from=build --chown=nodeapp:nodeapp \
+  /app/prisma ./prisma
+
+USER nodeapp
+EXPOSE 3000
+
+CMD ["node", "dist/server.js"]</code></pre>
+        <h3>Por que vários estágios?</h3>
+        <p>A imagem final não precisa carregar TypeScript, código fonte, ferramentas de build, caches e dependências de desenvolvimento.</p>
+        <h3>.dockerignore</h3>
+        <pre data-lang="text"><code>node_modules
+dist
+coverage
+.git
+.env
+.env.*
+npm-debug.log
+README.md</code></pre>
+        <div class="callout warning"><strong>Evite root e latest</strong>Execute com usuário não privilegiado e publique tags identificáveis, como versão ou hash do commit.</div>
+      </section>
+
+      <section id="compose">
+        <h2>15. Docker Compose</h2>
+        <pre data-lang="YAML"><code>services:
+  api:
+    build:
+      context: .
+      target: build
+    command: npm run dev
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: >-
+        postgresql://postgres:postgres@database:5432/app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U postgres -d app"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:</code></pre>
+        <p><code>depends_on</code> ajuda na inicialização, mas não garante disponibilidade eterna. A aplicação ainda precisa tratar quedas, timeouts e reconexões.</p>
+      </section>
+
+      <section id="build">
+        <h2>16. Build de TypeScript</h2>
+        <pre data-lang="JSON"><code>{
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint ."
+  }
+}</code></pre>
+        <div class="flow">npm ci
+→ npm run typecheck
+→ npm run lint
+→ npm test
+→ npm run build
+→ docker build</div>
+      </section>
+
+      <section id="deploy">
+        <h2>17. Deploy</h2>
+        <p>Deploy é o processo controlado de disponibilizar uma nova versão.</p>
+        <div class="flow">commit
+  ↓
+pipeline
+  ↓
+lint + typecheck + testes
+  ↓
+build da imagem
+  ↓
+registry
+  ↓
+migrations
+  ↓
+nova versão
+  ↓
+readiness
+  ↓
+tráfego</div>
+        <div class="grid-2">
+          <div class="card"><h3>Recreate</h3><p>Versão antiga para antes da nova. Simples, mas pode gerar indisponibilidade.</p></div>
+          <div class="card"><h3>Rolling</h3><p>Instâncias são substituídas gradualmente.</p></div>
+          <div class="card"><h3>Blue-green</h3><p>Dois ambientes; o tráfego muda após validação.</p></div>
+          <div class="card"><h3>Canary</h3><p>Uma pequena parcela recebe a nova versão primeiro.</p></div>
+        </div>
+        <h3>Rollback</h3>
+        <p>Retornar a imagem é apenas parte do rollback. Banco, contrato e dados escritos pela nova versão também precisam ser compatíveis.</p>
+      </section>
+
+      <section id="migrations">
+        <h2>18. Migrations em produção</h2>
+        <p>Antes de executar uma migration, responda: quem executa, quando executa, quanto bloqueia, se é repetível, se há backup e se as versões antiga e nova continuam compatíveis.</p>
+        <h3>Expand and contract</h3>
+        <ol>
+          <li>expanda o schema de maneira compatível;</li>
+          <li>publique código que aceite os dois formatos;</li>
+          <li>migre os dados;</li>
+          <li>remova o formato antigo depois.</li>
+        </ol>
+        <div class="callout warning"><strong>Evite mudanças destrutivas imediatas</strong>Remover ou renomear uma coluna no mesmo deploy pode quebrar instâncias antigas durante um rolling deployment.</div>
+      </section>
+
+      <section id="openapi">
+        <h2>19. OpenAPI e Swagger</h2>
+        <p>OpenAPI é uma especificação padronizada para descrever APIs HTTP. Swagger é um ecossistema de ferramentas que utiliza essa especificação.</p>
+        <div class="grid-2">
+          <div class="card"><h3>OpenAPI</h3><p>Contrato: endpoints, parâmetros, body, respostas, schemas e autenticação.</p></div>
+          <div class="card"><h3>Swagger</h3><p>Swagger UI, Editor, Codegen e outras ferramentas.</p></div>
+        </div>
+        <pre data-lang="YAML"><code>openapi: 3.1.0
+
+info:
+  title: Notes API
+  version: 1.0.0
+
+paths:
+  /health/live:
+    get:
+      summary: Verifica se o processo está vivo
+      operationId: getLiveness
+      responses:
+        "200":
+          description: Processo ativo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                properties:
+                  status:
+                    type: string
+                    const: alive</code></pre>
+        <h3>Swagger UI no Express</h3>
+        <pre data-lang="bash"><code>npm install swagger-ui-express
+npm install -D @types/swagger-ui-express</code></pre>
+        <pre data-lang="TypeScript"><code>import swaggerUi from "swagger-ui-express";
+import { openApiDocument } from "./docs/openapi.js";
+
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(openApiDocument),
+);</code></pre>
+        <h3>Code-first ou design-first?</h3>
+        <p>Code-first reduz duplicação e fica próximo da implementação. Design-first incentiva discussão do contrato antes do código. As duas abordagens precisam de testes para evitar divergência.</p>
+      </section>
+
+      <section id="arquitetura">
+        <h2>20. Arquitetura sugerida</h2>
+        <pre data-lang="text"><code>src/
+├── app.ts
+├── server.ts
+├── config/
+│   ├── env.ts
+│   └── logger.ts
+├── docs/
+│   └── openapi.ts
+├── middlewares/
+│   ├── context.ts
+│   ├── http-logger.ts
+│   ├── metrics.ts
+│   └── request-id.ts
+├── observability/
+│   ├── metrics.ts
+│   └── request-context.ts
+├── operational/
+│   ├── application-state.ts
+│   ├── health.controller.ts
+│   └── shutdown.ts
+└── modules/</code></pre>
+        <h3>Ordem de inicialização</h3>
+        <ol>
+          <li>carregar e validar configuração;</li>
+          <li>configurar logger;</li>
+          <li>registrar handlers de processo;</li>
+          <li>criar dependências;</li>
+          <li>conectar recursos essenciais;</li>
+          <li>criar a aplicação Express;</li>
+          <li>registrar middlewares e rotas;</li>
+          <li>iniciar o servidor;</li>
+          <li>marcar readiness.</li>
+        </ol>
+      </section>
+
+      <section id="edge-cases">
+        <h2>21. Edge cases de produção</h2>
+        <div class="grid-2">
+          <div class="card"><h3>Banco fora do ar</h3><p>Liveness permanece 200; readiness retorna 503.</p></div>
+          <div class="card"><h3>SIGTERM durante requisição</h3><p>A instância sai do tráfego e tenta concluir a operação.</p></div>
+          <div class="card"><h3>Shutdown travado</h3><p>O timeout força encerramento e gera log fatal.</p></div>
+          <div class="card"><h3>Health check caro</h3><p>A verificação pode causar carga e agravar o incidente.</p></div>
+          <div class="card"><h3>URL em métrica</h3><p><code>/users/1</code> e <code>/users/2</code> geram cardinalidade; use <code>/users/:userId</code>.</p></div>
+          <div class="card"><h3>Instância lenta</h3><p>Pode continuar “saudável”; latência e saturação revelam degradação.</p></div>
+          <div class="card"><h3>Migration incompatível</h3><p>Versões antiga e nova podem coexistir durante o deploy.</p></div>
+          <div class="card"><h3>Docs expostas</h3><p>Documentação privada pode revelar endpoints administrativos.</p></div>
+        </div>
+      </section>
+
+      <section id="exercicios">
+        <h2>22. Exercícios</h2>
+        <h3>1 — Logs</h3>
+        <p>Crie um middleware que registre Request ID, método, rota, status, duração e ambiente, sem registrar body ou Authorization.</p>
+        <h3>2 — Readiness</h3>
+        <p>Implemente banco, estado de shutdown, timeout de 500 ms e resposta 503.</p>
+        <h3>3 — Graceful shutdown</h3>
+        <p>Feche servidor HTTP, Prisma e um consumidor de fila fictício dentro de 10 segundos.</p>
+        <h3>4 — Métricas</h3>
+        <p>Registre total, duração, erros por código e operações em andamento.</p>
+        <h3>5 — Docker</h3>
+        <p>Crie Dockerfile multi-stage, .dockerignore, usuário não root e health check.</p>
+        <h3>6 — OpenAPI</h3>
+        <p>Documente CRUD, autenticação e os erros 400, 401, 403, 404 e 409.</p>
+      </section>
+
+      <section id="mini-projeto">
+        <h2>23. Mini projeto — API pronta para deploy</h2>
+        <p>Evolua uma API de tarefas, notas ou agendamentos para uma versão operável.</p>
+        <div class="grid-2">
+          <div class="card"><h3>Configuração</h3><ul><li>Zod;</li><li>três ambientes;</li><li>fail fast;</li><li>segredos externos.</li></ul></div>
+          <div class="card"><h3>Observabilidade</h3><ul><li>JSON em produção;</li><li>Request ID;</li><li>redaction;</li><li>métricas.</li></ul></div>
+          <div class="card"><h3>Operação</h3><ul><li>live;</li><li>ready;</li><li>SIGTERM;</li><li>timeout de shutdown.</li></ul></div>
+          <div class="card"><h3>Entrega</h3><ul><li>Docker;</li><li>PostgreSQL;</li><li>OpenAPI;</li><li>README operacional.</li></ul></div>
+        </div>
+        <div class="flow">install → typecheck → lint → test → build
+→ docker build → deploy → readiness</div>
+      </section>
+
+      <section id="checklist">
+        <h2>24. Checklist de produção</h2>
+        <ul class="checklist">
+          <li>configuração validada;</li>
+          <li>NODE_ENV correto;</li>
+          <li>Request ID;</li>
+          <li>logs estruturados;</li>
+          <li>redaction de segredos;</li>
+          <li>métricas com labels controladas;</li>
+          <li>liveness;</li>
+          <li>readiness;</li>
+          <li>graceful shutdown;</li>
+          <li>handlers de processo;</li>
+          <li>timeouts externos;</li>
+          <li>migrations planejadas;</li>
+          <li>backup;</li>
+          <li>imagem reproduzível;</li>
+          <li>tag identificável;</li>
+          <li>usuário não root;</li>
+          <li>segredos fora da imagem;</li>
+          <li>pipeline com testes;</li>
+          <li>rollback conhecido;</li>
+          <li>OpenAPI atualizada;</li>
+          <li>erros documentados;</li>
+          <li>README operacional.</li>
+        </ul>
+      </section>
+
+      <section id="referencias" class="ref-list">
+        <h2>25. Referências e leituras</h2>
+        <h3>Documentação oficial</h3>
+        <ul>
+          <li><a href="https://expressjs.com/" target="_blank" rel="noreferrer">Express</a> — aplicação, produção e tratamento de erros.</li>
+          <li><a href="https://nodejs.org/api/process.html" target="_blank" rel="noreferrer">Node.js Process</a> — sinais, exceções e rejeições.</li>
+          <li><a href="https://nodejs.org/api/async_context.html" target="_blank" rel="noreferrer">Node.js Async Context</a> — AsyncLocalStorage.</li>
+          <li><a href="https://docs.docker.com/guides/nodejs/" target="_blank" rel="noreferrer">Docker para Node.js</a>.</li>
+          <li><a href="https://spec.openapis.org/oas/latest.html" target="_blank" rel="noreferrer">OpenAPI Specification</a>.</li>
+          <li><a href="https://prometheus.io/docs/practices/naming/" target="_blank" rel="noreferrer">Prometheus — boas práticas</a>.</li>
+        </ul>
+        <h3>Livros</h3>
+        <ul>
+          <li><strong>Release It!</strong>, Michael T. Nygard.</li>
+          <li><strong>Site Reliability Engineering</strong>, Google.</li>
+          <li><strong>The Site Reliability Workbook</strong>, Google.</li>
+          <li><strong>Designing Data-Intensive Applications</strong>, Martin Kleppmann.</li>
+          <li><strong>Observability Engineering</strong>, Charity Majors, Liz Fong-Jones e George Miranda.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Conclusão</h2>
+        <p>Produção é a combinação de código, configuração, infraestrutura, observabilidade, operação, documentação e estratégia de mudança.</p>
+        <p>Ao concluir esta fase, você deve saber explicar como a API é observada, como recebe e perde tráfego, como encerra, como é empacotada, como é publicada e como seu contrato é descoberto.</p>
+      </section>
+
+      <p class="footer">Fase 12 · Observabilidade, produção e deploy · Express 5 com TypeScript</p>
+    </div>
+  </main>
+</div>
+<a class="top-button" href="#topo" aria-label="Voltar ao topo">↑</a>
+<script>
+  const links = [...document.querySelectorAll("nav a")];
+  const sections = links
+    .map(link => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (!visible) return;
+
+    links.forEach(link => {
+      link.classList.toggle(
+        "active",
+        link.getAttribute("href") === "#" + visible.target.id
+      );
+    });
+  }, {
+    rootMargin: "-15% 0px -72% 0px",
+    threshold: [0, .15, .5]
+  });
+
+  sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>

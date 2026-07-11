@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Fase 5 — Zod | Express 5 + TypeScript</title>
+    <style>
+      :root {
+        --bg: #09111f;
+        --panel: #101b2e;
+        --panel2: #142239;
+        --text: #e8edf7;
+        --muted: #a8b4c8;
+        --line: #283854;
+        --accent: #68d391;
+        --accent2: #63b3ed;
+        --warn: #f6c85f;
+        --danger: #fc8181;
+        --code: #07101d;
+        --shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 24px;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(135deg, #08101d, #0d1728 48%, #07111f);
+        color: var(--text);
+        font:
+          16px/1.72 Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 330px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+      aside {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: auto;
+        padding: 28px 20px;
+        border-right: 1px solid var(--line);
+        background: rgba(7, 16, 29, 0.96);
+      }
+      main {
+        min-width: 0;
+        padding: 34px 5vw 80px;
+      }
+      .content {
+        max-width: 1080px;
+        margin: auto;
+      }
+      .brand {
+        font-size: 1.3rem;
+        font-weight: 800;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin: 4px 0 18px;
+      }
+      .phase-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .phase-link {
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.82rem;
+      }
+      .phase-link.active {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(104, 211, 145, 0.08);
+      }
+      nav > a,
+      summary {
+        color: var(--text);
+      }
+      nav > a {
+        display: block;
+        padding: 9px 11px;
+        margin: 3px 0;
+        border-radius: 8px;
+        text-decoration: none;
+      }
+      nav > a:hover,
+      .nav-links a:hover,
+      .nav-links a.active {
+        background: var(--panel2);
+        color: var(--accent);
+      }
+      .nav-title {
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 800;
+        margin: 20px 10px 8px;
+      }
+      .nav-group {
+        border-top: 1px solid rgba(40, 56, 84, 0.62);
+      }
+      summary {
+        cursor: pointer;
+        padding: 12px 10px;
+        font-weight: 700;
+      }
+      .nav-links {
+        padding: 0 0 9px 10px;
+      }
+      .nav-links a {
+        display: block;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 7px;
+        font-size: 0.88rem;
+      }
+      .nav-progress {
+        margin-top: 18px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+      }
+      .nav-progress strong {
+        display: block;
+        color: var(--accent);
+        margin-bottom: 5px;
+      }
+      .nav-progress span {
+        font-size: 0.84rem;
+        color: var(--muted);
+      }
+      section {
+        padding: 36px 0 14px;
+      }
+      .phase {
+        padding-top: 0;
+      }
+      .tag,
+      .pill {
+        display: inline-flex;
+        border-radius: 999px;
+      }
+      .tag {
+        padding: 5px 10px;
+        background: rgba(104, 211, 145, 0.12);
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 18px 0 22px;
+      }
+      .pill {
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.83rem;
+      }
+      h1 {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        line-height: 1.05;
+        margin: 14px 0 18px;
+        letter-spacing: -0.045em;
+      }
+      h3 {
+        font-size: 1.42rem;
+        margin: 48px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid var(--line);
+      }
+      h4 {
+        font-size: 1.08rem;
+        margin: 28px 0 9px;
+        color: #cfe2ff;
+      }
+      p,
+      li {
+        color: #cbd5e5;
+      }
+      strong {
+        color: #f3f6fb;
+      }
+      code {
+        font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+        color: #b5f4d0;
+      }
+      pre {
+        position: relative;
+        overflow: auto;
+        background: var(--code);
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+        line-height: 1.55;
+      }
+      pre code {
+        color: #d7e4f6;
+      }
+      .callout,
+      .warning,
+      .danger,
+      .note {
+        padding: 16px 18px;
+        margin: 20px 0;
+        border-radius: 12px;
+        border-left: 4px solid;
+      }
+      .callout {
+        background: rgba(99, 179, 237, 0.08);
+        border-color: var(--accent2);
+      }
+      .warning {
+        background: rgba(246, 200, 95, 0.08);
+        border-color: var(--warn);
+      }
+      .danger {
+        background: rgba(252, 129, 129, 0.08);
+        border-color: var(--danger);
+      }
+      .note {
+        background: rgba(104, 211, 145, 0.08);
+        border-color: var(--accent);
+      }
+      .grid,
+      .columns {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+      }
+      .card {
+        background: linear-gradient(180deg, var(--panel2), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+      }
+      .card h4 {
+        margin-top: 0;
+      }
+      .flow {
+        display: grid;
+        gap: 9px;
+        margin: 20px 0;
+      }
+      .flow div {
+        padding: 13px 15px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0;
+        display: block;
+        overflow: auto;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 12px 13px;
+        border: 1px solid var(--line);
+        min-width: 150px;
+      }
+      th {
+        background: var(--panel2);
+        color: #fff;
+      }
+      td {
+        color: #cbd5e5;
+      }
+      .pipeline {
+        font-family: monospace;
+        text-align: center;
+        white-space: pre;
+        overflow: auto;
+        background: var(--code);
+        border: 1px solid var(--line);
+        padding: 20px;
+        border-radius: 12px;
+        color: #b5f4d0;
+      }
+      .checklist {
+        list-style: none;
+        padding-left: 0;
+      }
+      .checklist li {
+        padding: 8px 0 8px 30px;
+        position: relative;
+      }
+      .checklist li:before {
+        content: "□";
+        position: absolute;
+        left: 3px;
+        color: var(--accent);
+        font-size: 1.2rem;
+      }
+      .footer-note {
+        margin-top: 55px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      a {
+        color: #8ecdf7;
+      }
+      @media (max-width: 940px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          position: relative;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        main {
+          padding: 28px 20px 60px;
+        }
+        .grid,
+        .columns {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside>
+        <div class="brand">Express 5 + TypeScript</div>
+        <div class="subtitle">Curso detalhado focado em APIs.</div>
+        <div class="phase-links">
+          <a class="phase-link active" href="#fase5">Fase 5 · Zod</a>
+        </div>
+        <nav id="toc" aria-label="Mapa da Fase 5">
+          <a href="#fase5"><strong>Visão geral da fase</strong></a>
+          <div class="nav-title">Mapa do conteúdo</div>
+          <details class="nav-group" open>
+            <summary>Fundamentos</summary>
+            <div class="nav-links">
+              <a href="#modelo">1. Modelo mental</a
+              ><a href="#externos">2. Dados externos</a
+              ><a href="#runtime">3. TypeScript × runtime</a
+              ><a href="#schema">4. Schema</a
+              ><a href="#parse">5. parse e safeParse</a>
+            </div>
+          </details>
+          <details class="nav-group" open>
+            <summary>Construção</summary>
+            <div class="nav-links">
+              <a href="#primitivos">6. Primitivos</a
+              ><a href="#strings">7. Strings</a><a href="#numeros">8. Números</a
+              ><a href="#objetos">9. Objetos</a><a href="#arrays">10. Arrays</a
+              ><a href="#opcionais">11. optional e null</a
+              ><a href="#unions">12. Enums e unions</a>
+            </div>
+          </details>
+          <details class="nav-group">
+            <summary>HTTP e transformação</summary>
+            <div class="nav-links">
+              <a href="#body">13. Body</a><a href="#params">14. Params</a
+              ><a href="#query">15. Query</a><a href="#coercao">16. Coerção</a
+              ><a href="#preprocess">17. Preprocess</a
+              ><a href="#transform">18. Transformação</a>
+            </div>
+          </details>
+          <details class="nav-group">
+            <summary>Composição e regras</summary>
+            <div class="nav-links">
+              <a href="#infer">19. z.infer</a
+              ><a href="#composicao">20. Composição</a
+              ><a href="#patch">21. PATCH</a><a href="#refine">22. refine</a
+              ><a href="#superrefine">23. superRefine</a
+              ><a href="#async">24. Assíncrono</a>
+            </div>
+          </details>
+          <details class="nav-group">
+            <summary>Express e erros</summary>
+            <div class="nav-links">
+              <a href="#middleware">25. Middleware</a
+              ><a href="#validated">26. Dados validados</a
+              ><a href="#zoderror">27. ZodError</a
+              ><a href="#status">28. 400 ou 422</a>
+            </div>
+          </details>
+          <details class="nav-group">
+            <summary>Prática</summary>
+            <div class="nav-links">
+              <a href="#antipatterns">29. Erros comuns</a
+              ><a href="#edgecases">30. Edge cases</a
+              ><a href="#estrutura">31. Estrutura</a
+              ><a href="#integrado">32. Exemplo integrado</a
+              ><a href="#exercicios">33. Exercícios</a
+              ><a href="#projeto">34. Mini projeto</a
+              ><a href="#checklist">35. Checklist</a
+              ><a href="#referencias">36. Referências</a>
+            </div>
+          </details>
+          <div class="nav-progress">
+            <strong>O que esta fase cobre</strong
+            ><span
+              >Como converter entradas externas desconhecidas em dados
+              validados, normalizados e tipados antes das regras de
+              negócio.</span
+            >
+          </div>
+        </nav>
+      </aside>
+      <main>
+        <div class="content">
+          <section class="phase" id="fase5">
+            <span class="tag">Fase 5</span>
+            <h1>Validação de dados com Zod</h1>
+            <div class="meta">
+              <span class="pill">Zod 4</span><span class="pill">Express 5</span
+              ><span class="pill">TypeScript</span
+              ><span class="pill">Runtime validation</span
+              ><span class="pill">API de eventos</span>
+            </div>
+            <p>
+              Todo dado vindo de fora da aplicação deve ser tratado como não
+              confiável: body, params, query, headers, cookies, arquivos,
+              variáveis de ambiente e respostas de serviços externos. O
+              TypeScript ajuda enquanto escrevemos o programa, mas não verifica
+              o JSON que atravessa a rede. Zod ocupa essa fronteira.
+            </p>
+            <div class="callout">
+              <strong>Objetivo:</strong> transformar valores externos
+              desconhecidos em dados validados e tipados; escolher entre
+              parsing, coerção e transformação; compor schemas reutilizáveis;
+              validar PATCH; produzir erros úteis; e integrar tudo ao pipeline
+              do Express sem poluir controllers.
+            </div>
+            <div class="pipeline">
+              entrada externa (unknown) ↓ schema Zod ↓ parsing + validação ↓
+              coerção / normalização controlada ↓ dado confiável e tipado ↓
+              controller / service
+            </div>
+
+            <h3 id="modelo">1 — Modelo mental</h3>
+            <div class="flow">
+              <div>
+                <strong>1.</strong> A rede entrega valores em runtime, não tipos
+                TypeScript.
+              </div>
+              <div>
+                <strong>2.</strong> O schema descreve e executa verificações
+                reais.
+              </div>
+              <div>
+                <strong>3.</strong> O parsing pode falhar e precisa virar uma
+                resposta previsível.
+              </div>
+              <div>
+                <strong>4.</strong> Quando funciona, usamos o valor retornado
+                pelo Zod.
+              </div>
+              <div>
+                <strong>5.</strong> O controller recebe entrada normalizada e
+                concentra-se no caso de uso.
+              </div>
+            </div>
+            <div class="danger">
+              <strong>Regra central:</strong>
+              <code>Request&lt;..., CreateEventBody&gt;</code> não prova que o
+              cliente enviou esse formato. É apenas uma promessa feita ao
+              compilador.
+            </div>
+
+            <h3 id="externos">2 — O que conta como dado externo</h3>
+            <div class="grid">
+              <div class="card">
+                <h4>Entrada HTTP</h4>
+                <ul>
+                  <li><code>request.body</code></li>
+                  <li><code>request.params</code></li>
+                  <li><code>request.query</code></li>
+                  <li>headers, cookies e arquivos</li>
+                </ul>
+              </div>
+              <div class="card">
+                <h4>Outras fronteiras</h4>
+                <ul>
+                  <li><code>process.env</code></li>
+                  <li>webhooks e filas</li>
+                  <li>respostas de APIs</li>
+                  <li>dados legados do banco</li>
+                </ul>
+              </div>
+            </div>
+            <p>
+              “Externo” também inclui frontends com bug, integrações
+              desatualizadas e registros antigos. Não é apenas uma questão de
+              ataque.
+            </p>
+
+            <h3 id="runtime">3 — TypeScript não valida em runtime</h3>
+            <pre><code>type CreateEventBody = { title: string; startsAt: string };
+const body = request.body as CreateEventBody;
+body.title.trim(); // pode quebrar se title for 42</code></pre>
+            <p>
+              Depois da compilação, o tipo desaparece. <code>as</code> não
+              converte nem inspeciona. Mesmo que seu React valide o formulário,
+              o backend precisa validar novamente: qualquer cliente pode chamar
+              a API.
+            </p>
+
+            <h3 id="schema">4 — O que é um schema</h3>
+            <pre><code>import * as z from "zod";
+
+const createEventSchema = z.object({
+  title: z.string().trim().min(3).max(120),
+  startsAt: z.iso.datetime({ offset: true }),
+  capacity: z.number().int().positive(),
+});</code></pre>
+            <p>
+              O schema é uma especificação executável, um validador de runtime e
+              uma fonte de inferência de tipos. O curso usa Zod 4.
+            </p>
+
+            <h3 id="parse">
+              5 — <code>parse()</code> e <code>safeParse()</code>
+            </h3>
+            <div class="columns">
+              <div class="card">
+                <h4>parse</h4>
+                <pre><code>const event = createEventSchema.parse(input);</code></pre>
+                <p>Retorna o dado ou lança <code>ZodError</code>.</p>
+              </div>
+              <div class="card">
+                <h4>safeParse</h4>
+                <pre><code>const result = createEventSchema.safeParse(input);
+if (!result.success) {
+  console.log(result.error.issues);
+} else {
+  console.log(result.data);
+}</code></pre>
+                <p>Retorna uma união discriminada.</p>
+              </div>
+            </div>
+            <div class="warning">
+              <strong>Use <code>result.data</code>:</strong> ele contém o valor
+              validado e possivelmente transformado. Continuar usando o input
+              bruto desperdiça o trabalho do schema.
+            </div>
+
+            <h3 id="primitivos">6 — Schemas primitivos</h3>
+            <pre><code>z.string(); z.number(); z.boolean(); z.bigint();
+z.date(); z.undefined(); z.null(); z.unknown();</code></pre>
+            <p>
+              <code>z.number()</code> não aceita <code>"10"</code>. Converter
+              texto em número é uma decisão explícita de coerção.
+            </p>
+
+            <h3 id="strings">7 — Strings e formatos</h3>
+            <pre><code>const attendeeSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  email: z.email(),
+  website: z.url().optional(),
+  id: z.uuid(),
+  eventDate: z.iso.date(),
+});</code></pre>
+            <p>
+              <code>z.string()</code> aceita string vazia. Quando texto vazio
+              não é válido, use <code>.trim().min(1)</code> ou um limite de
+              domínio. Formato válido não significa recurso existente.
+            </p>
+
+            <h3 id="numeros">8 — Números e limites</h3>
+            <pre><code>const capacity = z.number().int().min(1).max(10_000);
+const price = z.number().nonnegative().finite();</code></pre>
+            <p>
+              Considere inteiros, decimais, NaN, infinito e intervalos. Para
+              dinheiro, geralmente prefira centavos inteiros ou um tipo decimal.
+            </p>
+
+            <h3 id="objetos">9 — Objetos e chaves extras</h3>
+            <pre><code>const createUserSchema = z.strictObject({
+  name: z.string().trim().min(2),
+  email: z.email(),
+});
+// { name, email, role: "ADMIN" } falha.</code></pre>
+            <p>
+              Em entradas sensíveis, rejeitar campos extras ajuda a detectar
+              erros e tentativas de enviar propriedades controladas pelo
+              servidor.
+            </p>
+
+            <h3 id="arrays">10 — Arrays</h3>
+            <pre><code>const tagsSchema = z
+  .array(z.string().trim().min(1).max(30))
+  .min(1)
+  .max(10);</code></pre>
+            <p>
+              Valide os itens e a coleção: tamanho, duplicidade e ordem podem
+              ser regras relevantes.
+            </p>
+
+            <h3 id="opcionais">
+              11 — Ausente, <code>undefined</code> e <code>null</code>
+            </h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Schema</th>
+                  <th>Aceita</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>z.string()</code></td>
+                  <td>string</td>
+                </tr>
+                <tr>
+                  <td><code>.optional()</code></td>
+                  <td>string ou ausência</td>
+                </tr>
+                <tr>
+                  <td><code>.nullable()</code></td>
+                  <td>string ou null</td>
+                </tr>
+                <tr>
+                  <td><code>.nullish()</code></td>
+                  <td>string, null ou ausência</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Em PATCH, ausência pode significar “não altere”; null pode
+              significar “limpe”.
+            </p>
+
+            <h3 id="unions">12 — Enums e unions discriminadas</h3>
+            <pre><code>const visibility = z.enum(["PUBLIC", "PRIVATE", "UNLISTED"]);
+
+const destination = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("ONLINE"), meetingUrl: z.url() }),
+  z.object({ type: z.literal("PHYSICAL"), address: z.string().min(5) }),
+]);</code></pre>
+            <p>
+              Uma propriedade discriminadora evita objetos ambíguos com muitos
+              campos opcionais.
+            </p>
+
+            <h3 id="body">13 — Validando body</h3>
+            <pre><code>const result = createEventSchema.safeParse(request.body);
+if (!result.success) {
+  return response.status(422).json({
+    error: { code: "INVALID_BODY", issues: result.error.issues },
+  });
+}
+const body = result.data;</code></pre>
+            <p>
+              <code>express.json()</code> faz parsing do JSON; Zod valida o
+              valor resultante. São responsabilidades diferentes.
+            </p>
+
+            <h3 id="params">14 — Validando params</h3>
+            <pre><code>const eventParamsSchema = z.object({ eventId: z.uuid() });
+const params = eventParamsSchema.parse(request.params);</code></pre>
+            <p>
+              Params chegam como strings. UUID válido ainda pode apontar para um
+              evento inexistente; isso é outra verificação.
+            </p>
+
+            <h3 id="query">15 — Query strings</h3>
+            <pre><code>const listEventsQuerySchema = z.object({
+  search: z.string().trim().min(1).optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "CANCELLED"]).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+});</code></pre>
+            <p>
+              Query é texto por natureza. Parâmetros repetidos podem virar
+              arrays; teste conscientemente.
+            </p>
+
+            <h3 id="coercao">16 — Coerção</h3>
+            <pre><code>z.coerce.number().parse("42"); // 42
+z.coerce.boolean().parse("false"); // true!</code></pre>
+            <div class="danger">
+              <strong>Armadilha:</strong> a coerção booleana usa a verdade do
+              JavaScript. Qualquer string não vazia é true. Para query, aceite
+              explicitamente <code>"true"</code> e <code>"false"</code>.
+            </div>
+            <pre><code>const boolQuery = z.enum(["true", "false"])
+  .transform(value =&gt; value === "true");</code></pre>
+
+            <h3 id="preprocess">17 — <code>preprocess()</code></h3>
+            <pre><code>const optionalWebsite = z.preprocess(
+  input =&gt; input === "" ? undefined : input,
+  z.url().optional(),
+);</code></pre>
+            <p>
+              A função recebe <code>unknown</code> antes de o schema interno
+              validar. Útil, mas pode esconder contratos ruins se usado em
+              excesso.
+            </p>
+
+            <h3 id="transform">18 — Transformações</h3>
+            <pre><code>const slugSchema = z.string().trim().min(3).transform(value =&gt;
+  value.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+);
+
+type SlugInput = z.input&lt;typeof slugSchema&gt;;
+type SlugOutput = z.output&lt;typeof slugSchema&gt;;</code></pre>
+            <p>
+              Transformação pode alterar valor e tipo. Sanitização não substitui
+              escaping contextual, queries parametrizadas ou autorização.
+            </p>
+
+            <h3 id="infer">19 — <code>z.infer</code></h3>
+            <pre><code>type CreateEventInput = z.infer&lt;typeof createEventSchema&gt;;</code></pre>
+            <p>
+              O schema vira fonte do tipo quando estrutura e validação
+              representam o mesmo contrato. Um DTO HTTP não é necessariamente
+              sua entidade de domínio.
+            </p>
+
+            <h3 id="composicao">20 — Composição</h3>
+            <pre><code>const baseEvent = z.object({
+  id: z.uuid(), title: z.string().trim().min(3), createdAt: z.iso.datetime(),
+});
+const createEvent = baseEvent.omit({ id: true, createdAt: true });
+const summary = baseEvent.pick({ id: true, title: true });
+const withCapacity = createEvent.extend({ capacity: z.number().int().positive() });</code></pre>
+            <p>
+              Reutilize conceitos estáveis, não apenas para reduzir linhas.
+              Derivação mecânica de schemas do banco pode vazar campos privados.
+            </p>
+
+            <h3 id="patch">21 — PATCH e <code>partial()</code></h3>
+            <pre><code>const updateEventSchema = z.object({
+  title: z.string().trim().min(3),
+  description: z.string().trim().max(2000).nullable(),
+  startsAt: z.iso.datetime({ offset: true }),
+}).partial().refine(
+  body =&gt; Object.keys(body).length &gt; 0,
+  { error: "Envie ao menos um campo." },
+);</code></pre>
+            <p>
+              Não permita campos como <code>ownerId</code> e
+              <code>createdAt</code>. Um schema parcial puro costuma aceitar
+              <code>{}</code>.
+            </p>
+
+            <h3 id="refine">22 — <code>refine()</code></h3>
+            <pre><code>const period = z.object({
+  startsAt: z.iso.datetime({ offset: true }),
+  endsAt: z.iso.datetime({ offset: true }),
+}).refine(
+  data =&gt; new Date(data.endsAt).getTime() &gt; new Date(data.startsAt).getTime(),
+  { path: ["endsAt"], error: "O término deve ocorrer depois do início." },
+);</code></pre>
+            <p>
+              Use <code>path</code> para associar a issue ao campo mais útil
+              para o cliente.
+            </p>
+
+            <h3 id="superrefine">23 — <code>superRefine()</code></h3>
+            <pre><code>schema.superRefine((data, ctx) =&gt; {
+  if (data.minAge &gt; data.maxAge) {
+    ctx.addIssue({ code: "custom", path: ["maxAge"], message: "Intervalo inválido." });
+  }
+  if (data.waitlistCapacity &gt; data.capacity * 2) {
+    ctx.addIssue({ code: "custom", path: ["waitlistCapacity"], message: "Limite excedido." });
+  }
+});</code></pre>
+            <p>É útil para relatar vários problemas na mesma execução.</p>
+
+            <h3 id="async">24 — Validação assíncrona</h3>
+            <pre><code>const uniqueSlug = z.string().refine(
+  async slug =&gt; !(await repository.existsBySlug(slug)),
+  { error: "Slug já usado." },
+);
+const result = await uniqueSlug.safeParseAsync(input);</code></pre>
+            <p>
+              Use <code>parseAsync</code> ou <code>safeParseAsync</code>. Uma
+              consulta prévia não garante unicidade contra concorrência; a
+              restrição do banco continua necessária.
+            </p>
+
+            <h3 id="middleware">25 — Middleware reutilizável</h3>
+            <pre><code>import type { NextFunction, Request, Response } from "express";
+import type { ZodType } from "zod";
+
+export function validateBody(schema: ZodType) {
+  return async (req: Request, res: Response, next: NextFunction) =&gt; {
+    const result = await schema.safeParseAsync(req.body);
+    if (!result.success) {
+      res.status(422).json({
+        error: {
+          code: "VALIDATION_ERROR",
+          issues: result.error.issues.map(issue =&gt; ({
+            path: issue.path, code: issue.code, message: issue.message,
+          })),
+        },
+      });
+      return;
+    }
+    res.locals.validatedBody = result.data;
+    next();
+  };
+}</code></pre>
+
+            <h3 id="validated">26 — Onde guardar o dado validado</h3>
+            <ul>
+              <li>
+                Substituir <code>request.body</code>: simples, mas muta o
+                objeto.
+              </li>
+              <li>Usar <code>res.locals</code>: separa bruto e validado.</li>
+              <li>
+                Criar helper tipado de rota: melhor ergonomia, mais abstração.
+              </li>
+            </ul>
+            <pre><code>type Locals = { validatedBody: CreateEventInput };
+response: Response&lt;unknown, Locals&gt;
+const input = response.locals.validatedBody;</code></pre>
+
+            <h3 id="zoderror">27 — <code>ZodError</code> e contrato público</h3>
+            <pre><code>for (const issue of result.error.issues) {
+  console.log(issue.code, issue.path, issue.message);
+}</code></pre>
+            <p>
+              Não exponha stack trace, input completo ou detalhes internos. Crie
+              um contrato estável:
+            </p>
+            <pre><code>{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Os dados enviados são inválidos.",
+    "issues": [{ "path": ["title"], "code": "too_small", "message": "..." }]
+  }
+}</code></pre>
+
+            <h3 id="status">28 — 400 ou 422?</h3>
+            <p>
+              Ambos aparecem no mercado. Uma convenção coerente é: JSON
+              malformado → 400; conteúdo compreendido, mas inválido → 422.
+              Documente a escolha e nunca use 500 para erro do cliente.
+            </p>
+
+            <h3 id="antipatterns">29 — Erros comuns</h3>
+            <div class="grid">
+              <div class="card">
+                <h4>Confiar no Request tipado</h4>
+                <p>O compilador não inspeciona tráfego.</p>
+              </div>
+              <div class="card">
+                <h4>Usar o input bruto</h4>
+                <p>Ignora normalizações.</p>
+              </div>
+              <div class="card">
+                <h4>Coagir tudo</h4>
+                <p>Aceita entradas ambíguas.</p>
+              </div>
+              <div class="card">
+                <h4>Schema universal</h4>
+                <p>Criação, PATCH e resposta diferem.</p>
+              </div>
+              <div class="card">
+                <h4>Banco em todo refine</h4>
+                <p>Mistura validação e I/O.</p>
+              </div>
+              <div class="card">
+                <h4>Expor issues sem adaptar</h4>
+                <p>Acopla a API à biblioteca.</p>
+              </div>
+            </div>
+
+            <h3 id="edgecases">30 — Edge cases</h3>
+            <details>
+              <summary>30.1 — Body ausente</summary>
+              <p>
+                Sem parser, content-type ou body, a entrada pode ser undefined.
+              </p>
+            </details>
+            <details>
+              <summary>30.2 — JSON malformado</summary>
+              <p>
+                Falha em <code>express.json()</code>, antes do Zod; trate como
+                400.
+              </p>
+            </details>
+            <details>
+              <summary>30.3 — Chaves extras</summary>
+              <p>
+                Escolha conscientemente entre rejeitar, remover ou preservar.
+              </p>
+            </details>
+            <details>
+              <summary>30.4 — Espaços</summary>
+              <p>
+                <code>" "</code> passa em string simples. Use trim antes de min.
+              </p>
+            </details>
+            <details>
+              <summary>30.5 — Datas e fuso</summary>
+              <p>
+                ISO válido não resolve horário de verão nem regra “no futuro”.
+              </p>
+            </details>
+            <details>
+              <summary>30.6 — Booleano na query</summary>
+              <p><code>Boolean("false")</code> é true.</p>
+            </details>
+            <details>
+              <summary>30.7 — Número vazio</summary>
+              <p>
+                Teste string vazia, espaços, NaN, infinito e notação
+                exponencial.
+              </p>
+            </details>
+            <details>
+              <summary>30.8 — Query repetida</summary>
+              <p><code>?status=A&amp;status=B</code> pode virar array.</p>
+            </details>
+            <details>
+              <summary>30.9 — PATCH vazio</summary>
+              <p><code>{}</code> pode passar em partial.</p>
+            </details>
+            <details>
+              <summary>30.10 — optional versus null</summary>
+              <p>Ausência e null podem ter semânticas diferentes.</p>
+            </details>
+            <details>
+              <summary>30.11 — Concorrência</summary>
+              <p>Refine assíncrono não substitui constraint unique.</p>
+            </details>
+            <details>
+              <summary>30.12 — Payload grande</summary>
+              <p>Configure limite no parser; Zod não é limitador de upload.</p>
+            </details>
+
+            <h3 id="estrutura">31 — Estrutura sugerida</h3>
+            <pre><code>src/
+├── app.ts
+├── routes/events.routes.ts
+├── schemas/events.schema.ts
+├── middlewares/validate.middleware.ts
+├── controllers/events.controller.ts
+└── types/express.d.ts</code></pre>
+            <p>
+              Schema valida a fronteira; middleware coordena o HTTP; controller
+              executa o comportamento. A fase seguinte aprofundará as camadas.
+            </p>
+
+            <h3 id="integrado">32 — Exemplo integrado</h3>
+            <pre><code>const createEventSchema = z.strictObject({
+  title: z.string().trim().min(3).max(120),
+  description: z.string().trim().max(2000).nullable().default(null),
+  startsAt: z.iso.datetime({ offset: true }),
+  endsAt: z.iso.datetime({ offset: true }),
+  visibility: z.enum(["PUBLIC", "PRIVATE"]).default("PRIVATE"),
+  capacity: z.number().int().min(1).max(10_000),
+  tags: z.array(z.string().trim().min(1).max(30)).max(10).default([]),
+}).refine(
+  ({ startsAt, endsAt }) =&gt; new Date(endsAt).getTime() &gt; new Date(startsAt).getTime(),
+  { path: ["endsAt"], error: "O término deve ocorrer depois do início." },
+);
+
+app.post("/events", (request, response) =&gt; {
+  const result = createEventSchema.safeParse(request.body);
+  if (!result.success) {
+    return response.status(422).json({
+      error: { code: "VALIDATION_ERROR", issues: result.error.issues },
+    });
+  }
+  const event = {
+    id: crypto.randomUUID(),
+    ...result.data,
+    status: "DRAFT",
+    createdAt: new Date().toISOString(),
+  };
+  return response.status(201).location(`/events/${event.id}`).json({ data: event });
+});</code></pre>
+            <p>
+              O exemplo garante forma, limites, defaults e ordem das datas.
+              Ainda não garante autorização, conflito de agenda, persistência
+              nem que o evento está no futuro.
+            </p>
+
+            <h3 id="exercicios">33 — Exercícios</h3>
+            <ol>
+              <li>Schema de params com UUID e casos inválidos.</li>
+              <li>Query com busca, status, page e limit entre 1 e 100.</li>
+              <li>
+                Parser explícito de booleanos, sem
+                <code>z.coerce.boolean()</code>.
+              </li>
+              <li>PATCH com campos permitidos e body não vazio.</li>
+              <li>Localização como união online/presencial.</li>
+              <li>Contrato próprio de issues com field, code e message.</li>
+              <li>
+                Casos de teste para null, espaços, chaves extras, query repetida
+                e datas fora de ordem.
+              </li>
+            </ol>
+
+            <h3 id="projeto">34 — Mini projeto: cadastro de eventos</h3>
+            <pre><code>POST   /events
+GET    /events
+GET    /events/:eventId
+PATCH  /events/:eventId
+POST   /events/:eventId/publish
+POST   /events/:eventId/cancel</code></pre>
+            <h4>Validação</h4>
+            <ul>
+              <li>Título de 3 a 120 caracteres.</li>
+              <li>Descrição opcional ou nula até 2.000.</li>
+              <li>Datas ISO com offset e término posterior.</li>
+              <li>Capacidade inteira de 1 a 10.000.</li>
+              <li>Visibilidade controlada e até 10 tags sem vazias.</li>
+              <li>Params UUID, paginação e PATCH seguro.</li>
+            </ul>
+            <h4>Regras de negócio</h4>
+            <ul>
+              <li>Evento publicado não pode começar no passado.</li>
+              <li>Evento cancelado não pode ser publicado.</li>
+              <li>
+                Alteração de horário de evento publicado deve ser tratada
+                conscientemente.
+              </li>
+              <li>
+                Validação estrutural e regra de negócio devem permanecer
+                separadas.
+              </li>
+            </ul>
+
+            <h3 id="checklist">35 — Checklist</h3>
+            <ul class="checklist">
+              <li>Explico por que TypeScript não valida JSON.</li>
+              <li>Diferencio parse e safeParse.</li>
+              <li>Uso o valor retornado pelo schema.</li>
+              <li>Diferencio optional, nullable e nullish.</li>
+              <li>Valido body, params e query.</li>
+              <li>Entendo riscos de coerção.</li>
+              <li>Modelo unions discriminadas.</li>
+              <li>Uso z.infer sem confundir DTO e entidade.</li>
+              <li>Crio PATCH parcial seguro.</li>
+              <li>Uso refine e superRefine.</li>
+              <li>Lido com validação assíncrona.</li>
+              <li>Formato erros em contrato próprio.</li>
+              <li>Separo validação estrutural e regra de negócio.</li>
+            </ul>
+
+            <h3 id="referencias">36 — Referências</h3>
+            <div class="columns">
+              <div>
+                <h4>Documentação oficial</h4>
+                <ul>
+                  <li>
+                    <a href="https://zod.dev/" target="_blank" rel="noopener"
+                      >Zod — introdução</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://zod.dev/basics"
+                      target="_blank"
+                      rel="noopener"
+                      >Uso básico</a
+                    >
+                  </li>
+                  <li>
+                    <a href="https://zod.dev/api" target="_blank" rel="noopener"
+                      >Definição de schemas</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://zod.dev/error-customization"
+                      target="_blank"
+                      rel="noopener"
+                      >Customização de erros</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://zod.dev/error-formatting"
+                      target="_blank"
+                      rel="noopener"
+                      >Formatação de erros</a
+                    >
+                  </li>
+                  <li>
+                    <a href="https://zod.dev/v4" target="_blank" rel="noopener"
+                      >Zod 4</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4>Livros</h4>
+                <ul>
+                  <li><em>Effective TypeScript</em>, Dan Vanderkam.</li>
+                  <li><em>Programming TypeScript</em>, Boris Cherny.</li>
+                  <li><em>API Design Patterns</em>, JJ Geewax.</li>
+                  <li><em>Web API Security</em>, José Haro Peralta.</li>
+                  <li>
+                    <em>Domain-Driven Design Distilled</em>, Vaughn Vernon.
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="callout">
+              <strong>Próxima fase:</strong> com entradas confiáveis,
+              controllers, services e repositories separarão tradução HTTP,
+              regras de negócio e persistência. O Zod continuará na fronteira,
+              sem tomar o lugar do domínio.
+            </div>
+          </section>
+          <div class="footer-note">
+            Fase 5 · Validação com Zod — Trilha Express 5 com TypeScript
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      const links = [...document.querySelectorAll("#toc a")];
+      const sections = links
+        .map((a) => document.querySelector(a.getAttribute("href")))
+        .filter(Boolean);
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) return;
+          links.forEach((a) =>
+            a.classList.toggle(
+              "active",
+              a.getAttribute("href") === "#" + visible.target.id,
+            ),
+          );
+        },
+        { rootMargin: "-15% 0px -70% 0px", threshold: [0, 0.2, 0.5] },
+      );
+      sections.forEach((s) => observer.observe(s));
+    </script>
+  </body>
+</html>

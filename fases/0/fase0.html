@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso Express 5 + TypeScript — Fase 0: Fundamentos</title>
+<style>
+:root{--bg:#0a0f1f;--panel:#12192d;--panel2:#17213a;--text:#f4f7ff;--muted:#aeb8d0;--accent:#7c9cff;--accent2:#5eead4;--border:#2b3657;--code:#090e1b;--warning:#fbbf24}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,#09101f,#0a0f1f);color:var(--text);line-height:1.72}.layout{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:26px 20px;background:#080d1bf7;border-right:1px solid var(--border)}.brand{font-weight:900;font-size:1.15rem}.subtitle,.small{color:var(--muted);font-size:.9rem}nav{display:flex;flex-direction:column;gap:4px;margin-top:20px}.nav-title{margin:18px 8px 6px;color:var(--text);font-size:.78rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.nav-group{border:1px solid transparent;border-radius:10px}.nav-group summary{list-style:none;padding:7px 8px;color:#dce4fb;font-size:.86rem}.nav-group summary::-webkit-details-marker{display:none}.nav-group summary:before{content:"▸";display:inline-block;width:18px;color:var(--accent2)}.nav-group[open] summary:before{content:"▾"}.nav-group[open]{background:#ffffff04;border-color:#ffffff0b}.nav-links{display:flex;flex-direction:column;padding:0 4px 7px 22px}nav a{color:var(--muted);text-decoration:none;padding:5px 7px;border-radius:7px;font-size:.78rem;line-height:1.3}nav a:hover{background:var(--panel2);color:var(--text)}.nav-progress{margin-top:16px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#ffffff04}.nav-progress strong{display:block;font-size:.8rem}.nav-progress span{display:block;margin-top:4px;color:var(--muted);font-size:.75rem;line-height:1.45}main{width:min(1120px,100%);padding:42px;margin:auto}section{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:32px}.phase{position:relative;overflow:hidden}.phase:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--accent),var(--accent2))}.tag,.pill{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:4px 10px}.tag{color:var(--accent2);font-weight:800}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 22px}.pill{color:var(--muted);font-size:.82rem}h1,h2,h3,h4{color:#f8fbff}h1{line-height:1.1}h2{font-size:2rem;margin:10px 0}h3{margin-top:34px;padding-top:8px;border-top:1px solid rgba(43,54,87,.6)}h4{margin-top:24px}p,li{color:#d9def0}code{font-family:Consolas,"Liberation Mono",monospace;background:var(--code);border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:#dce7ff}pre{overflow:auto;background:var(--code);border:1px solid var(--border);border-radius:12px;padding:18px}pre code{border:0;padding:0;background:transparent}.callout,.warning{border-radius:14px;padding:16px 18px;margin:18px 0}.callout{background:#7c9cff14;border:1px solid #7c9cff40}.warning{background:#fbbf2414;border:1px solid #fbbf2440}table{width:100%;border-collapse:collapse;margin:16px 0}th,td{border:1px solid var(--border);padding:10px 12px;vertical-align:top;text-align:left}th{background:var(--panel2)}details{background:#ffffff06;border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0}summary{cursor:pointer;font-weight:800}a{color:#9eb3ff}.checklist{padding-left:22px}@media(max-width:900px){.layout{grid-template-columns:1fr}aside{position:static;height:auto}main{padding:18px}section{padding:22px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside>
+  <div class="brand">Express 5 + TypeScript</div>
+  <div class="subtitle">Fase 0 expandida — fundamentos de backend e HTTP.</div>
+  <nav aria-label="Mapa da Fase 0">
+    <a href="#fase0"><strong>Visão geral da fase</strong></a>
+
+    <div class="nav-title">Mapa do conteúdo</div>
+
+    <details class="nav-group" open>
+      <summary>Base da comunicação web</summary>
+      <div class="nav-links">
+        <a href="#modelo-mental">0.1 Modelo mental</a>
+        <a href="#cliente-servidor">1. Cliente e servidor</a>
+        <a href="#api">2. API e endpoint</a>
+        <a href="#fetch">3. Fluxo do fetch()</a>
+      </div>
+    </details>
+
+    <details class="nav-group">
+      <summary>HTTP por dentro</summary>
+      <div class="nav-links">
+        <a href="#http-https">4. HTTP e HTTPS</a>
+        <a href="#url">5. Anatomia da URL</a>
+        <a href="#request-response">6. Request e response</a>
+        <a href="#headers-body">7. Headers e body</a>
+        <a href="#json">8. JSON e serialização</a>
+        <a href="#metodos-http">9. Métodos HTTP</a>
+        <a href="#status-http">10. Status HTTP</a>
+      </div>
+    </details>
+
+    <details class="nav-group">
+      <summary>Execução no backend</summary>
+      <div class="nav-links">
+        <a href="#stateless">11. Stateless</a>
+        <a href="#processo-node">12. Processo Node.js</a>
+        <a href="#event-loop">13. Event loop</a>
+        <a href="#variaveis-ambiente">14. Variáveis de ambiente</a>
+        <a href="#integracao">15. Ligando os conceitos</a>
+      </div>
+    </details>
+
+    <details class="nav-group">
+      <summary>Prática e consolidação</summary>
+      <div class="nav-links">
+        <a href="#edge-cases">16. Edge cases</a>
+        <a href="#exercicios">17. Exercícios</a>
+        <a href="#mini-projeto">18. Mini projeto</a>
+        <a href="#checklist">19. Checklist</a>
+        <a href="#referencias">20. Leituras e livros</a>
+      </div>
+    </details>
+
+    <div class="nav-progress">
+      <strong>O que esta fase cobre</strong>
+      <span>Da ação no React até a resposta da API, incluindo rede, HTTP, Node.js, falhas e prática.</span>
+    </div>
+  </nav>
+</aside>
+<main>
+
+    <section class="phase" id="fase0">
+      <span class="tag">Fase 0</span>
+      <h2>Fundamentos de backend, rede e HTTP</h2>
+      <div class="meta">
+        <span class="pill">Nível: iniciante</span>
+        <span class="pill">Sem banco de dados</span>
+        <span class="pill">Base para todo o curso</span>
+        <span class="pill">Explicação detalhada</span>
+      </div>
+
+      <p>
+        Antes de aprender Express, precisamos entender o que o Express esconde, organiza ou simplifica.
+        Esta fase começa pelo que pode parecer óbvio de propósito. Palavras como “cliente”, “servidor”,
+        “requisição”, “JSON” e “porta” aparecem o tempo inteiro no desenvolvimento web; quando seu
+        significado fica impreciso, métodos como <code>app.get()</code>, <code>response.json()</code> e
+        <code>express.json()</code> parecem funcionar por magia.
+      </p>
+
+      <div class="callout">
+        <strong>Objetivo da fase:</strong> ao final, você deverá conseguir narrar o caminho completo de uma
+        ação no React até uma resposta da API, identificar cada parte de uma mensagem HTTP e explicar onde
+        o Node.js e o Express entram nesse processo.
+      </div>
+
+      <h3 id="modelo-mental">0.1 — O modelo mental geral</h3>
+      <p>Uma aplicação web costuma envolver, no mínimo, dois programas executando em lugares diferentes:</p>
+      <pre><code>usuário
+  ↓ interage
+frontend no navegador
+  ↓ envia uma requisição HTTP
+backend no servidor
+  ↓ executa regras e acessa dados
+backend envia uma resposta HTTP
+  ↓
+frontend interpreta a resposta
+  ↓
+tela é atualizada</code></pre>
+      <p>
+        Mesmo quando frontend e backend estão no mesmo computador durante o desenvolvimento, continuam
+        sendo processos e responsabilidades diferentes. O endereço <code>localhost</code> apenas indica que
+        o destino está na própria máquina.
+      </p>
+
+      <h3 id="cliente-servidor">1 — Frontend, backend, cliente e servidor</h3>
+      <h4>1.1 — Frontend</h4>
+      <p>
+        Frontend é a parte da aplicação com a qual o usuário normalmente interage. Em um projeto React,
+        inclui componentes, páginas, formulários, estado visual, rotas do navegador e código que solicita
+        dados a serviços externos. Ele costuma executar no navegador do usuário.
+      </p>
+      <p>
+        O frontend não deve ser considerado uma fonte confiável para proteger regras importantes. O usuário
+        controla o navegador, pode alterar JavaScript, repetir requisições, editar o corpo enviado ou chamar
+        a API sem abrir sua interface.
+      </p>
+
+      <h4>1.2 — Backend</h4>
+      <p>
+        Backend é a parte que recebe solicitações, valida dados, aplica regras de negócio, autentica usuários,
+        conversa com bancos e serviços externos e devolve respostas. Neste curso, construiremos o backend com
+        Node.js, Express 5 e TypeScript.
+      </p>
+
+      <h4>1.3 — Cliente</h4>
+      <p>
+        Cliente é o participante que inicia uma comunicação pedindo algo. Um navegador pode ser cliente,
+        mas também um aplicativo mobile, outro backend, um programa de terminal, Postman, Insomnia ou um teste
+        automatizado. “Cliente” é um papel na comunicação, não o nome de uma tecnologia específica.
+      </p>
+
+      <h4>1.4 — Servidor</h4>
+      <p>
+        Servidor pode significar duas coisas relacionadas: a máquina que hospeda um serviço ou o programa que
+        fica disponível para receber requisições. Quando executamos <code>app.listen(3000)</code>, iniciamos um
+        programa servidor escutando conexões na porta 3000.
+      </p>
+
+      <table>
+        <thead><tr><th>Termo</th><th>Pergunta que ele responde</th><th>Exemplo no curso</th></tr></thead>
+        <tbody>
+          <tr><td>Frontend</td><td>Onde está a interface?</td><td>Aplicação React</td></tr>
+          <tr><td>Backend</td><td>Onde ficam regras, dados e integrações?</td><td>API Express</td></tr>
+          <tr><td>Cliente</td><td>Quem iniciou esta requisição?</td><td><code>fetch()</code> no navegador</td></tr>
+          <tr><td>Servidor</td><td>Quem recebeu e respondeu?</td><td>Processo Node.js</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="api">2 — O que é uma API</h3>
+      <p>
+        API significa <em>Application Programming Interface</em>, ou interface de programação de aplicações.
+        É um contrato que permite que um software use capacidades oferecidas por outro. Uma API define quais
+        operações estão disponíveis, quais dados devem ser enviados, quais respostas podem voltar e como erros
+        são representados.
+      </p>
+      <p>
+        Nem toda API é uma API web. O navegador oferece APIs como <code>localStorage</code> e <code>fetch</code>;
+        uma biblioteca também expõe uma API por meio de funções e classes. Neste curso, quando dissermos “API”,
+        normalmente estaremos falando de uma API HTTP acessada pela rede.
+      </p>
+
+      <h4>2.1 — Endpoint</h4>
+      <p>
+        Endpoint é um ponto de acesso da API, geralmente identificado pela combinação de método HTTP e caminho.
+        Portanto, <code>GET /tasks</code> e <code>POST /tasks</code> são endpoints diferentes, embora usem o mesmo path.
+      </p>
+
+      <h4>2.2 — Contrato</h4>
+      <pre><code>POST /tasks
+Content-Type: application/json
+
+{
+  "title": "Estudar HTTP"
+}</code></pre>
+      <pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "id": "task-123",
+  "title": "Estudar HTTP",
+  "completed": false
+}</code></pre>
+      <p>
+        O contrato inclui método, URL, headers, formato do body, status e formato da resposta. TypeScript ajuda
+        nosso código interno, mas não impede que um cliente real envie dados diferentes. Por isso, posteriormente
+        faremos validação em tempo de execução.
+      </p>
+
+      <h3 id="fetch">3 — O que acontece quando o React executa <code>fetch()</code></h3>
+      <pre><code>async function loadTasks(): Promise&lt;void&gt; {
+  const response = await fetch("http://localhost:3000/tasks");
+
+  if (!response.ok) {
+    throw new Error(`A API respondeu com ${response.status}`);
+  }
+
+  const tasks = await response.json();
+  console.log(tasks);
+}</code></pre>
+
+      <h4>3.1 — Passo a passo</h4>
+      <ol>
+        <li>O JavaScript chama <code>fetch()</code> e fornece uma URL e, opcionalmente, configurações.</li>
+        <li>O navegador interpreta a URL e verifica protocolo, host, porta, path e políticas de segurança.</li>
+        <li>Quando necessário, o nome de domínio é resolvido para um endereço de rede.</li>
+        <li>O navegador estabelece ou reutiliza uma conexão com o destino.</li>
+        <li>Ele monta e envia uma requisição HTTP, incluindo método, headers e possivelmente body.</li>
+        <li>O processo Node.js que escuta a porta recebe os dados.</li>
+        <li>Express compara método e path com as rotas registradas.</li>
+        <li>Middlewares e handler executam validações, regras e operações necessárias.</li>
+        <li>O backend constrói uma resposta com status, headers e, quando apropriado, body.</li>
+        <li>O navegador recebe a resposta e resolve a Promise retornada por <code>fetch()</code>.</li>
+        <li><code>response.json()</code> lê o body e tenta interpretá-lo como JSON.</li>
+        <li>O React pode armazenar os dados no estado e renderizar novamente a interface.</li>
+      </ol>
+
+      <div class="warning">
+        <strong>Detalhe importante:</strong> <code>fetch()</code> normalmente não rejeita a Promise apenas porque
+        a API respondeu <code>404</code> ou <code>500</code>. Esses casos ainda são respostas HTTP válidas. Por isso,
+        conferimos <code>response.ok</code> ou <code>response.status</code>. A Promise costuma rejeitar em falhas como
+        erro de rede, bloqueio da requisição ou cancelamento.
+      </div>
+
+      <h4>3.2 — Exemplo de envio de JSON</h4>
+      <pre><code>type CreateTaskInput = {
+  title: string;
+};
+
+async function createTask(input: CreateTaskInput): Promise&lt;void&gt; {
+  const response = await fetch("http://localhost:3000/tasks", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Falha ao criar tarefa: ${response.status}`);
+  }
+}</code></pre>
+
+      <h3 id="http-https">4 — HTTP e HTTPS</h3>
+      <h4>4.1 — HTTP</h4>
+      <p>
+        HTTP é um protocolo da camada de aplicação usado para trocar mensagens entre clientes e servidores.
+        Protocolo é um conjunto de regras compartilhadas: define como expressar uma requisição, uma resposta,
+        métodos, headers, status e outras semânticas. HTTP não é Express; Express é uma biblioteca que nos ajuda
+        a lidar com HTTP dentro do Node.js.
+      </p>
+
+      <h4>4.2 — HTTPS</h4>
+      <p>
+        HTTPS é HTTP protegido por TLS. A proteção busca oferecer confidencialidade, integridade e autenticação
+        do servidor. Em termos práticos, terceiros no caminho não deveriam conseguir ler ou alterar facilmente
+        o conteúdo trafegado, e o certificado ajuda o cliente a verificar com quem está falando.
+      </p>
+      <p>
+        HTTPS protege os dados em trânsito, mas não corrige uma aplicação insegura. Uma API em HTTPS ainda pode
+        ter autorização incorreta, senhas fracas, SQL injection ou vazamento de informações.
+      </p>
+
+      <table>
+        <thead><tr><th>Aspecto</th><th>HTTP</th><th>HTTPS</th></tr></thead>
+        <tbody>
+          <tr><td>Esquema comum</td><td><code>http://</code></td><td><code>https://</code></td></tr>
+          <tr><td>Porta padrão</td><td>80</td><td>443</td></tr>
+          <tr><td>Criptografia em trânsito</td><td>Não por padrão</td><td>Sim, via TLS</td></tr>
+          <tr><td>Uso em produção</td><td>Evitar para dados reais</td><td>Obrigatório na prática</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="url">5 — Anatomia de uma URL</h3>
+      <pre><code>https://api.exemplo.com:8443/tasks/42?include=owner&amp;page=2#details
+└─┬─┘   └──────┬──────┘ └┬─┘ └───┬───┘ └─────────┬─────────┘ └──┬──┘
+protocolo      domínio     porta      path              query       fragmento</code></pre>
+
+      <h4>5.1 — Protocolo ou esquema</h4>
+      <p><code>https</code> indica como o recurso deve ser acessado.</p>
+
+      <h4>5.2 — Domínio, hostname e host</h4>
+      <p>
+        O domínio é o nome legível, como <code>api.exemplo.com</code>. O hostname identifica o destino na rede.
+        Em muitos contextos práticos os termos são usados de forma próxima. O host pode incluir a porta,
+        por exemplo <code>api.exemplo.com:8443</code>.
+      </p>
+
+      <h4>5.3 — Porta</h4>
+      <p>
+        A porta identifica qual serviço deve receber a conexão dentro de uma máquina. Uma mesma máquina pode
+        executar vários serviços em portas diferentes. Durante o curso, é comum termos React em uma porta e
+        Express em outra.
+      </p>
+
+      <h4>5.4 — Path</h4>
+      <p>
+        O path indica o caminho do recurso ou operação dentro do servidor, como <code>/tasks/42</code>. No Express,
+        rotas são comparadas principalmente usando método e path.
+      </p>
+
+      <h4>5.5 — Query string</h4>
+      <p>
+        A query começa após <code>?</code> e representa pares de chave e valor. É muito usada para filtros, busca,
+        ordenação, paginação e opções de apresentação. Ela faz parte da URL e não deve carregar segredos.
+      </p>
+      <pre><code>GET /tasks?completed=false&amp;page=2&amp;limit=20</code></pre>
+
+      <h4>5.6 — Fragmento</h4>
+      <p>
+        O fragmento começa com <code>#</code> e normalmente é interpretado pelo cliente. Em requisições HTTP comuns,
+        ele não é enviado ao servidor. É incluído aqui para você não confundi-lo com query string.
+      </p>
+
+      <h3 id="request-response">6 — Requisição e resposta</h3>
+      <h4>6.1 — Requisição</h4>
+      <p>
+        Requisição é a mensagem enviada pelo cliente. Conceitualmente contém método, destino, headers e talvez
+        um body. Em HTTP/1.1 textual, uma mensagem poderia se parecer com isto:
+      </p>
+      <pre><code>POST /tasks HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+Accept: application/json
+
+{"title":"Estudar Express"}</code></pre>
+
+      <h4>6.2 — Resposta</h4>
+      <p>
+        Resposta é a mensagem enviada pelo servidor após processar a requisição. Ela contém status, headers e
+        talvez um body.
+      </p>
+      <pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+Content-Length: 76
+
+{"id":"task-123","title":"Estudar Express","completed":false}</code></pre>
+
+      <h4>6.3 — Uma requisição deve receber uma resposta</h4>
+      <p>
+        O cliente permanece esperando até receber uma resposta, a conexão falhar ou algum timeout ocorrer.
+        Um handler que não envia resposta e não continua o pipeline deixa a requisição pendurada.
+      </p>
+
+      <h3 id="headers-body">7 — Headers e body</h3>
+      <h4>7.1 — Headers</h4>
+      <p>
+        Headers são metadados da mensagem. Eles descrevem informações como tipo do conteúdo, formatos aceitos,
+        autenticação, cache, origem, cookies e tamanho. Headers não são “o conteúdo principal”, mas influenciam
+        como ele deve ser interpretado e processado.
+      </p>
+      <table>
+        <thead><tr><th>Header</th><th>Finalidade comum</th></tr></thead>
+        <tbody>
+          <tr><td><code>Content-Type</code></td><td>Informa o formato do body enviado.</td></tr>
+          <tr><td><code>Accept</code></td><td>Informa quais formatos de resposta o cliente aceita.</td></tr>
+          <tr><td><code>Authorization</code></td><td>Transporta credenciais de autenticação conforme um esquema.</td></tr>
+          <tr><td><code>Cache-Control</code></td><td>Define instruções relacionadas a cache.</td></tr>
+          <tr><td><code>Origin</code></td><td>Informa a origem de certas requisições do navegador.</td></tr>
+          <tr><td><code>Content-Length</code></td><td>Indica o tamanho do conteúdo quando aplicável.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>7.2 — Body</h4>
+      <p>
+        Body é o conteúdo principal da mensagem. Pode conter JSON, texto, HTML, dados de formulário, arquivo ou
+        bytes em outro formato. Nem toda requisição ou resposta possui body. Um status <code>204 No Content</code>,
+        por exemplo, não deve enviar conteúdo de resposta.
+      </p>
+
+      <h4>7.3 — <code>Content-Type</code> não transforma o conteúdo</h4>
+      <p>
+        Informar <code>Content-Type: application/json</code> apenas declara que o body deveria ser JSON. Isso não
+        corrige automaticamente um JSON inválido. O receptor ainda precisa fazer parsing e lidar com falhas.
+      </p>
+
+      <h3 id="json">8 — JSON e serialização</h3>
+      <h4>8.1 — O que é JSON</h4>
+      <p>
+        JSON é um formato textual de troca de dados. Embora tenha sintaxe inspirada em JavaScript, JSON é texto,
+        não um objeto JavaScript. Ele pode ser produzido e consumido por várias linguagens.
+      </p>
+      <pre><code>{
+  "id": 42,
+  "title": "Aprender JSON",
+  "completed": false,
+  "tags": ["http", "backend"],
+  "description": null
+}</code></pre>
+
+      <h4>8.2 — Serialização</h4>
+      <p>
+        Serializar é converter uma estrutura em memória para um formato que possa ser armazenado ou transmitido.
+        <code>JSON.stringify()</code> transforma um valor JavaScript compatível em texto JSON.
+      </p>
+      <pre><code>const task = {
+  id: 42,
+  title: "Aprender JSON",
+};
+
+const serialized = JSON.stringify(task);
+// '{"id":42,"title":"Aprender JSON"}'</code></pre>
+
+      <h4>8.3 — Desserialização ou parsing</h4>
+      <pre><code>const text = '{"id":42,"title":"Aprender JSON"}';
+const parsed: unknown = JSON.parse(text);</code></pre>
+      <p>
+        Fazer parsing prova apenas que o texto possui sintaxe JSON válida. Não prova que os campos atendem ao
+        contrato da aplicação. O valor ainda deve ser validado antes de ser confiado.
+      </p>
+
+      <h4>8.4 — Limitações importantes</h4>
+      <ul>
+        <li>JSON não possui <code>undefined</code>.</li>
+        <li>JSON não representa funções.</li>
+        <li>Datas normalmente viram strings e precisam de interpretação posterior.</li>
+        <li><code>BigInt</code> não é serializado por <code>JSON.stringify()</code> sem tratamento.</li>
+        <li>Referências circulares causam erro na serialização padrão.</li>
+        <li>Propriedades com valor <code>undefined</code> podem desaparecer de objetos serializados.</li>
+      </ul>
+
+      <h3 id="metodos-http">9 — Métodos HTTP</h3>
+      <p>
+        O método comunica a intenção da requisição. Ele não é apenas um nome escolhido livremente; cada método
+        possui semântica. Uma API previsível usa métodos de forma coerente.
+      </p>
+      <table>
+        <thead><tr><th>Método</th><th>Intenção comum</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET</code></td><td>Obter uma representação sem solicitar alteração.</td><td><code>GET /tasks</code></td></tr>
+          <tr><td><code>POST</code></td><td>Submeter dados, frequentemente criando algo.</td><td><code>POST /tasks</code></td></tr>
+          <tr><td><code>PUT</code></td><td>Substituir uma representação completa ou definir o recurso.</td><td><code>PUT /tasks/42</code></td></tr>
+          <tr><td><code>PATCH</code></td><td>Aplicar alteração parcial.</td><td><code>PATCH /tasks/42</code></td></tr>
+          <tr><td><code>DELETE</code></td><td>Solicitar remoção.</td><td><code>DELETE /tasks/42</code></td></tr>
+          <tr><td><code>HEAD</code></td><td>Obter metadados equivalentes a GET, sem body da resposta.</td><td><code>HEAD /files/manual.pdf</code></td></tr>
+          <tr><td><code>OPTIONS</code></td><td>Descobrir opções de comunicação; também aparece em preflight CORS.</td><td><code>OPTIONS /tasks</code></td></tr>
+        </tbody>
+      </table>
+
+      <h4>9.1 — Seguro e idempotente</h4>
+      <p>
+        Um método seguro é definido para leitura, sem solicitar alteração do estado do servidor. Idempotência
+        significa que repetir a mesma requisição pretendida produz o mesmo efeito final que executá-la uma vez.
+        <code>GET</code> é seguro e idempotente; <code>DELETE</code> é idempotente em sua intenção, ainda que respostas
+        sucessivas possam ter status diferentes; <code>POST</code> geralmente não é idempotente.
+      </p>
+
+      <h3 id="status-http">10 — Status HTTP</h3>
+      <p>
+        O status resume o resultado da tentativa de processar a requisição. O body pode fornecer detalhes, mas o
+        status permite que clientes, proxies e ferramentas entendam a categoria do resultado sem depender de uma
+        mensagem escrita para humanos.
+      </p>
+      <table>
+        <thead><tr><th>Faixa</th><th>Categoria</th><th>Ideia geral</th></tr></thead>
+        <tbody>
+          <tr><td>100–199</td><td>Informacional</td><td>Comunicação intermediária.</td></tr>
+          <tr><td>200–299</td><td>Sucesso</td><td>A requisição foi processada com sucesso conforme o status.</td></tr>
+          <tr><td>300–399</td><td>Redirecionamento</td><td>Outra ação ou localização pode ser necessária.</td></tr>
+          <tr><td>400–499</td><td>Erro do cliente</td><td>Há um problema relacionado à requisição ou permissão.</td></tr>
+          <tr><td>500–599</td><td>Erro do servidor</td><td>O servidor falhou ao cumprir uma requisição válida ou encontrou erro.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>10.1 — Status usados frequentemente no curso</h4>
+      <table>
+        <thead><tr><th>Status</th><th>Uso típico</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td><code>200 OK</code></td><td>Leitura ou operação bem-sucedida com resposta.</td><td>É o sucesso genérico.</td></tr>
+          <tr><td><code>201 Created</code></td><td>Recurso criado.</td><td>Pode incluir localização do novo recurso.</td></tr>
+          <tr><td><code>204 No Content</code></td><td>Sucesso sem body.</td><td>Não tente enviar JSON junto.</td></tr>
+          <tr><td><code>400 Bad Request</code></td><td>Requisição inválida ou malformada.</td><td>Ex.: JSON inválido.</td></tr>
+          <tr><td><code>401 Unauthorized</code></td><td>Autenticação ausente ou inválida.</td><td>Apesar do nome, trata de autenticação.</td></tr>
+          <tr><td><code>403 Forbidden</code></td><td>Identidade conhecida, ação não permitida.</td><td>Problema de autorização.</td></tr>
+          <tr><td><code>404 Not Found</code></td><td>Recurso ou rota não encontrado.</td><td>Evite retornar 200 com “não encontrado”.</td></tr>
+          <tr><td><code>409 Conflict</code></td><td>Conflito com o estado atual.</td><td>Ex.: e-mail único já cadastrado.</td></tr>
+          <tr><td><code>422 Unprocessable Content</code></td><td>Conteúdo compreendido, mas semanticamente inválido.</td><td>Frequentemente usado em validação.</td></tr>
+          <tr><td><code>500 Internal Server Error</code></td><td>Falha inesperada no servidor.</td><td>Não exponha detalhes sensíveis.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="stateless">11 — Aplicações stateless</h3>
+      <p>
+        HTTP é um protocolo stateless: cada requisição deve ser compreensível por si, e o protocolo não exige que
+        o servidor mantenha memória automática das requisições anteriores. Isso não significa que a aplicação não
+        possua banco, sessão, cache ou estado; significa que o estado precisa ser representado e recuperado de forma
+        explícita.
+      </p>
+      <pre><code>Requisição 1: POST /login
+Resposta: token ou cookie
+
+Requisição 2: GET /profile
+Cliente envia novamente o token ou cookie
+Servidor recupera a identidade e processa a requisição</code></pre>
+      <p>
+        Essa característica facilita escalar horizontalmente: requisições sucessivas podem chegar a instâncias
+        diferentes, desde que todas consigam acessar o estado necessário. Guardar dados críticos apenas em uma
+        variável local do processo cria limitações e perda de dados quando o processo reinicia.
+      </p>
+
+      <h3 id="processo-node">12 — O processo do Node.js</h3>
+      <p>
+        Quando executamos <code>node dist/server.js</code> ou <code>tsx watch src/server.ts</code>, o sistema operacional
+        cria um processo. Esse processo possui memória, identificador, argumentos, variáveis de ambiente, recursos
+        abertos e um ciclo de vida.
+      </p>
+      <pre><code>console.log({
+  pid: process.pid,
+  platform: process.platform,
+  nodeVersion: process.version,
+  workingDirectory: process.cwd(),
+});</code></pre>
+
+      <h4>12.1 — Por que o servidor continua vivo</h4>
+      <p>
+        Um script simples termina quando não há mais trabalho pendente. Um servidor continua executando porque há
+        recursos ativos, como o socket que está escutando uma porta. O processo permanece disponível esperando
+        novas conexões.
+      </p>
+
+      <h4>12.2 — Memória do processo não é banco de dados</h4>
+      <pre><code>const tasks: string[] = [];</code></pre>
+      <p>
+        Esse array existe apenas na memória daquela execução. Se o servidor reiniciar, os dados desaparecem. Se
+        houver duas instâncias, cada uma terá seu próprio array. Usaremos memória em exercícios iniciais apenas
+        para isolar conceitos de HTTP antes de introduzir persistência.
+      </p>
+
+      <h4>12.3 — Sinais e encerramento</h4>
+      <p>
+        Processos podem receber sinais como <code>SIGINT</code> e <code>SIGTERM</code>. Em produção, não devemos apenas
+        interromper tudo abruptamente: aprenderemos encerramento gracioso para parar de aceitar tráfego, concluir
+        requisições possíveis e fechar recursos.
+      </p>
+
+      <h3 id="event-loop">13 — Introdução ao event loop</h3>
+      <p>
+        O JavaScript do Node.js executa, por padrão, em uma thread principal. Mesmo assim, Node consegue coordenar
+        muitas operações de I/O sem bloquear essa thread durante toda a espera. O event loop organiza quando
+        callbacks e continuações ficam prontos para executar.
+      </p>
+      <pre><code>console.log("A");
+
+setTimeout(() =&gt; {
+  console.log("B");
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+  console.log("C");
+});
+
+console.log("D");
+
+// Ordem esperada neste exemplo: A, D, C, B</code></pre>
+      <p>
+        <code>setTimeout(..., 0)</code> não significa “execute agora”. Significa que o callback poderá ser agendado
+        depois que o código atual terminar e as regras das filas permitirem. Promises usam uma fila de microtasks,
+        processada com prioridade própria em relação a fases como timers.
+      </p>
+
+      <h4>13.1 — I/O não bloqueante versus código pesado</h4>
+      <p>
+        Esperar banco, arquivo ou rede pode ser coordenado de forma assíncrona. Porém, um cálculo JavaScript longo
+        e síncrono ocupa a thread principal e atrasa todas as outras requisições daquele processo.
+      </p>
+      <pre><code>app.get("/bad-example", (request, response) =&gt; {
+  const end = Date.now() + 5_000;
+
+  while (Date.now() &lt; end) {
+    // Bloqueia a thread principal por aproximadamente 5 segundos.
+  }
+
+  response.json({ ok: true });
+});</code></pre>
+      <div class="warning">
+        “Node é single-thread” é uma simplificação. O JavaScript da aplicação normalmente usa uma thread principal,
+        mas o runtime, o sistema operacional e o pool de threads podem participar de certas operações. O ponto mais
+        importante agora é: não bloqueie a thread principal com trabalho síncrono demorado.
+      </div>
+
+      <h3 id="variaveis-ambiente">14 — Variáveis de ambiente</h3>
+      <p>
+        Variáveis de ambiente são configurações fornecidas ao processo pelo ambiente em que ele executa. Elas
+        permitem mudar porta, conexão de banco, URLs externas e outros valores sem editar o código-fonte.
+      </p>
+      <pre><code>const rawPort = process.env.PORT;
+const port = rawPort ? Number(rawPort) : 3000;
+
+if (!Number.isInteger(port) || port &lt; 1 || port &gt; 65_535) {
+  throw new Error("PORT deve ser um inteiro entre 1 e 65535");
+}</code></pre>
+
+      <h4>14.1 — Tudo chega como string ou <code>undefined</code></h4>
+      <p>
+        <code>process.env.PORT</code> não é automaticamente um número. Escrever <code>PORT=false</code> também não cria
+        um booleano; cria a string <code>"false"</code>. Configurações precisam de parsing e validação.
+      </p>
+
+      <h4>14.2 — Arquivo <code>.env</code></h4>
+      <pre><code>PORT=3000
+DATABASE_URL=postgresql://user:password@localhost:5432/app
+LOG_LEVEL=info</code></pre>
+      <p>
+        O arquivo <code>.env</code> é uma conveniência de desenvolvimento para carregar variáveis. Ele não deve ser
+        tratado como cofre. Arquivos com segredos reais não devem ser versionados. Em produção, a plataforma ou um
+        gerenciador de segredos costuma fornecer esses valores ao processo.
+      </p>
+
+      <h4>14.3 — Falhar cedo</h4>
+      <p>
+        Se uma configuração obrigatória está ausente, é melhor impedir a inicialização com uma mensagem clara do
+        que aceitar tráfego e falhar de maneira confusa durante uma requisição. Mais adiante validaremos o ambiente
+        inteiro com Zod.
+      </p>
+
+      <h3 id="integracao">15 — Ligando todos os conceitos</h3>
+      <pre><code>// Frontend: cliente
+const response = await fetch("http://localhost:3000/tasks?completed=false", {
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+if (!response.ok) {
+  throw new Error(`Status inesperado: ${response.status}`);
+}
+
+const data: unknown = await response.json();</code></pre>
+      <pre><code>// Backend: servidor
+import express from "express";
+
+export const app = express();
+
+app.use(express.json());
+
+app.get("/tasks", (request, response) =&gt; {
+  const completed = request.query.completed;
+
+  return response.status(200).json({
+    filters: { completed },
+    items: [],
+  });
+});</code></pre>
+      <p>
+        O frontend inicia uma requisição GET; a URL contém protocolo, host, porta, path e query; headers informam
+        o formato aceito; o processo Node recebe a conexão; Express encontra a rota; o handler lê a query e envia
+        uma resposta 200 com JSON serializado.
+      </p>
+
+      <h3 id="edge-cases">16 — Edge cases: conceito, propósito e prática</h3>
+      <h4>16.1 — O que é um edge case</h4>
+      <p>
+        Edge case, ou caso de borda, é uma situação que ocorre nos limites, extremos ou combinações menos comuns
+        das entradas e estados de um sistema. É o caso que não representa o caminho mais frequente, mas ainda é
+        possível e precisa ter comportamento definido.
+      </p>
+      <p>
+        Exemplo simples: em um campo que aceita idade de 18 a 120, valores 18 e 120 são limites; 17, 121, texto,
+        campo ausente e número decimal são casos que testam as bordas do contrato.
+      </p>
+
+      <h4>16.2 — Edge case não é necessariamente bug</h4>
+      <p>
+        O caso extremo existe independentemente de o código estar certo. Ele se torna bug quando o comportamento
+        observado é incorreto, inseguro, inconsistente ou não definido. Pensar em edge cases é antecipar situações
+        antes que usuários ou produção as encontrem.
+      </p>
+
+      <h4>16.3 — Por que edge cases existem</h4>
+      <ul>
+        <li>Entradas possuem limites, formatos e valores ausentes.</li>
+        <li>Rede e serviços externos podem falhar, atrasar ou responder parcialmente.</li>
+        <li>Usuários repetem ações, clicam duas vezes e usam a aplicação fora da ordem esperada.</li>
+        <li>Requisições concorrentes podem tentar alterar o mesmo estado.</li>
+        <li>Dados antigos podem não seguir o contrato atual.</li>
+        <li>Processos reiniciam, clientes desconectam e timeouts acontecem.</li>
+        <li>Atacantes procuram justamente comportamentos não considerados.</li>
+      </ul>
+
+      <h4>16.4 — Para que servem no desenvolvimento</h4>
+      <p>
+        Edge cases ajudam a definir validações, regras de negócio, status HTTP, tratamento de erros, testes,
+        observabilidade e decisões de arquitetura. Uma funcionalidade não está realmente especificada apenas pelo
+        “caminho feliz”; precisamos decidir o que acontece quando algo falta, repete, conflita, expira ou falha.
+      </p>
+
+      <h4>16.5 — Caminho feliz, caso de erro e caso de borda</h4>
+      <table>
+        <thead><tr><th>Categoria</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td>Caminho feliz</td><td>Criar tarefa com título válido e receber 201.</td></tr>
+          <tr><td>Caso de erro comum</td><td>Criar tarefa sem título e receber erro de validação.</td></tr>
+          <tr><td>Caso de borda</td><td>Título exatamente no limite máximo; duas criações idênticas simultâneas; cliente desconecta durante a resposta.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>16.6 — Como descobrir edge cases</h4>
+      <ol>
+        <li>Liste entradas e identifique mínimo, máximo, vazio, ausente, nulo e formato incorreto.</li>
+        <li>Repita a mesma ação e observe se deveria ser idempotente.</li>
+        <li>Mude a ordem das ações.</li>
+        <li>Considere duas requisições simultâneas.</li>
+        <li>Imagine dependências lentas, indisponíveis ou retornando dados inesperados.</li>
+        <li>Considere permissões, ownership e tentativa de acessar dados de outra pessoa.</li>
+        <li>Interrompa o processo ou desconecte o cliente em pontos diferentes.</li>
+      </ol>
+
+      <h4>16.7 — Os cinco edge cases iniciais da Fase 0</h4>
+      <details>
+        <summary>1. Porta inválida ou indisponível</summary>
+        <p>
+          A variável <code>PORT</code> pode conter texto, zero, número acima de 65535 ou uma porta já ocupada por
+          outro processo. Devemos validar o valor e tratar erros de inicialização. Sem isso, o servidor pode nem
+          iniciar ou falhar com uma mensagem pouco amigável.
+        </p>
+      </details>
+      <details>
+        <summary>2. Path inexistente</summary>
+        <p>
+          O cliente pode pedir <code>/taks</code> em vez de <code>/tasks</code>, usar uma versão antiga da API ou
+          solicitar um recurso removido. O servidor deve encerrar a requisição com resposta consistente, normalmente
+          404, sem deixar a conexão pendurada e sem responder 200 com mensagem de erro.
+        </p>
+      </details>
+      <details>
+        <summary>3. JSON malformado</summary>
+        <p>
+          O header pode declarar JSON enquanto o body contém vírgula sobrando, aspas ausentes ou texto qualquer.
+          O parsing falha antes de a regra de negócio rodar. A API precisa transformar essa falha em resposta 4xx
+          controlada, em vez de encerrar o processo ou devolver detalhes internos.
+        </p>
+      </details>
+      <details>
+        <summary>4. Cliente desconecta antes da resposta</summary>
+        <p>
+          O usuário pode fechar a aba, perder a rede ou cancelar a requisição enquanto o servidor ainda trabalha.
+          Algumas operações podem ser canceladas; outras já produziram efeito e precisam terminar com segurança.
+          Isso afeta logs, recursos, transações e decisões sobre idempotência.
+        </p>
+      </details>
+      <details>
+        <summary>5. Header esperado não foi enviado</summary>
+        <p>
+          A API pode exigir <code>Content-Type</code>, autenticação ou um identificador de idempotência. Header ausente,
+          vazio ou em formato inválido deve resultar em comportamento explícito. Nunca assuma que o frontend oficial
+          será o único cliente.
+        </p>
+      </details>
+
+      <h4>16.8 — Edge cases e testes</h4>
+      <p>
+        Um edge case importante deve virar exemplo de contrato e, quando possível, teste automatizado. Testes não
+        substituem o raciocínio; eles preservam a decisão para impedir regressões durante refatorações.
+      </p>
+
+      <h3 id="exercicios">17 — Exercícios orientados</h3>
+      <details>
+        <summary>Exercício 1 — Anatomia completa de uma URL</summary>
+        <p>Use a URL <code>https://api.example.com:8443/users/42/posts?published=true&amp;page=3#comments</code>.</p>
+        <ol>
+          <li>Identifique esquema, hostname, porta, path, query e fragmento.</li>
+          <li>Explique quais partes chegam ao servidor em uma requisição HTTP comum.</li>
+          <li>Diga qual porta seria usada se <code>:8443</code> fosse removido.</li>
+        </ol>
+      </details>
+      <details>
+        <summary>Exercício 2 — Narre o caminho do React ao Express</summary>
+        <p>
+          Escreva, com suas palavras, o que acontece desde o clique em “Salvar tarefa” até a nova tarefa aparecer
+          na tela. Inclua serialização, método, headers, body, rota, status, parsing e nova renderização.
+        </p>
+      </details>
+      <details>
+        <summary>Exercício 3 — Escolha status e justifique</summary>
+        <p>Escolha um status para cada situação e explique por que não usaria 200 em todas:</p>
+        <ul>
+          <li>Tarefa criada.</li>
+          <li>Tarefa inexistente.</li>
+          <li>JSON com sintaxe inválida.</li>
+          <li>Usuário autenticado sem permissão.</li>
+          <li>E-mail já cadastrado.</li>
+          <li>Falha inesperada do banco.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Exercício 4 — JSON versus objeto JavaScript</summary>
+        <p>
+          Crie um objeto com uma data, uma propriedade <code>undefined</code> e uma função. Execute
+          <code>JSON.stringify()</code>, compare o resultado e descreva o que foi perdido ou transformado.
+        </p>
+      </details>
+      <details>
+        <summary>Exercício 5 — Mapeamento de edge cases</summary>
+        <p>
+          Para um endpoint <code>POST /appointments</code> com início, fim e participante, liste pelo menos dez
+          edge cases. Organize-os por entrada, tempo, repetição, concorrência, permissão e falha externa.
+        </p>
+      </details>
+
+      <h3 id="mini-projeto">18 — Mini projeto da Fase 0</h3>
+      <p>
+        O projeto será uma pequena API de diagnóstico. O objetivo não é arquitetura avançada, e sim observar
+        HTTP de forma consciente.
+      </p>
+      <pre><code>GET  /health
+GET  /request-info
+GET  /headers
+GET  /status/:code
+POST /echo</code></pre>
+      <ul>
+        <li><code>GET /health</code>: informa se o processo está disponível.</li>
+        <li><code>GET /request-info</code>: devolve método, path, query e protocolo observados.</li>
+        <li><code>GET /headers</code>: devolve uma seleção segura de headers recebidos.</li>
+        <li><code>GET /status/:code</code>: permite observar respostas com status controlados.</li>
+        <li><code>POST /echo</code>: recebe JSON e devolve o conteúdo, deixando claro o ciclo de serialização.</li>
+      </ul>
+      <div class="warning">
+        A rota de headers não deve devolver credenciais ou cookies indiscriminadamente. Até uma ferramenta didática
+        precisa evitar expor segredos recebidos.
+      </div>
+
+      <h3 id="checklist">19 — Checklist de domínio da Fase 0</h3>
+      <ul class="checklist">
+        <li>Consigo diferenciar frontend/backend de cliente/servidor.</li>
+        <li>Consigo explicar API, endpoint e contrato.</li>
+        <li>Consigo narrar o ciclo completo de um <code>fetch()</code>.</li>
+        <li>Sei decompor uma URL.</li>
+        <li>Sei diferenciar headers e body.</li>
+        <li>Entendo JSON como texto e sei explicar serialização e parsing.</li>
+        <li>Consigo escolher método e status sem tratar tudo como POST e 200.</li>
+        <li>Entendo o significado de stateless.</li>
+        <li>Sei que o servidor é um processo com memória e ciclo de vida.</li>
+        <li>Entendo, em nível introdutório, por que código síncrono pesado bloqueia o event loop.</li>
+        <li>Sei que variáveis de ambiente precisam de parsing e validação.</li>
+        <li>Consigo identificar e justificar edge cases.</li>
+      </ul>
+
+      <h3 id="referencias">20 — Leituras externas e referências</h3>
+      <p>Use estas leituras como complemento, não como substituição das explicações e exercícios:</p>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" target="_blank" rel="noreferrer">MDN — Overview of HTTP</a>.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages" target="_blank" rel="noreferrer">MDN — HTTP messages</a>.</li>
+        <li><a href="https://developer.mozilla.org/pt-BR/docs/Web/API/Fetch_API/Using_Fetch" target="_blank" rel="noreferrer">MDN — Usando Fetch</a>.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods" target="_blank" rel="noreferrer">MDN — HTTP request methods</a>.</li>
+        <li><a href="https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Reference/Status" target="_blank" rel="noreferrer">MDN — Códigos de status HTTP</a>.</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" target="_blank" rel="noreferrer">RFC 9110 — HTTP Semantics</a>.</li>
+        <li><a href="https://nodejs.org/learn/asynchronous-work/event-loop-timers-and-nexttick" target="_blank" rel="noreferrer">Node.js — The Event Loop</a>.</li>
+        <li><a href="https://nodejs.org/api/process.html" target="_blank" rel="noreferrer">Node.js — Process API</a>.</li>
+        <li><a href="https://json.org/" target="_blank" rel="noreferrer">JSON.org — introdução ao formato JSON</a>.</li>
+      </ul>
+
+      <h4>20.1 — Livros recomendados</h4>
+      <ul>
+        <li><strong>HTTP: The Definitive Guide</strong>, de David Gourley e Brian Totty — antigo em alguns detalhes, mas excelente para formar modelo mental sobre HTTP.</li>
+        <li><strong>High Performance Browser Networking</strong>, de Ilya Grigorik — redes, HTTP, TLS e desempenho; disponível legalmente para leitura online pelo autor.</li>
+        <li><strong>Designing Data-Intensive Applications</strong>, de Martin Kleppmann — recomendado para fases posteriores; explica dados, concorrência, replicação e sistemas distribuídos.</li>
+        <li><strong>Node.js Design Patterns</strong>, de Mario Casciaro e Luciano Mammino — útil após dominar a base, especialmente para assíncrono e arquitetura Node.</li>
+        <li><strong>API Design Patterns</strong>, de JJ Geewax — recomendado quando chegarmos a desenho de APIs e evolução de contratos.</li>
+      </ul>
+    </section>
+
+</main>
+</div>
+</body>
+</html>

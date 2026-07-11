@@ -1,0 +1,1686 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Curso Completo de Express 5 com TypeScript</title>
+    <style>
+      :root {
+        --bg: #0a0f1f;
+        --panel: #12192d;
+        --panel-2: #17213a;
+        --text: #f4f7ff;
+        --muted: #aeb8d0;
+        --accent: #7c9cff;
+        --accent-2: #5eead4;
+        --border: #2b3657;
+        --code: #090e1b;
+        --warning: #fbbf24;
+        --success: #34d399;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background:
+          radial-gradient(
+            circle at top right,
+            rgba(124, 156, 255, 0.1),
+            transparent 28%
+          ),
+          linear-gradient(180deg, #09101f 0%, #0a0f1f 100%);
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      aside {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 26px 20px;
+        background: rgba(8, 13, 27, 0.97);
+        border-right: 1px solid var(--border);
+      }
+
+      .brand {
+        font-weight: 900;
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+      }
+
+      nav {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      nav a {
+        display: block;
+        text-decoration: none;
+        color: var(--muted);
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+      }
+
+      nav a:hover {
+        background: var(--panel-2);
+        color: var(--text);
+      }
+
+      main {
+        width: min(1180px, 100%);
+        padding: 44px 42px 90px;
+        margin: 0 auto;
+      }
+
+      .hero {
+        padding: 38px;
+        border: 1px solid var(--border);
+        background:
+          radial-gradient(
+            circle at top right,
+            rgba(124, 156, 255, 0.2),
+            transparent 35%
+          ),
+          var(--panel);
+        border-radius: 22px;
+        margin-bottom: 24px;
+      }
+
+      .eyebrow {
+        color: var(--accent-2);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.13em;
+        font-size: 0.78rem;
+      }
+
+      h1 {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        line-height: 1.06;
+        margin: 12px 0 16px;
+      }
+
+      h2 {
+        font-size: 1.85rem;
+        margin: 0 0 12px;
+      }
+
+      h3 {
+        margin-top: 28px;
+        margin-bottom: 8px;
+        color: #f8fbff;
+      }
+
+      h4 {
+        margin-top: 20px;
+        margin-bottom: 6px;
+        color: #dfe7ff;
+      }
+
+      p,
+      li {
+        color: #d9def0;
+      }
+
+      .lead {
+        font-size: 1.08rem;
+        color: #cbd5ea;
+        max-width: 900px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 24px;
+      }
+
+      .stat,
+      .card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+
+      .stat strong {
+        display: block;
+        color: var(--accent-2);
+        font-size: 1.1rem;
+      }
+
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 30px;
+        margin: 18px 0;
+      }
+
+      .phase {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .phase::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(var(--accent), var(--accent-2));
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--accent-2);
+        background: rgba(94, 234, 212, 0.08);
+        border: 1px solid rgba(94, 234, 212, 0.22);
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 0.82rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+
+      .meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 12px 0 20px;
+      }
+
+      .pill {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 5px 10px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        background: rgba(255, 255, 255, 0.025);
+      }
+
+      code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 2px 6px;
+        color: #dce7ff;
+      }
+
+      pre {
+        overflow-x: auto;
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        line-height: 1.55;
+      }
+
+      pre code {
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+
+      .columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .callout,
+      .warning,
+      .success {
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin: 16px 0;
+      }
+
+      .callout {
+        background: rgba(124, 156, 255, 0.08);
+        border: 1px solid rgba(124, 156, 255, 0.25);
+        color: #dfe6ff;
+      }
+
+      .warning {
+        background: rgba(251, 191, 36, 0.08);
+        border: 1px solid rgba(251, 191, 36, 0.25);
+        color: #fff1b6;
+      }
+
+      .success {
+        background: rgba(52, 211, 153, 0.08);
+        border: 1px solid rgba(52, 211, 153, 0.25);
+        color: #d9fff2;
+      }
+
+      .checklist {
+        padding-left: 20px;
+      }
+
+      details {
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin: 10px 0;
+      }
+
+      summary {
+        cursor: pointer;
+        font-weight: 800;
+        color: #e8eeff;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-size: 0.95rem;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        vertical-align: top;
+        text-align: left;
+      }
+
+      th {
+        background: var(--panel-2);
+        color: #f5f7ff;
+      }
+
+      .small {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      footer {
+        color: var(--muted);
+        text-align: center;
+        padding-top: 28px;
+      }
+
+      @media (max-width: 950px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          position: static;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--border);
+        }
+        nav {
+          flex-direction: row;
+          overflow-x: auto;
+        }
+        nav a {
+          white-space: nowrap;
+        }
+        main {
+          padding: 24px 16px 60px;
+        }
+        .grid,
+        .columns {
+          grid-template-columns: 1fr;
+        }
+        section,
+        .hero {
+          padding: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside>
+        <div class="brand">Curso Express 5 + TypeScript</div>
+        <div class="subtitle">
+          API, arquitetura, banco, segurança, testes e tempo real.
+        </div>
+        <nav>
+          <a href="#visao">Visão geral</a>
+          <a href="#metodo">Como o curso funciona</a>
+          <a href="#scaffolding">Seu scaffolding</a>
+          <a href="#documentacao">Documentação oficial</a>
+          <a href="#fase0">Fase 0 — Fundamentos</a>
+          <a href="#fase1">Fase 1 — Express básico</a>
+          <a href="#fase2">Fase 2 — TypeScript</a>
+          <a href="#fase3">Fase 3 — REST</a>
+          <a href="#fase4">Fase 4 — Middlewares</a>
+          <a href="#fase5">Fase 5 — Zod</a>
+          <a href="#fase6">Fase 6 — Camadas</a>
+          <a href="#fase7">Fase 7 — Erros</a>
+          <a href="#fase8">Fase 8 — Testes</a>
+          <a href="#fase9">Fase 9 — Banco e Prisma</a>
+          <a href="#fase10">Fase 10 — Autenticação</a>
+          <a href="#fase11">Fase 11 — Segurança</a>
+          <a href="#fase12">Fase 12 — Produção</a>
+          <a href="#fase13">Fase 13 — Avançado</a>
+          <a href="#final">Projeto final</a>
+          <a href="#criterios">Critérios de domínio</a>
+          <a href="#inicio">Primeiras aulas</a>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="hero" id="visao">
+          <div class="eyebrow">Curso completo e progressivo</div>
+          <h1>Aprendendo Express 5 com TypeScript</h1>
+          <p class="lead">
+            Esta página é o mapa central do curso. Ela reúne os mesmos
+            princípios que usaremos nas aulas: explicação detalhada, comparação
+            com frontend, exemplos tipados, exercícios sem resposta direta, mini
+            projetos, clean code, regras de negócio, edge cases e práticas
+            usadas no mercado.
+          </p>
+
+          <div class="grid">
+            <div class="stat">
+              <strong>Foco em APIs</strong>Express como backend para React,
+              mobile e integrações.
+            </div>
+            <div class="stat">
+              <strong>TypeScript sempre</strong>Todos os exemplos e exercícios
+              serão tipados.
+            </div>
+            <div class="stat">
+              <strong>Do zero ao real</strong>De HTTP básico até agenda com chat
+              em tempo real.
+            </div>
+          </div>
+
+          <div class="callout">
+            Não vamos aprender Express apenas como uma coleção de métodos. O
+            objetivo é entender o que acontece em cada camada, por que
+            determinada decisão é tomada e quais problemas aparecem em
+            aplicações reais.
+          </div>
+        </header>
+
+        <section id="metodo">
+          <span class="tag">Metodologia</span>
+          <h2>Como o curso vai funcionar</h2>
+
+          <p>
+            Cada assunto será construído em camadas. Primeiro, veremos o
+            conceito. Depois, um exemplo pequeno. Em seguida, você aplicará a
+            ideia em um exercício e, por fim, consolidará o conhecimento em um
+            mini projeto.
+          </p>
+
+          <ol>
+            <li>
+              <strong>Conceito:</strong> explicação começando pelo óbvio, sem
+              assumir conhecimento prévio de backend.
+            </li>
+            <li>
+              <strong>Ligação com o frontend:</strong> comparação com React,
+              services, hooks, componentes e chamadas HTTP.
+            </li>
+            <li>
+              <strong>Exemplo em TypeScript:</strong> código curto e comentado.
+            </li>
+            <li>
+              <strong>Documentação oficial:</strong> leitura dos pontos
+              importantes do Express 5.
+            </li>
+            <li>
+              <strong>Exercício guiado:</strong> problema para você resolver sem
+              receber a resposta pronta.
+            </li>
+            <li>
+              <strong>Dicas progressivas:</strong> perguntas e pistas para
+              orientar o raciocínio.
+            </li>
+            <li>
+              <strong>Revisão:</strong> análise da sua solução, clareza, tipos,
+              responsabilidades e casos extremos.
+            </li>
+            <li>
+              <strong>Refatoração:</strong> melhoria do código somente depois de
+              entendermos o problema.
+            </li>
+            <li>
+              <strong>Mini projeto:</strong> aplicação pequena usando os
+              conceitos em conjunto.
+            </li>
+          </ol>
+
+          <h3>Como serão os exercícios</h3>
+          <p>Em vez de entregar algo como:</p>
+
+          <pre><code>app.get("/users/:userId", (request, response) =&gt; {
+  // resposta completa pronta
+});</code></pre>
+
+          <p>O exercício será orientado por perguntas:</p>
+
+          <div class="card">
+            <p>Onde o identificador do usuário está chegando?</p>
+            <p>Qual deve ser o tipo desse parâmetro?</p>
+            <p>O que deve acontecer quando ele não existe?</p>
+            <p>Qual status HTTP representa esse caso?</p>
+            <p>Essa validação pertence à camada HTTP ou à regra de negócio?</p>
+          </div>
+
+          <div class="warning">
+            Clean code não significa criar muitas pastas e classes. Primeiro
+            criaremos código simples e correto. As camadas surgirão quando
+            houver responsabilidades reais para separar.
+          </div>
+        </section>
+
+        <section id="scaffolding">
+          <span class="tag">Base atual</span>
+          <h2>Como seu scaffolding entra no curso</h2>
+
+          <p>
+            Seu projeto já possui uma boa fundação: Express 5, TypeScript, tsx,
+            dotenv, separação entre configuração da aplicação e inicialização do
+            servidor.
+          </p>
+
+          <pre><code>src/
+├── app.ts
+└── server.ts
+
+.env
+package.json
+package-lock.json
+tsconfig.json</code></pre>
+
+          <div class="columns">
+            <div class="card">
+              <h3><code>app.ts</code></h3>
+              <p>
+                Responsável por criar e configurar a aplicação Express. Aqui
+                entram middlewares, routers, tratamento de erros e configurações
+                da API.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3><code>server.ts</code></h3>
+              <p>
+                Responsável por iniciar o servidor HTTP, abrir a porta e
+                futuramente coordenar o encerramento gracioso das conexões.
+              </p>
+            </div>
+          </div>
+
+          <h3>Comparação aproximada com React</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Frontend React</th>
+                <th>Backend Express</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>main.tsx</code></td>
+                <td><code>server.ts</code>, ponto de inicialização</td>
+              </tr>
+              <tr>
+                <td><code>App.tsx</code></td>
+                <td><code>app.ts</code>, configuração da aplicação</td>
+              </tr>
+              <tr>
+                <td>Rotas do React Router</td>
+                <td>Rotas HTTP do Express</td>
+              </tr>
+              <tr>
+                <td>Service que chama API</td>
+                <td>Controller/service que responde à chamada</td>
+              </tr>
+              <tr>
+                <td>Validação de formulário</td>
+                <td>Validação obrigatória da entrada da API</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Ajustes iniciais que estudaremos</h3>
+          <ul>
+            <li>Remover imports não utilizados.</li>
+            <li>
+              Adicionar <code>express.json()</code> e entender por que ele é
+              necessário.
+            </li>
+            <li>Criar uma rota de health check.</li>
+            <li>Separar rota e lógica quando isso começar a fazer sentido.</li>
+            <li>Validar variáveis de ambiente com Zod.</li>
+            <li>Configurar testes com Vitest e Supertest.</li>
+            <li>Preparar encerramento gracioso do servidor.</li>
+          </ul>
+        </section>
+
+        <section id="documentacao">
+          <span class="tag">Fonte principal</span>
+          <h2>Como usaremos a documentação oficial do Express 5</h2>
+
+          <p>
+            A documentação oficial será a principal referência técnica. Porém,
+            os exemplos serão reinterpretados para TypeScript e para APIs
+            modernas, em vez de serem copiados de forma mecânica.
+          </p>
+
+          <h3>Exemplos essenciais</h3>
+          <ul>
+            <li>Hello World.</li>
+            <li>Parâmetros de rota.</li>
+            <li>Recursos HTTP.</li>
+            <li>Middlewares de rota.</li>
+            <li>Separação de rotas.</li>
+            <li>Múltiplos routers.</li>
+            <li>Busca e query strings.</li>
+            <li>Tratamento de erros.</li>
+            <li>Autenticação reinterpretada com práticas atuais.</li>
+          </ul>
+
+          <h3>Exemplos complementares</h3>
+          <ul>
+            <li>Cookies e sessões.</li>
+            <li>Downloads.</li>
+            <li>Arquivos estáticos.</li>
+            <li>Negociação de conteúdo.</li>
+            <li>Aplicações online e status.</li>
+          </ul>
+
+          <h3>Assuntos que não serão prioridade</h3>
+          <ul>
+            <li>EJS, Pug e outras template engines.</li>
+            <li>MVC voltado a renderização HTML no servidor.</li>
+            <li>Exemplos antigos que não representam bem uma API moderna.</li>
+          </ul>
+
+          <div class="callout">
+            Não ignoraremos esses recursos. Vamos entender para que servem, mas
+            o foco do curso será API REST, autenticação, banco de dados, regras
+            de negócio, testes, segurança e tempo real.
+          </div>
+        </section>
+
+        <section class="phase" id="fase0">
+          <span class="tag">Fase 0</span>
+          <h2>Fundamentos de backend e HTTP</h2>
+          <div class="meta">
+            <span class="pill">Nível: iniciante</span>
+            <span class="pill">Sem banco</span>
+            <span class="pill">Base para todo o curso</span>
+          </div>
+
+          <p>
+            Antes de aprender Express, precisamos entender o que o Express está
+            escondendo ou simplificando. Essa fase evita que métodos como
+            <code>app.get()</code> pareçam magia.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>O que é frontend, backend, cliente e servidor.</li>
+            <li>O que é uma API.</li>
+            <li>O que acontece quando o React executa <code>fetch()</code>.</li>
+            <li>HTTP e HTTPS.</li>
+            <li>URL, protocolo, domínio, porta, path e query string.</li>
+            <li>Requisição e resposta.</li>
+            <li>Headers e body.</li>
+            <li>JSON e serialização.</li>
+            <li>Métodos HTTP.</li>
+            <li>Status HTTP.</li>
+            <li>Aplicações stateless.</li>
+            <li>Processo do Node.js.</li>
+            <li>Introdução ao event loop.</li>
+            <li>Variáveis de ambiente.</li>
+          </ul>
+
+          <h3>Comparação com React</h3>
+          <pre><code>const response = await fetch("http://localhost:3000/tasks");
+const tasks = await response.json();</code></pre>
+
+          <p>
+            Nesse fluxo, o React é o cliente. Ele envia uma requisição. A API
+            recebe essa requisição, executa alguma lógica e devolve uma
+            resposta.
+          </p>
+
+          <pre><code>app.get("/tasks", (request, response) =&gt; {
+  response.status(200).json([]);
+});</code></pre>
+
+          <h3>Exercícios orientados</h3>
+          <details>
+            <summary>Exercício 1 — Anatomia de uma URL</summary>
+            <p>
+              Separe protocolo, host, porta, path e query string de uma URL
+              fornecida.
+            </p>
+            <p class="small">
+              Pistas: qual parte define como a comunicação ocorre? Qual parte
+              identifica o servidor? O que vem depois de <code>?</code>?
+            </p>
+          </details>
+
+          <details>
+            <summary>Exercício 2 — Cliente e servidor</summary>
+            <p>
+              Descreva com suas palavras o caminho de uma requisição feita por
+              um botão no React até a resposta aparecer na tela.
+            </p>
+          </details>
+
+          <details>
+            <summary>Exercício 3 — Status HTTP</summary>
+            <p>
+              Escolha status adequados para criação, recurso inexistente, dados
+              inválidos e erro inesperado.
+            </p>
+          </details>
+
+          <h3>Mini projeto</h3>
+          <pre><code>GET /health
+GET /request-info
+GET /headers
+GET /status/:code</code></pre>
+
+          <h3>Edge cases</h3>
+          <ul>
+            <li>Porta inválida.</li>
+            <li>Path inexistente.</li>
+            <li>JSON malformado.</li>
+            <li>Cliente desconecta antes da resposta.</li>
+            <li>Header esperado não foi enviado.</li>
+          </ul>
+          <p>
+            <a href="./fases/0/fase0.html">Ir para conteúdo da fase 0 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase1">
+          <span class="tag">Fase 1</span>
+          <h2>Primeiros passos com Express 5</h2>
+
+          <p>
+            Nesta fase, aprenderemos o funcionamento básico da aplicação Express
+            e o ciclo completo de uma requisição dentro de uma rota.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>O que <code>express()</code> retorna.</li>
+            <li>O que é uma aplicação Express.</li>
+            <li><code>app.listen()</code>.</li>
+            <li>
+              <code>app.get()</code>, <code>app.post()</code> e outros métodos.
+            </li>
+            <li>Callback de rota.</li>
+            <li><code>Request</code> e <code>Response</code>.</li>
+            <li>
+              <code>res.send()</code>, <code>res.json()</code>,
+              <code>res.status()</code> e <code>res.end()</code>.
+            </li>
+            <li>Rota inexistente.</li>
+            <li>Resposta enviada mais de uma vez.</li>
+            <li><code>headersSent</code>.</li>
+          </ul>
+
+          <h3>Exemplo</h3>
+          <pre><code>import express from "express";
+
+export const app = express();
+
+app.get("/health", (request, response) =&gt; {
+  return response.status(200).json({
+    status: "ok",
+  });
+});</code></pre>
+
+          <h3>O que cada parte significa</h3>
+          <ul>
+            <li>
+              <code>app.get</code>: registra uma rota que responde ao método
+              HTTP GET.
+            </li>
+            <li><code>"/health"</code>: caminho da rota.</li>
+            <li><code>request</code>: informações que chegaram do cliente.</li>
+            <li>
+              <code>response</code>: objeto usado para construir a resposta.
+            </li>
+            <li><code>status(200)</code>: define o status HTTP.</li>
+            <li>
+              <code>json()</code>: serializa um objeto JavaScript como JSON e
+              encerra a resposta.
+            </li>
+          </ul>
+
+          <h3>Exercícios orientados</h3>
+          <details>
+            <summary>Exercício — Criar três rotas</summary>
+            <p>
+              Crie uma rota de status, uma rota de versão e uma rota que aceite
+              um nome no path.
+            </p>
+            <p class="small">
+              Pense: qual método HTTP usar? Onde o nome chegará? O que deve
+              acontecer se vier vazio?
+            </p>
+          </details>
+
+          <h3>Mini projeto</h3>
+          <p>API de frases com dados em memória:</p>
+          <pre><code>GET    /quotes
+GET    /quotes/:quoteId
+POST   /quotes
+PUT    /quotes/:quoteId
+PATCH  /quotes/:quoteId
+DELETE /quotes/:quoteId</code></pre>
+          <p>
+            <a href="./fases/1/fase1.html">Ir para conteúdo da fase 1 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase2">
+          <span class="tag">Fase 2</span>
+          <h2>TypeScript aplicado ao Express</h2>
+
+          <p>
+            O objetivo não será apenas “colocar tipos”, mas entender o que está
+            sendo garantido, o que continua inseguro e onde a validação em
+            runtime se torna necessária.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Inferência e anotação.</li>
+            <li><code>type</code> e <code>interface</code>.</li>
+            <li>Tipos do Express.</li>
+            <li>Generics.</li>
+            <li>Tipagem de params, body, query e resposta.</li>
+            <li><code>unknown</code> versus <code>any</code>.</li>
+            <li>Narrowing e type guards.</li>
+            <li>Tipos opcionais.</li>
+            <li>Union types.</li>
+            <li>Tipos literais.</li>
+            <li><code>Readonly</code>.</li>
+            <li>DTOs.</li>
+            <li>Tipo estático versus dado real recebido pela rede.</li>
+          </ul>
+
+          <h3>Exemplo tipando o body</h3>
+          <pre><code>import type { Request, Response } from "express";
+
+type CreateTaskBody = {
+  title: string;
+  description?: string;
+};
+
+type CreateTaskResponse = {
+  id: string;
+  title: string;
+  description: string | null;
+};
+
+app.post(
+  "/tasks",
+  (
+    request: Request&lt;
+      Record&lt;string, never&gt;,
+      CreateTaskResponse,
+      CreateTaskBody
+    &gt;,
+    response: Response&lt;CreateTaskResponse&gt;,
+  ) =&gt; {
+    const { title, description } = request.body;
+
+    return response.status(201).json({
+      id: crypto.randomUUID(),
+      title,
+      description: description ?? null,
+    });
+  },
+);</code></pre>
+
+          <div class="warning">
+            O tipo <code>CreateTaskBody</code> não obriga o cliente a enviar
+            esse formato. Ele apenas informa ao TypeScript como queremos
+            trabalhar com o valor. A validação real virá com Zod.
+          </div>
+
+          <h3>Exercícios orientados</h3>
+          <details>
+            <summary>Exercício — Tipar parâmetros e query</summary>
+            <p>
+              Crie os tipos para uma rota que recebe <code>productId</code> no
+              path e <code>includeInactive</code> na query.
+            </p>
+            <p class="small">
+              Lembre-se: valores de URL chegam inicialmente como string.
+            </p>
+          </details>
+          <p>
+            <a href="./fases/2/fase2.html">Ir para conteúdo da fase 2 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase3">
+          <span class="tag">Fase 3</span>
+          <h2>Desenho de APIs REST</h2>
+
+          <p>
+            Aqui aprenderemos a representar recursos e comportamentos usando
+            URLs, métodos HTTP, status corretos e contratos previsíveis.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Recurso, URI e endpoint.</li>
+            <li>GET, POST, PUT, PATCH e DELETE.</li>
+            <li>Idempotência.</li>
+            <li>Parâmetros de rota.</li>
+            <li>Query params.</li>
+            <li>Filtros, busca, ordenação e paginação.</li>
+            <li>Versionamento.</li>
+            <li>Rotas aninhadas.</li>
+            <li>Status 200, 201, 204, 400, 401, 403, 404, 409, 422 e 500.</li>
+          </ul>
+
+          <h3>Comparação de desenho</h3>
+          <pre><code>POST /create-task
+POST /delete-task
+GET  /get-all-tasks</code></pre>
+
+          <p>Uma forma mais orientada a recursos:</p>
+
+          <pre><code>POST   /tasks
+DELETE /tasks/:taskId
+GET    /tasks</code></pre>
+
+          <h3>PUT versus PATCH</h3>
+          <ul>
+            <li>
+              <strong>PUT:</strong> normalmente representa substituição completa
+              do recurso.
+            </li>
+            <li><strong>PATCH:</strong> representa alteração parcial.</li>
+          </ul>
+
+          <h3>Mini projeto</h3>
+          <p>API de biblioteca:</p>
+          <pre><code>/authors
+/books
+/loans</code></pre>
+
+          <h3>Regras de negócio</h3>
+          <ul>
+            <li>Livro indisponível não pode ser emprestado.</li>
+            <li>Empréstimo devolvido não pode ser devolvido novamente.</li>
+            <li>
+              Autor com livros não pode ser removido sem estratégia definida.
+            </li>
+            <li>ISBN não pode se repetir.</li>
+            <li>Página e limite precisam ser válidos.</li>
+          </ul>
+          <p>
+            <a href="./fases/3/fase3.html">Ir para conteúdo da fase 3 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase4">
+          <span class="tag">Fase 4</span>
+          <h2>Middlewares e pipeline da requisição</h2>
+
+          <p>
+            Middleware é uma função que participa do caminho da requisição. Ela
+            pode ler ou alterar dados, encerrar a resposta ou passar o controle
+            para a próxima etapa.
+          </p>
+
+          <pre><code>requisição
+  ↓
+logger
+  ↓
+autenticação
+  ↓
+autorização
+  ↓
+validação
+  ↓
+controller
+  ↓
+resposta</code></pre>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Middleware global.</li>
+            <li>Middleware por router.</li>
+            <li>Middleware por rota.</li>
+            <li><code>next()</code>.</li>
+            <li>Ordem de registro.</li>
+            <li>Logging.</li>
+            <li>Request ID.</li>
+            <li>Tempo de resposta.</li>
+            <li><code>res.locals</code>.</li>
+            <li>Autenticação e autorização.</li>
+          </ul>
+
+          <h3>Exemplo</h3>
+          <pre><code>import type { NextFunction, Request, Response } from "express";
+
+export function requestLogger(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  const startedAt = Date.now();
+
+  response.on("finish", () =&gt; {
+    const duration = Date.now() - startedAt;
+
+    console.log({
+      method: request.method,
+      path: request.path,
+      statusCode: response.statusCode,
+      duration,
+    });
+  });
+
+  next();
+}</code></pre>
+
+          <h3>Erro comum</h3>
+          <pre><code>export function brokenMiddleware(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  console.log("Recebi a requisição");
+  // Não respondeu e não chamou next()
+}</code></pre>
+
+          <p>
+            A requisição fica pendurada porque o pipeline não foi encerrado nem
+            continuado.
+          </p>
+
+          <h3>Mini projeto</h3>
+          <p>
+            API administrativa com papéis <code>ADMIN</code> e
+            <code>MEMBER</code>, request ID e logs.
+          </p>
+          <p>
+            <a href="./fases/4/fase4.html">Ir para conteúdo da fase 4 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase5">
+          <span class="tag">Fase 5</span>
+          <h2>Validação de dados com Zod</h2>
+
+          <p>
+            Todo dado vindo de fora da aplicação deve ser tratado como não
+            confiável: body, params, query, headers, arquivos e respostas de
+            serviços externos.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Parsing versus validação.</li>
+            <li>Schema.</li>
+            <li>Coerção.</li>
+            <li>Sanitização.</li>
+            <li>Mensagens de erro.</li>
+            <li>Schemas reutilizáveis.</li>
+            <li>Validação parcial para PATCH.</li>
+            <li>Refinements.</li>
+            <li>Inferência com <code>z.infer</code>.</li>
+          </ul>
+
+          <h3>Exemplo</h3>
+          <pre><code>import { z } from "zod";
+
+export const createUserSchema = z.object({
+  name: z.string().trim().min(2).max(100),
+  email: z.string().trim().toLowerCase().email(),
+  birthDate: z.coerce.date(),
+});
+
+export type CreateUserInput = z.infer&lt;typeof createUserSchema&gt;;</code></pre>
+
+          <h3>Edge cases</h3>
+          <ul>
+            <li>String com apenas espaços.</li>
+            <li>E-mail com letras maiúsculas.</li>
+            <li>Data inválida.</li>
+            <li>Número enviado como string.</li>
+            <li>Campo ausente.</li>
+            <li><code>null</code> versus <code>undefined</code>.</li>
+            <li>PATCH com body vazio.</li>
+            <li>Campos adicionais não esperados.</li>
+          </ul>
+
+          <h3>Mini projeto</h3>
+          <p>
+            API de eventos em memória com validação completa de criação e
+            edição.
+          </p>
+          <p>
+            <a href="./fases/5/fase5.html">Ir para conteúdo da fase 5 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase6">
+          <span class="tag">Fase 6</span>
+          <h2>Controllers, services, repositories e regras de negócio</h2>
+
+          <p>
+            Esta fase ensina a separar responsabilidades sem transformar a
+            aplicação em uma coleção de arquivos vazios.
+          </p>
+
+          <pre><code>Route
+└── associa URL, método e middlewares
+
+Controller
+└── traduz HTTP para uma chamada da aplicação
+
+Service / Use case
+└── executa regras de negócio
+
+Repository
+└── lê e grava dados
+
+Schema
+└── valida dados externos</code></pre>
+
+          <h3>Estrutura inicial</h3>
+          <pre><code>src/
+├── app.ts
+├── server.ts
+├── routes/
+├── controllers/
+├── services/
+├── repositories/
+├── middlewares/
+├── schemas/
+├── errors/
+└── config/</code></pre>
+
+          <h3>Estrutura por módulo</h3>
+          <pre><code>src/
+├── modules/
+│   ├── users/
+│   │   ├── user.routes.ts
+│   │   ├── user.controller.ts
+│   │   ├── user.service.ts
+│   │   ├── user.repository.ts
+│   │   ├── user.schema.ts
+│   │   └── user.types.ts
+│   └── appointments/
+└── shared/</code></pre>
+
+          <h3>Comparação aproximada com frontend</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Frontend</th>
+                <th>Backend</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Evento ou rota da UI</td>
+                <td>Rota HTTP</td>
+              </tr>
+              <tr>
+                <td>Hook/controller da tela</td>
+                <td>Controller</td>
+              </tr>
+              <tr>
+                <td>Service</td>
+                <td>Service/use case</td>
+              </tr>
+              <tr>
+                <td>Cache/estado</td>
+                <td>Repository/banco</td>
+              </tr>
+              <tr>
+                <td>Schema de formulário</td>
+                <td>Schema da API</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Mini projeto</h3>
+          <p>Sistema de pedidos com:</p>
+          <ul>
+            <li>Pedido vazio proibido.</li>
+            <li>Produto inativo bloqueado.</li>
+            <li>Quantidade positiva.</li>
+            <li>Cupom expirado.</li>
+            <li>Pedido pago imutável.</li>
+            <li>Cancelamento restaurando estoque.</li>
+          </ul>
+          <p>
+            <a href="./fases/6/fase6.html">Ir para conteúdo da fase 6 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase7">
+          <span class="tag">Fase 7</span>
+          <h2>Tratamento de erros no Express 5</h2>
+
+          <p>
+            O objetivo será criar erros previsíveis para o cliente sem esconder
+            problemas de programação nem vazar detalhes sensíveis.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Erro operacional versus erro de programação.</li>
+            <li><code>throw</code>.</li>
+            <li>Promise rejeitada.</li>
+            <li>
+              Encaminhamento automático de erros assíncronos no Express 5.
+            </li>
+            <li>Middleware de erro.</li>
+            <li>Erros personalizados.</li>
+            <li>404, validação, conflito e erro interno.</li>
+            <li>Stack trace por ambiente.</li>
+          </ul>
+
+          <h3>Middleware de erro</h3>
+          <pre><code>import type {
+  ErrorRequestHandler,
+} from "express";
+
+export const errorHandler: ErrorRequestHandler = (
+  error,
+  request,
+  response,
+  next,
+) =&gt; {
+  console.error(error);
+
+  return response.status(500).json({
+    error: {
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Ocorreu um erro inesperado.",
+    },
+  });
+};</code></pre>
+
+          <h3>Formato de erro</h3>
+          <pre><code>{
+  "error": {
+    "code": "APPOINTMENT_CONFLICT",
+    "message": "Este horário não está disponível.",
+    "details": [],
+    "requestId": "..."
+  }
+}</code></pre>
+
+          <h3>Edge cases</h3>
+          <ul>
+            <li>Erro depois de headers enviados.</li>
+            <li>Erro do banco de dados.</li>
+            <li>Valor lançado que não é <code>Error</code>.</li>
+            <li>Promise rejeitada.</li>
+            <li>Timeout de serviço externo.</li>
+          </ul>
+          <p>
+            <a href="./fases/7/fase7.html">Ir para conteúdo da fase 7 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase8">
+          <span class="tag">Fase 8</span>
+          <h2>Testes com Vitest e Supertest</h2>
+
+          <p>
+            Testar não é apenas verificar se uma função “retorna algo”. Vamos
+            testar comportamentos, regras de negócio, respostas HTTP e casos
+            extremos.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Teste unitário.</li>
+            <li>Teste de integração.</li>
+            <li>Teste HTTP.</li>
+            <li>Arrange, Act, Assert.</li>
+            <li>Mocks e quando evitá-los.</li>
+            <li>Fakes.</li>
+            <li>Banco isolado.</li>
+            <li>Supertest.</li>
+            <li>Cobertura sem obsessão por porcentagem.</li>
+          </ul>
+
+          <h3>Exemplo de intenção</h3>
+          <pre><code>describe("CreateAppointmentService", () =&gt; {
+  it("should reject overlapping appointments", async () =&gt; {
+    // Arrange
+    // Act
+    // Assert
+  });
+});</code></pre>
+
+          <h3>Perguntas usadas nos exercícios</h3>
+          <ul>
+            <li>Quais dados precisam existir antes da ação?</li>
+            <li>Qual é a ação principal?</li>
+            <li>Qual resultado prova que a regra foi respeitada?</li>
+            <li>Qual comportamento deve ocorrer no caso de erro?</li>
+          </ul>
+
+          <h3>Mini projeto</h3>
+          <p>
+            API de tarefas com testes de sucesso, validação, conflito e recurso
+            inexistente.
+          </p>
+          <p>
+            <a href="./fases/8/fase8.html">Ir para conteúdo da fase 8 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase9">
+          <span class="tag">Fase 9</span>
+          <h2>Banco de dados, SQL e Prisma</h2>
+
+          <p>
+            Antes do ORM, aprenderemos os fundamentos de banco relacional. Isso
+            evita usar Prisma apenas como uma caixa-preta.
+          </p>
+
+          <h3>Fundamentos de banco</h3>
+          <ul>
+            <li>Tabela, linha e coluna.</li>
+            <li>Chave primária.</li>
+            <li>Chave estrangeira.</li>
+            <li>Relacionamentos.</li>
+            <li>Índices.</li>
+            <li>Unique constraint.</li>
+            <li><code>NOT NULL</code>.</li>
+            <li>Transações.</li>
+            <li>Integridade referencial.</li>
+            <li>Problema N+1.</li>
+            <li>Paginação e concorrência.</li>
+          </ul>
+
+          <h3>Prisma</h3>
+          <ul>
+            <li>Prisma Schema.</li>
+            <li>Prisma Client.</li>
+            <li>Migrations.</li>
+            <li>Models e relations.</li>
+            <li><code>select</code> e <code>include</code>.</li>
+            <li>Filtros e ordenação.</li>
+            <li>Paginação.</li>
+            <li>Transações.</li>
+            <li>Seed.</li>
+            <li>Banco de testes.</li>
+          </ul>
+
+          <h3>Mini projeto</h3>
+          <p>
+            API financeira com contas, categorias, transações e transferências.
+          </p>
+
+          <h3>Regras importantes</h3>
+          <ul>
+            <li>Valor não pode ser zero.</li>
+            <li>Transferência precisa ser atômica.</li>
+            <li>Conta de origem e destino devem ser diferentes.</li>
+            <li>Saldo insuficiente.</li>
+            <li>Categoria pertence ao usuário.</li>
+            <li>Usuário não acessa dados de outro usuário.</li>
+          </ul>
+          <p>
+            <a href="./fases/9/fase9.html">Ir para conteúdo da fase 9 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase10">
+          <span class="tag">Fase 10</span>
+          <h2>Autenticação e autorização</h2>
+
+          <p>
+            Autenticação responde “quem é você?”. Autorização responde “o que
+            você pode fazer?”.
+          </p>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Hash e salt de senha.</li>
+            <li>Cookies.</li>
+            <li>Sessões.</li>
+            <li>JWT.</li>
+            <li>Access token e refresh token.</li>
+            <li>Rotação de token.</li>
+            <li>Logout e revogação.</li>
+            <li>
+              Cookies <code>HttpOnly</code>, <code>Secure</code> e
+              <code>SameSite</code>.
+            </li>
+            <li>CSRF e CORS.</li>
+            <li>RBAC.</li>
+            <li>Ownership.</li>
+            <li>Recuperação de senha.</li>
+            <li>Verificação de e-mail.</li>
+            <li>Rate limiting.</li>
+          </ul>
+
+          <h3>Exemplo de ownership</h3>
+          <pre><code>const appointment = await repository.findById(appointmentId);
+
+if (!appointment) {
+  throw new NotFoundError("Appointment");
+}
+
+if (appointment.userId !== authenticatedUser.id) {
+  throw new ForbiddenError();
+}</code></pre>
+
+          <h3>Mini projeto</h3>
+          <p>
+            API de notas privadas com login, refresh token e controle de
+            propriedade.
+          </p>
+          <p>
+            <a href="./fases/10/fase10.html">Ir para conteúdo da fase 10 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase11">
+          <span class="tag">Fase 11</span>
+          <h2>Segurança de APIs</h2>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>CORS.</li>
+            <li>Helmet.</li>
+            <li>Rate limiting.</li>
+            <li>Proteção contra brute force.</li>
+            <li>Limite de payload.</li>
+            <li>Mass assignment.</li>
+            <li>Injeção.</li>
+            <li>Vazamento de dados.</li>
+            <li>Logs sensíveis.</li>
+            <li>Secrets.</li>
+            <li>HTTPS.</li>
+            <li>Proxy reverso.</li>
+            <li><code>trust proxy</code>.</li>
+            <li>Uploads e validação de arquivos.</li>
+            <li>Princípio do menor privilégio.</li>
+          </ul>
+
+          <h3>Mini projeto</h3>
+          <p>Auditoria e correção de uma API deliberadamente vulnerável.</p>
+          <p>
+            <a href="./fases/11/fase11.html">Ir para conteúdo da fase 11 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase12">
+          <span class="tag">Fase 12</span>
+          <h2>Observabilidade, produção e deploy</h2>
+
+          <h3>Conteúdos</h3>
+          <ul>
+            <li>Logs estruturados.</li>
+            <li>Níveis de log.</li>
+            <li>Request ID.</li>
+            <li>Métricas.</li>
+            <li>Health check.</li>
+            <li>Readiness e liveness.</li>
+            <li>Graceful shutdown.</li>
+            <li>Exceções e rejeições não tratadas.</li>
+            <li>Docker.</li>
+            <li>Configuração por ambiente.</li>
+            <li>Deploy.</li>
+            <li>OpenAPI e Swagger.</li>
+          </ul>
+
+          <h3>Endpoints operacionais</h3>
+          <pre><code>GET /health/live
+GET /health/ready</code></pre>
+
+          <ul>
+            <li><strong>Live:</strong> o processo está vivo?</li>
+            <li><strong>Ready:</strong> banco e dependências estão prontos?</li>
+          </ul>
+          <p>
+            <a href="./fases/12/fase12.html">Ir para conteúdo da fase 12 >> </a>
+          </p>
+        </section>
+
+        <section class="phase" id="fase13">
+          <span class="tag">Fase 13</span>
+          <h2>Recursos avançados de backend</h2>
+
+          <ul>
+            <li>Uploads.</li>
+            <li>Streams.</li>
+            <li>Downloads.</li>
+            <li>Cache HTTP.</li>
+            <li>ETag.</li>
+            <li>Compressão.</li>
+            <li>Content negotiation.</li>
+            <li>Webhooks.</li>
+            <li>Idempotency keys.</li>
+            <li>Filas.</li>
+            <li>Tarefas agendadas.</li>
+            <li>E-mails.</li>
+            <li>Timeouts.</li>
+            <li>Retry.</li>
+            <li>Circuit breaker em nível conceitual.</li>
+            <li>Server-Sent Events.</li>
+            <li>WebSocket.</li>
+          </ul>
+
+          <div class="callout">
+            Esses assuntos serão introduzidos quando já tivermos uma base sólida
+            de HTTP, camadas, banco, erros, testes e segurança.
+          </div>
+          <p>
+            <a href="./fases/13/fase13.html">Ir para conteúdo da fase 13 >> </a>
+          </p>
+        </section>
+
+        <section id="final">
+          <span class="tag">Projeto final</span>
+          <h2>Agenda com chat em tempo real</h2>
+
+          <p>
+            O projeto final será uma aplicação de backend completa, não apenas
+            um CRUD. Ele reunirá regras de negócio, autenticação, banco, testes,
+            segurança, documentação e comunicação em tempo real.
+          </p>
+
+          <div class="columns">
+            <div class="card">
+              <h3>Módulos</h3>
+              <ul>
+                <li>Usuários.</li>
+                <li>Autenticação.</li>
+                <li>Perfis.</li>
+                <li>Contatos.</li>
+                <li>Compromissos.</li>
+                <li>Disponibilidade.</li>
+                <li>Conversas.</li>
+                <li>Mensagens.</li>
+                <li>Notificações.</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Tecnologias prováveis</h3>
+              <ul>
+                <li>Node.js.</li>
+                <li>Express 5.</li>
+                <li>TypeScript.</li>
+                <li>Zod.</li>
+                <li>PostgreSQL.</li>
+                <li>Prisma.</li>
+                <li>Vitest.</li>
+                <li>Supertest.</li>
+                <li>WebSocket ou Socket.IO.</li>
+                <li>Docker.</li>
+                <li>OpenAPI.</li>
+                <li>Pino.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Agenda</h3>
+          <ul>
+            <li>Criar, editar e cancelar compromisso.</li>
+            <li>Participantes e convites.</li>
+            <li>Confirmação de presença.</li>
+            <li>Recorrência.</li>
+            <li>Fusos horários.</li>
+            <li>Lembretes.</li>
+            <li>Filtros e paginação.</li>
+            <li>Conflito de horário.</li>
+            <li>Disponibilidade.</li>
+            <li>Permissões.</li>
+          </ul>
+
+          <h3>Chat em tempo real</h3>
+          <ul>
+            <li>Conversas individuais.</li>
+            <li>Grupos.</li>
+            <li>Mensagens persistidas.</li>
+            <li>Usuário online.</li>
+            <li>Indicador de digitação.</li>
+            <li>Mensagens entregues e lidas.</li>
+            <li>Reconexão.</li>
+            <li>Paginação do histórico.</li>
+            <li>Autorização por conversa.</li>
+          </ul>
+
+          <h3>Regras e edge cases</h3>
+          <ul>
+            <li>Horário final deve ser posterior ao inicial.</li>
+            <li>Compromissos não podem se sobrepor sem regra explícita.</li>
+            <li>Convite não pode ser aceito duas vezes.</li>
+            <li>Compromisso cancelado não aceita alterações comuns.</li>
+            <li>Usuário removido da conversa não lê mensagens futuras.</li>
+            <li>Somente participante pode marcar mensagem como lida.</li>
+            <li>Datas precisam ser persistidas de forma consistente.</li>
+            <li>Requisição duplicada não deve criar registros duplicados.</li>
+            <li>Falha de notificação não deve corromper a agenda.</li>
+            <li>Concorrência precisa ser protegida no banco.</li>
+          </ul>
+          <p>
+            <a href="./fases/final/projetofinal.html"
+              >Ir para conteúdo da fase 12 >>
+            </a>
+          </p>
+        </section>
+
+        <section id="criterios">
+          <span class="tag">Avaliação</span>
+          <h2>Como saberemos que um assunto foi dominado</h2>
+
+          <p>Você estará pronto para avançar quando conseguir:</p>
+          <ul>
+            <li>Explicar o conceito com suas palavras.</li>
+            <li>Construir um exemplo sem copiar.</li>
+            <li>Identificar erros comuns.</li>
+            <li>Escolher status HTTP coerentes.</li>
+            <li>Tipar entradas e saídas.</li>
+            <li>Separar validação, HTTP e regra de negócio.</li>
+            <li>Reconhecer ao menos os principais edge cases.</li>
+            <li>Testar o fluxo de sucesso e os fluxos de erro.</li>
+            <li>Justificar as decisões de arquitetura.</li>
+          </ul>
+
+          <div class="success">
+            O objetivo não é decorar a API do Express. É conseguir pensar como
+            alguém que projeta, implementa, testa e mantém um backend.
+          </div>
+        </section>
+
+        <section id="inicio">
+          <span class="tag">Próximo passo</span>
+          <h2>Primeira sequência prática</h2>
+
+          <ol>
+            <li>O que realmente acontece em uma requisição HTTP.</li>
+            <li>
+              Anatomia do seu <code>app.ts</code> e <code>server.ts</code>.
+            </li>
+            <li>Rotas, métodos e status.</li>
+            <li>Params, query, body e headers.</li>
+            <li>Primeiro CRUD em memória.</li>
+            <li>Middlewares e ordem de execução.</li>
+            <li>Separação inicial de rotas.</li>
+            <li>Revisão e mini projeto.</li>
+          </ol>
+
+          <h3>Primeira alteração no projeto</h3>
+          <ul>
+            <li>Limpar imports sem uso.</li>
+            <li>Adicionar <code>express.json()</code>.</li>
+            <li>Criar <code>GET /health</code>.</li>
+            <li>Entender cada linha antes de avançar.</li>
+          </ul>
+
+          <div class="callout">
+            Esta página será mantida coerente com o curso. Conforme novos
+            módulos, decisões e exercícios forem definidos, ela poderá ser
+            atualizada para continuar funcionando como referência central.
+          </div>
+        </section>
+
+        <footer>
+          Curso Aprendendo Express com TypeScript — API, arquitetura, banco de
+          dados, testes, segurança e tempo real.
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Fase 13 — Recursos avançados | Express 5 + TypeScript</title><style>
+:root{--bg:#09111f;--panel:#101b2e;--panel2:#142239;--text:#e8edf7;--muted:#a8b4c8;--line:#283854;--accent:#68d391;--accent2:#63b3ed;--warn:#f6c85f;--danger:#fc8181;--code:#07101d;--shadow:0 18px 48px rgba(0,0,0,.25)}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:linear-gradient(135deg,#08101d,#0d1728 48%,#07111f);color:var(--text);font:16px/1.72 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.layout{display:grid;grid-template-columns:330px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:rgba(7,16,29,.96)}main{min-width:0;padding:34px 5vw 80px}.content{max-width:1080px;margin:auto}.brand{font-size:1.3rem;font-weight:800}.subtitle{color:var(--muted);font-size:.92rem;margin:4px 0 18px}.phase-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.phase-link{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);text-decoration:none;font-size:.82rem}.phase-link.active{border-color:var(--accent);color:var(--accent);background:rgba(104,211,145,.08)}nav>a,summary{color:var(--text)}nav>a{display:block;padding:9px 11px;margin:3px 0;border-radius:8px;text-decoration:none}nav>a:hover,.nav-links a:hover,.nav-links a.active{background:var(--panel2);color:var(--accent)}.nav-title{text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-size:.72rem;font-weight:800;margin:20px 10px 8px}.nav-group{border-top:1px solid rgba(40,56,84,.62)}summary{cursor:pointer;padding:12px 10px;font-weight:700}.nav-links{padding:0 0 9px 10px}.nav-links a{display:block;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:7px;font-size:.88rem}.nav-progress{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.nav-progress strong{display:block;color:var(--accent);margin-bottom:5px}.nav-progress span{font-size:.84rem;color:var(--muted)}section{padding:36px 0 14px}.phase{padding-top:0}.tag,.pill{display:inline-flex;border-radius:999px}.tag{padding:5px 10px;background:rgba(104,211,145,.12);color:var(--accent);font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px}.pill{padding:5px 10px;border:1px solid var(--line);color:var(--muted);font-size:.83rem}h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;margin:14px 0 18px;letter-spacing:-.045em}h3{font-size:1.42rem;margin:48px 0 14px;padding-top:8px;border-top:1px solid var(--line)}h4{font-size:1.08rem;margin:28px 0 9px;color:#cfe2ff}p,li{color:#cbd5e5}strong{color:#f3f6fb}code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;color:#b5f4d0}pre{overflow:auto;background:var(--code);border:1px solid var(--line);border-radius:13px;padding:18px 20px;box-shadow:var(--shadow);line-height:1.55}pre code{color:#d7e4f6}.callout,.warning,.danger,.note{padding:16px 18px;margin:20px 0;border-radius:12px;border-left:4px solid}.callout{background:rgba(99,179,237,.08);border-color:var(--accent2)}.warning{background:rgba(246,200,95,.08);border-color:var(--warn)}.danger{background:rgba(252,129,129,.08);border-color:var(--danger)}.note{background:rgba(104,211,145,.08);border-color:var(--accent)}.grid,.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:18px}.card h4{margin-top:0}.flow{display:grid;gap:9px;margin:20px 0}.flow div{padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}table{width:100%;border-collapse:collapse;margin:18px 0;display:block;overflow:auto}th,td{text-align:left;padding:12px 13px;border:1px solid var(--line);min-width:150px}th{background:var(--panel2);color:#fff}td{color:#cbd5e5}.pipeline{font-family:monospace;text-align:center;white-space:pre;overflow:auto;background:var(--code);border:1px solid var(--line);padding:20px;border-radius:12px;color:#b5f4d0}.checklist{list-style:none;padding-left:0}.checklist li{padding:8px 0 8px 30px;position:relative}.checklist li:before{content:"□";position:absolute;left:3px;color:var(--accent);font-size:1.2rem}.footer-note{margin-top:55px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}a{color:#8ecdf7}@media(max-width:940px){.layout{grid-template-columns:1fr}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:28px 20px 60px}.grid,.columns{grid-template-columns:1fr}}
+</style></head><body><div class="layout"><aside><div class="brand">Express 5 + TypeScript</div><div class="subtitle">Curso detalhado focado em APIs.</div><div class="phase-links"><a class="phase-link active" href="#fase13">Fase 13 · Avançado</a></div><nav id="toc" aria-label="Mapa da Fase 13"><a href="#fase13"><strong>Visão geral da fase</strong></a><div class="nav-title">Mapa do conteúdo</div>
+<details class="nav-group" open><summary>Fundamentos</summary><div class="nav-links"><a href="#modelo">1. Modelo mental</a><a href="#assincronia">2. Trabalho assíncrono</a><a href="#custos">3. Custos e limites</a><a href="#contratos">4. Contratos</a></div></details>
+<details class="nav-group" open><summary>Arquivos e HTTP</summary><div class="nav-links"><a href="#uploads">5. Uploads</a><a href="#validacao-arquivos">6. Validação</a><a href="#streams">7. Streams</a><a href="#downloads">8. Downloads</a><a href="#cache">9. Cache HTTP</a><a href="#etag">10. ETag</a><a href="#compressao">11. Compressão</a><a href="#negociacao">12. Content negotiation</a></div></details>
+<details class="nav-group"><summary>Integrações resilientes</summary><div class="nav-links"><a href="#webhooks">13. Webhooks</a><a href="#assinatura">14. Assinatura</a><a href="#idempotencia">15. Idempotency keys</a><a href="#timeouts">16. Timeouts</a><a href="#retry">17. Retry</a><a href="#circuit">18. Circuit breaker</a></div></details>
+<details class="nav-group"><summary>Processamento assíncrono</summary><div class="nav-links"><a href="#filas">19. Filas</a><a href="#workers">20. Workers</a><a href="#agendadas">21. Tarefas agendadas</a><a href="#emails">22. E-mails</a><a href="#consistencia">23. Consistência</a></div></details>
+<details class="nav-group"><summary>Tempo real</summary><div class="nav-links"><a href="#sse">24. SSE</a><a href="#websocket">25. WebSocket</a><a href="#comparacao">26. Comparação</a><a href="#escala">27. Escala</a></div></details>
+<details class="nav-group"><summary>Prática</summary><div class="nav-links"><a href="#antipatterns">28. Erros comuns</a><a href="#edgecases">29. Edge cases</a><a href="#estrutura">30. Estrutura</a><a href="#integrado">31. Exemplo integrado</a><a href="#testes">32. Testes</a><a href="#exercicios">33. Exercícios</a><a href="#projeto">34. Mini projeto</a><a href="#checklist">35. Checklist</a><a href="#referencias">36. Referências</a></div></details>
+<div class="nav-progress"><strong>O que esta fase cobre</strong><span>Como mover dados, integrar sistemas e executar trabalho assíncrono com contratos, limites, segurança e tolerância a falhas.</span></div></nav></aside><main><div class="content"><section class="phase" id="fase13"><span class="tag">Fase 13</span><h1>Recursos avançados de backend</h1><div class="meta"><span class="pill">Express 5</span><span class="pill">TypeScript</span><span class="pill">Streams</span><span class="pill">Filas</span><span class="pill">Tempo real</span><span class="pill">Resiliência</span></div>
+<p>Esta fase reúne recursos que deixam de parecer “avançados” quando vistos como combinações de fundamentos já estudados: HTTP, camadas, banco, erros, testes, segurança e produção. O objetivo não é decorar bibliotecas, mas compreender modelos de execução, contratos e falhas.</p><div class="callout"><strong>Objetivo:</strong> implementar uploads e downloads seguros; transferir dados com streams; usar cache e negociação HTTP; receber webhooks sem duplicar efeitos; desacoplar tarefas com filas; enviar e-mails de modo confiável; aplicar timeout, retry e circuit breaker; e escolher entre SSE e WebSocket.</div>
+<div class="pipeline">requisição ou evento
+      ↓
+validação + autenticação + limites
+      ↓
+trabalho síncrono mínimo
+      ↓
+persistência / fila / stream
+      ↓
+resposta previsível
+      ↓
+processamento, entrega ou atualização em tempo real</div>
+
+<h3 id="modelo">1 — Modelo mental</h3><div class="flow"><div><strong>Entrada:</strong> arquivo, requisição, evento externo ou conexão persistente.</div><div><strong>Contrato:</strong> formato, tamanho, identidade, ordem e semântica.</div><div><strong>Efeito:</strong> persistir, publicar, transferir, notificar ou agendar.</div><div><strong>Falha:</strong> timeout, duplicidade, desconexão, indisponibilidade ou dado inválido.</div><div><strong>Recuperação:</strong> retry controlado, idempotência, fila de erro, compensação ou retomada.</div></div><div class="danger"><strong>Princípio central:</strong> “assíncrono” não significa “sem falhas”. Significa que a resposta HTTP e a conclusão do trabalho deixam de ocorrer necessariamente no mesmo momento.</div>
+
+<h3 id="assincronia">2 — Trabalho síncrono e assíncrono</h3><div class="columns"><div class="card"><h4>Síncrono</h4><p>O cliente espera o trabalho terminar antes da resposta.</p><ul><li>Validação curta.</li><li>Consulta necessária para responder.</li><li>Operação rápida e previsível.</li></ul></div><div class="card"><h4>Assíncrono</h4><p>A API confirma aceitação e o trabalho continua em outro fluxo.</p><ul><li>Envio de e-mail.</li><li>Processamento de imagem.</li><li>Geração de relatório.</li><li>Notificações em lote.</li></ul></div></div><pre><code>POST /reports
+→ 202 Accepted
+{
+  "data": {
+    "jobId": "job_123",
+    "status": "QUEUED"
+  }
+}</code></pre>
+
+<h3 id="custos">3 — Custos, limites e backpressure</h3><p>Recursos avançados frequentemente movem muitos bytes ou consomem serviços lentos. O backend precisa limitar tamanho, duração, concorrência e quantidade de tentativas. Sem limites, uma funcionalidade correta em desenvolvimento pode esgotar memória, CPU, conexões ou orçamento em produção.</p><div class="warning"><strong>Backpressure:</strong> ocorre quando quem produz dados é mais rápido do que quem consome. Streams e filas existem, entre outros motivos, para controlar essa diferença.</div>
+
+<h3 id="contratos">4 — Contratos além do JSON</h3><table><thead><tr><th>Recurso</th><th>Contrato relevante</th><th>Falha típica</th></tr></thead><tbody><tr><td>Upload</td><td>tipo, tamanho, nome e conteúdo</td><td>arquivo malicioso ou enorme</td></tr><tr><td>Webhook</td><td>assinatura, evento e identificador</td><td>evento duplicado ou forjado</td></tr><tr><td>Fila</td><td>payload, versão e número de tentativas</td><td>mensagem venenosa</td></tr><tr><td>SSE/WebSocket</td><td>autorização, formato e reconexão</td><td>conexão órfã ou perda de evento</td></tr></tbody></table>
+
+<h3 id="uploads">5 — Uploads</h3><p>Uploads normalmente chegam como <code>multipart/form-data</code>. Diferente de JSON, esse formato transporta campos e arquivos. Em Express, uma biblioteca de multipart interpreta o corpo e expõe metadados ou streams.</p><pre><code>app.post(
+  "/avatars",
+  upload.single("avatar"),
+  async (request, response) =&gt; {
+    if (!request.file) {
+      return response.status(422).json({
+        error: { code: "FILE_REQUIRED", message: "Envie um avatar." },
+      });
+    }
+
+    const avatar = await avatarService.save({
+      userId: response.locals.user.id,
+      file: request.file,
+    });
+
+    return response.status(201).json({ data: avatar });
+  },
+);</code></pre><p>Guardar o arquivo no disco local pode funcionar em desenvolvimento, mas costuma falhar em ambientes com múltiplas instâncias ou filesystem efêmero. Em produção, é comum usar armazenamento de objetos.</p>
+
+<h3 id="validacao-arquivos">6 — Validação de arquivos</h3><ul><li>Limite de tamanho antes de consumir memória excessiva.</li><li>Quantidade máxima de arquivos.</li><li>Extensões permitidas apenas como sinal auxiliar.</li><li><code>Content-Type</code> não deve ser aceito cegamente.</li><li>Inspeção dos bytes iniciais quando necessário.</li><li>Nome gerado pelo servidor, sem confiar no nome original.</li><li>Diretório e permissões controlados.</li><li>Varredura ou processamento isolado para tipos de maior risco.</li></ul><div class="danger"><strong>Não confie em <code>image/png</code> enviado pelo cliente:</strong> metadados podem mentir. Validação precisa considerar conteúdo, destino e risco.</div>
+
+<h3 id="streams">7 — Streams</h3><p>Uma stream permite processar dados em partes, sem carregar tudo na memória. Em Node.js, arquivos, requisições e respostas podem ser streams. Isso é essencial para arquivos grandes.</p><pre><code>import { createReadStream } from "node:fs";
+import { pipeline } from "node:stream/promises";
+
+app.get("/exports/:fileName", async (request, response) =&gt; {
+  response.type("text/csv");
+  response.attachment(request.params.fileName);
+
+  await pipeline(
+    createReadStream(`/safe/exports/${request.params.fileName}`),
+    response,
+  );
+});</code></pre><p><code>pipeline()</code> coordena propagação de erros e encerramento das streams. Ainda é necessário validar o caminho para impedir path traversal.</p>
+
+<h3 id="downloads">8 — Downloads</h3><p>Downloads devem definir tipo, nome, autorização e política de cache. O backend também precisa decidir se o conteúdo é público, privado, temporário ou gerado sob demanda.</p><pre><code>response.setHeader(
+  "Content-Disposition",
+  'attachment; filename="relatorio.csv"',
+);
+response.type("text/csv");</code></pre><div class="warning">Nunca forme um caminho de arquivo concatenando diretamente um parâmetro da URL. <code>../../</code> pode escapar do diretório esperado.</div>
+
+<h3 id="cache">9 — Cache HTTP</h3><p>Cache HTTP reduz transferência e processamento, mas exige entender frescor e revalidação. O servidor pode informar por quanto tempo uma resposta pode ser reutilizada e se caches compartilhados podem armazená-la.</p><pre><code>response.setHeader(
+  "Cache-Control",
+  "private, max-age=60, must-revalidate",
+);</code></pre><table><thead><tr><th>Diretiva</th><th>Ideia</th></tr></thead><tbody><tr><td><code>no-store</code></td><td>não armazenar a resposta</td></tr><tr><td><code>no-cache</code></td><td>pode armazenar, mas deve revalidar</td></tr><tr><td><code>private</code></td><td>somente cache privado</td></tr><tr><td><code>public</code></td><td>cache compartilhado pode armazenar</td></tr><tr><td><code>max-age</code></td><td>tempo de frescor em segundos</td></tr></tbody></table>
+
+<h3 id="etag">10 — ETag e requisições condicionais</h3><p>ETag identifica uma versão da representação. O cliente pode enviar <code>If-None-Match</code>; se nada mudou, o servidor responde <code>304 Not Modified</code> sem reenviar o corpo.</p><pre><code>const etag = `"user-${user.id}-${user.updatedAt.getTime()}"`;
+response.setHeader("ETag", etag);
+
+if (request.headers["if-none-match"] === etag) {
+  return response.status(304).end();
+}
+
+return response.json({ data: user });</code></pre><p>Express já possui suporte a ETag em respostas, mas criar um valor manual ajuda a entender a semântica. ETag também pode participar de controle otimista com <code>If-Match</code>.</p>
+
+<h3 id="compressao">11 — Compressão</h3><p>Compressão reduz bytes transferidos, especialmente em JSON, HTML, CSS e texto. Ela consome CPU e não ajuda igualmente em formatos já comprimidos, como JPEG, PNG, ZIP e muitos vídeos.</p><div class="note"><strong>Regra prática:</strong> comprima respostas textuais acima de um limite razoável; não tente comprimir tudo indiscriminadamente.</div>
+
+<h3 id="negociacao">12 — Content negotiation</h3><p>Negociação de conteúdo permite escolher uma representação com base em headers como <code>Accept</code>, <code>Accept-Language</code> e <code>Accept-Encoding</code>.</p><pre><code>app.get("/reports/:reportId", async (request, response) =&gt; {
+  const format = request.accepts(["json", "text/csv"]);
+
+  if (!format) {
+    return response.status(406).json({
+      error: { code: "NOT_ACCEPTABLE", message: "Formato não suportado." },
+    });
+  }
+
+  const report = await reportService.get(request.params.reportId);
+  return format === "json"
+    ? response.json({ data: report })
+    : response.type("text/csv").send(toCsv(report));
+});</code></pre>
+
+<h3 id="webhooks">13 — Webhooks</h3><p>Webhook é uma requisição HTTP enviada por outro sistema quando um evento acontece. O receptor precisa assumir que a entrega pode atrasar, repetir, chegar fora de ordem ou nunca chegar.</p><pre><code>app.post("/webhooks/payments", rawBodyMiddleware, async (request, response) =&gt; {
+  webhookVerifier.verify({
+    rawBody: request.body,
+    signature: request.header("x-provider-signature"),
+  });
+
+  await webhookService.accept(request.body);
+  return response.status(204).end();
+});</code></pre><p>Alguns provedores calculam a assinatura sobre o corpo bruto. Fazer parsing e reserialização antes da verificação pode alterar os bytes e invalidar a assinatura.</p>
+
+<h3 id="assinatura">14 — Assinatura, autenticidade e replay</h3><ul><li>Use segredo separado para webhooks.</li><li>Compare assinaturas de modo seguro.</li><li>Inclua timestamp na verificação quando o provedor oferecer.</li><li>Rejeite eventos muito antigos quando apropriado.</li><li>Registre o identificador externo do evento.</li><li>Não use apenas IP de origem como autenticação principal.</li></ul>
+
+<h3 id="idempotencia">15 — Idempotency keys</h3><p>Uma idempotency key permite repetir uma requisição sem repetir seu efeito. É útil em pagamentos, criação de pedidos e outras operações sensíveis a duplicidade.</p><pre><code>const key = request.header("idempotency-key");
+if (!key) throw new ValidationError("Idempotency-Key é obrigatório.");
+
+const previous = await idempotencyRepository.find(key);
+if (previous) {
+  return response.status(previous.statusCode).json(previous.body);
+}
+
+const result = await orderService.create(input);
+await idempotencyRepository.save(key, {
+  statusCode: 201,
+  body: { data: result },
+});
+return response.status(201).json({ data: result });</code></pre><p>A chave deve ser associada ao usuário, endpoint e fingerprint do payload. Reutilizar a mesma chave com outro corpo deve gerar conflito.</p>
+
+<h3 id="timeouts">16 — Timeouts</h3><p>Timeout limita quanto tempo uma operação pode ocupar recursos. Ele deve existir em chamadas externas, conexões, filas e trabalhos internos potencialmente lentos.</p><pre><code>const response = await fetch(url, {
+  signal: AbortSignal.timeout(5_000),
+});</code></pre><div class="danger"><strong>Timeout não desfaz automaticamente o efeito remoto.</strong> Uma requisição pode expirar no cliente e ainda ser concluída pelo serviço externo. Idempotência continua necessária.</div>
+
+<h3 id="retry">17 — Retry</h3><p>Retry é adequado para falhas transitórias, não para qualquer erro. Deve ter limite, atraso crescente, jitter e consciência de idempotência.</p><pre><code>async function retry&lt;T&gt;(
+  operation: () =&gt; Promise&lt;T&gt;,
+  attempts = 3,
+): Promise&lt;T&gt; {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt &lt;= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts) break;
+      await new Promise(resolve =&gt; setTimeout(resolve, 200 * 2 ** (attempt - 1)));
+    }
+  }
+
+  throw lastError;
+}</code></pre><p>Na prática, filtre erros retryable e adicione jitter para evitar que várias instâncias repitam ao mesmo tempo.</p>
+
+<h3 id="circuit">18 — Circuit breaker em nível conceitual</h3><div class="grid"><div class="card"><h4>Closed</h4><p>Chamadas passam normalmente. Falhas são contadas.</p></div><div class="card"><h4>Open</h4><p>Chamadas falham rapidamente para proteger o sistema.</p></div><div class="card"><h4>Half-open</h4><p>Algumas chamadas de teste verificam se o serviço se recuperou.</p></div><div class="card"><h4>Fallback</h4><p>Resposta degradada, cache ou enfileiramento, quando fizer sentido.</p></div></div><p>Circuit breaker não substitui timeout. Ele reage a um padrão de falhas; timeout limita cada tentativa.</p>
+
+<h3 id="filas">19 — Filas</h3><p>Uma fila desacopla produção e consumo de trabalho. A API publica uma mensagem; um worker processa depois. Isso melhora latência e absorve picos, mas introduz entrega repetida, atraso e consistência eventual.</p><pre><code>await queue.add("send-welcome-email", {
+  userId: user.id,
+  email: user.email,
+});
+
+return response.status(201).json({ data: user });</code></pre><div class="warning">Considere entrega “pelo menos uma vez”: o mesmo job pode ser processado novamente. O consumidor precisa ser idempotente.</div>
+
+<h3 id="workers">20 — Workers, tentativas e dead-letter</h3><p>Worker é o processo que consome jobs. Ele precisa registrar início, sucesso, falha, duração e número de tentativas. Mensagens que sempre falham não podem bloquear a fila indefinidamente.</p><ul><li>Retry limitado com backoff.</li><li>Dead-letter queue ou estado <code>FAILED</code>.</li><li>Timeout do job.</li><li>Concorrência configurável.</li><li>Idempotência por job ou efeito.</li><li>Observabilidade e ferramenta de inspeção.</li></ul>
+
+<h3 id="agendadas">21 — Tarefas agendadas</h3><p>Tarefas agendadas executam em horários ou intervalos. Exemplos: expirar reservas, consolidar métricas e emitir lembretes. Em múltiplas instâncias, todas podem tentar executar o mesmo cron.</p><div class="danger"><strong>Problema clássico:</strong> três réplicas da API executam o mesmo cron e enviam três e-mails. Use scheduler centralizado, lock distribuído, fila com unicidade ou desenho idempotente.</div>
+
+<h3 id="emails">22 — E-mails</h3><p>Envio de e-mail é integração externa e não deve, em geral, segurar a resposta principal. Modele template, destinatário, idioma, deduplicação, status e falhas.</p><pre><code>await emailQueue.add("password-reset", {
+  userId,
+  resetTokenId,
+  locale: "pt-BR",
+});</code></pre><p>Evite colocar tokens sensíveis completos em logs ou payloads duráveis sem necessidade. Links de recuperação devem expirar e ser de uso único.</p>
+
+<h3 id="consistencia">23 — Consistência entre banco e fila</h3><p>Salvar no banco e publicar na fila são dois efeitos separados. Se o banco confirmar e a publicação falhar, o estado pode ficar inconsistente. Um padrão importante é o transactional outbox.</p><pre><code>await prisma.$transaction(async tx =&gt; {
+  const order = await tx.order.create({ data: orderData });
+  await tx.outboxEvent.create({
+    data: {
+      type: "ORDER_CREATED",
+      aggregateId: order.id,
+      payload: JSON.stringify({ orderId: order.id }),
+    },
+  });
+});</code></pre><p>Outro processo publica eventos pendentes e marca o outbox como entregue. Assim, estado e intenção de publicar são persistidos atomicamente.</p>
+
+<h3 id="sse">24 — Server-Sent Events</h3><p>SSE mantém uma resposta HTTP aberta para o servidor enviar eventos ao cliente. É unidirecional, simples e adequado a progresso, notificações e atualizações de status.</p><pre><code>app.get("/jobs/:jobId/events", async (request, response) =&gt; {
+  response.setHeader("Content-Type", "text/event-stream");
+  response.setHeader("Cache-Control", "no-cache");
+  response.setHeader("Connection", "keep-alive");
+  response.flushHeaders();
+
+  const send = (event: string, data: unknown) =&gt; {
+    response.write(`event: ${event}\n`);
+    response.write(`data: ${JSON.stringify(data)}\n\n`);
+  };
+
+  send("connected", { jobId: request.params.jobId });
+
+  const unsubscribe = jobEvents.subscribe(request.params.jobId, send);
+  request.on("close", unsubscribe);
+});</code></pre><p>O cliente pode reconectar automaticamente. Para recuperação, considere IDs de evento e <code>Last-Event-ID</code>.</p>
+
+<h3 id="websocket">25 — WebSocket</h3><p>WebSocket estabelece canal bidirecional persistente. É adequado quando cliente e servidor precisam trocar mensagens frequentes em baixa latência, como chat e colaboração em tempo real.</p><ul><li>Autenticação no handshake ou primeira mensagem.</li><li>Autorização por sala ou recurso.</li><li>Heartbeat para detectar conexões mortas.</li><li>Limite de tamanho e frequência de mensagens.</li><li>Validação de todo payload.</li><li>Reconexão e deduplicação no cliente.</li></ul>
+
+<h3 id="comparacao">26 — SSE, WebSocket e polling</h3><table><thead><tr><th>Opção</th><th>Direção</th><th>Complexidade</th><th>Bom uso</th></tr></thead><tbody><tr><td>Polling</td><td>cliente consulta</td><td>baixa</td><td>atualizações ocasionais</td></tr><tr><td>SSE</td><td>servidor → cliente</td><td>média</td><td>progresso e feed</td></tr><tr><td>WebSocket</td><td>bidirecional</td><td>alta</td><td>chat e colaboração</td></tr></tbody></table><p>Escolha a opção mais simples que atende o comportamento. “Tempo real” não obriga WebSocket.</p>
+
+<h3 id="escala">27 — Escala e estado de conexão</h3><p>Com múltiplas instâncias, um cliente pode estar conectado a uma instância enquanto o evento nasce em outra. É necessário um barramento compartilhado, pub/sub ou infraestrutura gerenciada. Também pode ser necessário sticky session, dependendo da biblioteca e do transporte.</p><div class="note"><strong>Persistência continua importante:</strong> WebSocket entrega atualização, mas histórico e estado durável pertencem ao banco. Conexão em tempo real não deve virar a única fonte da verdade.</div>
+
+<h3 id="antipatterns">28 — Erros comuns</h3><ol><li>Ler arquivos enormes inteiros na memória.</li><li>Confiar apenas em extensão ou MIME declarado.</li><li>Responder ao webhook antes de persistir sua aceitação sem estratégia.</li><li>Executar retry infinito.</li><li>Repetir POST não idempotente automaticamente.</li><li>Enviar e-mail dentro da transação principal.</li><li>Tratar fila como garantia de “exatamente uma vez”.</li><li>Executar cron em cada réplica sem coordenação.</li><li>Usar WebSocket para algo resolvido por polling simples.</li><li>Não remover listeners quando a conexão fecha.</li><li>Guardar estado importante apenas na memória do processo.</li><li>Ocultar falhas assíncronas sem observabilidade.</li></ol>
+
+<h3 id="edgecases">29 — Edge cases</h3><div class="flow"><div><strong>Upload interrompido:</strong> remova arquivo parcial e reverta metadados incompletos.</div><div><strong>Mesmo webhook duas vezes:</strong> use identificador externo e constraint unique.</div><div><strong>Webhook fora de ordem:</strong> compare versão, timestamp ou consulte o estado atual no provedor.</div><div><strong>Timeout com efeito concluído:</strong> consulte por idempotency key antes de repetir.</div><div><strong>Job executado duas vezes:</strong> efeito deve ser idempotente.</div><div><strong>Mensagem venenosa:</strong> limite tentativas e mova para análise.</div><div><strong>Worker cai após o efeito, antes do ACK:</strong> o job pode reaparecer.</div><div><strong>Cron no horário de verão:</strong> defina timezone e semântica esperada.</div><div><strong>SSE reconecta após perder eventos:</strong> use ID e retomada quando necessário.</div><div><strong>WebSocket desconecta durante envio:</strong> confirme persistência e sequência, não apenas emissão.</div><div><strong>Cache de resposta privada:</strong> configure <code>private</code> ou <code>no-store</code>.</div><div><strong>ETag com representação diferente:</strong> inclua versão da representação e variáveis relevantes.</div></div>
+
+<h3 id="estrutura">30 — Estrutura sugerida</h3><pre><code>src/
+├── modules/
+│   ├── files/
+│   │   ├── file.controller.ts
+│   │   ├── file.service.ts
+│   │   └── storage.gateway.ts
+│   ├── webhooks/
+│   │   ├── webhook.controller.ts
+│   │   ├── webhook.service.ts
+│   │   └── webhook.repository.ts
+│   └── notifications/
+│       ├── notification.service.ts
+│       └── notification.gateway.ts
+├── jobs/
+│   ├── queues.ts
+│   ├── workers/
+│   └── schedulers/
+├── realtime/
+│   ├── sse.ts
+│   └── websocket.ts
+├── integrations/
+│   ├── email.client.ts
+│   └── payment.client.ts
+└── shared/
+    ├── retry.ts
+    ├── timeout.ts
+    └── idempotency.ts</code></pre><p>Gateways e clients isolam detalhes externos; services preservam regras; workers reutilizam casos de uso sem fingir que são controllers HTTP.</p>
+
+<h3 id="integrado">31 — Exemplo integrado: relatório assíncrono</h3><pre><code>// Controller: aceita o pedido rapidamente
+app.post("/reports", async (request, response) =&gt; {
+  const input = createReportSchema.parse(request.body);
+  const job = await reportService.request({
+    userId: response.locals.user.id,
+    ...input,
+  });
+
+  await reportQueue.add("generate-report", { reportId: job.id });
+
+  return response
+    .status(202)
+    .location(`/reports/${job.id}`)
+    .json({ data: job });
+});
+
+// Worker: executa o trabalho pesado
+reportWorker.process(async ({ data }) =&gt; {
+  const report = await reportRepository.findById(data.reportId);
+  if (!report || report.status === "READY") return;
+
+  await reportRepository.markProcessing(report.id);
+
+  try {
+    const stream = reportGenerator.createCsvStream(report.filters);
+    const file = await storage.uploadStream(stream);
+    await reportRepository.markReady(report.id, file);
+    await reportEvents.publish(report.id, { status: "READY" });
+  } catch (error) {
+    await reportRepository.markFailed(report.id);
+    throw error;
+  }
+});</code></pre><p>O exemplo combina <code>202</code>, fila, worker idempotente, stream, armazenamento, estado persistido e atualização em tempo real.</p>
+
+<h3 id="testes">32 — Estratégia de testes</h3><div class="grid"><div class="card"><h4>Unitários</h4><ul><li>Retry e classificação de erros.</li><li>Fingerprint de idempotência.</li><li>Regras de transição de job.</li><li>Formatação de eventos SSE.</li></ul></div><div class="card"><h4>Integração</h4><ul><li>Webhook com assinatura válida e inválida.</li><li>Evento duplicado.</li><li>Outbox e transação.</li><li>Worker com falha e retry.</li></ul></div><div class="card"><h4>HTTP</h4><ul><li>Upload sem arquivo.</li><li>Arquivo acima do limite.</li><li><code>304</code> com ETag.</li><li><code>406</code> para formato não aceito.</li></ul></div><div class="card"><h4>Tempo real</h4><ul><li>Autorização da conexão.</li><li>Fechamento limpa listeners.</li><li>Reconexão.</li><li>Mensagem inválida é rejeitada.</li></ul></div></div>
+
+<h3 id="exercicios">33 — Exercícios</h3><ol><li>Crie upload de avatar com limite de 2 MB e tipos permitidos.</li><li>Implemente download privado com autorização e nome seguro.</li><li>Adicione ETag a uma rota de leitura e teste o <code>304</code>.</li><li>Sirva o mesmo relatório como JSON ou CSV usando <code>Accept</code>.</li><li>Implemente receptor de webhook com assinatura e deduplicação.</li><li>Modele uma tabela de idempotência com expiração.</li><li>Escreva retry com backoff, jitter e filtro de erros.</li><li>Modele um worker de e-mail idempotente.</li><li>Projete um cron que não execute duplicado em três réplicas.</li><li>Crie SSE para acompanhar progresso de um relatório.</li><li>Liste decisões adicionais necessárias para transformar esse SSE em WebSocket.</li><li>Desenhe um outbox para criação de pedidos e publicação de eventos.</li></ol>
+
+<h3 id="projeto">34 — Mini projeto: central de processamento de mídia</h3><p>Construa uma API em que usuários enviam imagens, acompanham o processamento e baixam versões transformadas.</p><h4>34.1 — Fluxo</h4><ol><li><code>POST /media</code> recebe upload e cria registro <code>UPLOADED</code>.</li><li>A API publica um job de processamento.</li><li>O worker valida conteúdo, gera thumbnail e versão otimizada.</li><li>O progresso é persistido e publicado via SSE.</li><li><code>GET /media/:id</code> informa estado.</li><li><code>GET /media/:id/download</code> entrega arquivo autorizado por stream.</li><li>Um webhook opcional avisa outro sistema quando o item fica pronto.</li></ol><h4>34.2 — Regras</h4><ul><li>Usuário só acessa seus arquivos.</li><li>Arquivo possui limite de tamanho e dimensões.</li><li>Mesmo job pode rodar duas vezes sem duplicar versões.</li><li>Falha após número máximo de tentativas marca <code>FAILED</code>.</li><li>Download usa nome seguro e tipo correto.</li><li>Webhook de saída possui assinatura, timeout e retry limitado.</li><li>Eventos SSE não vazam mídia de outro usuário.</li><li>Metadados e intenção de processamento são persistidos atomicamente.</li></ul>
+
+<h3 id="checklist">35 — Checklist para concluir</h3><ul class="checklist"><li>Consigo explicar por que streams evitam carregar tudo na memória.</li><li>Sei quais validações um upload precisa além da extensão.</li><li>Entendo <code>Cache-Control</code>, ETag e <code>304</code>.</li><li>Consigo explicar por que webhooks podem repetir e chegar fora de ordem.</li><li>Sei quando exigir idempotency key.</li><li>Entendo a diferença entre timeout, retry e circuit breaker.</li><li>Sei por que fila não significa entrega exatamente uma vez.</li><li>Consigo modelar worker idempotente e dead-letter.</li><li>Entendo o problema de cron em múltiplas instâncias.</li><li>Sei por que e-mail deve ser desacoplado em muitos fluxos.</li><li>Consigo explicar transactional outbox.</li><li>Sei escolher entre polling, SSE e WebSocket.</li><li>Entendo que tempo real não substitui persistência.</li><li>Consigo testar duplicidade, desconexão e falhas transitórias.</li></ul>
+
+<h3 id="referencias">36 — Referências</h3><div class="columns"><div><h4>Documentação técnica</h4><ul><li><a href="https://expressjs.com/en/5x/api.html" target="_blank" rel="noopener">Express 5 API</a></li><li><a href="https://nodejs.org/api/stream.html" target="_blank" rel="noopener">Node.js Streams</a></li><li><a href="https://nodejs.org/api/stream.html#streampipeline" target="_blank" rel="noopener">Node.js pipeline</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching" target="_blank" rel="noopener">MDN — HTTP caching</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag" target="_blank" rel="noopener">MDN — ETag</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events" target="_blank" rel="noopener">MDN — Server-Sent Events</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API" target="_blank" rel="noopener">MDN — WebSocket</a></li></ul></div><div><h4>Livros recomendados</h4><ul><li><em>Node.js Design Patterns</em>, Mario Casciaro e Luciano Mammino.</li><li><em>Designing Data-Intensive Applications</em>, Martin Kleppmann.</li><li><em>Release It!</em>, Michael T. Nygard.</li><li><em>Enterprise Integration Patterns</em>, Gregor Hohpe e Bobby Woolf.</li><li><em>Building Microservices</em>, Sam Newman.</li><li><em>Web Scalability for Startup Engineers</em>, Artur Ejsmont.</li></ul></div></div><div class="callout"><strong>Conclusão da trilha:</strong> esta fase não encerra o aprendizado de backend; ela fornece vocabulário e modelos mentais para explorar bibliotecas e infraestrutura sem tratá-las como magia. O próximo passo natural é reunir autenticação, agenda, mensagens, filas, notificações e tempo real no projeto final.</div>
+</section><div class="footer-note">Fase 13 · Recursos avançados — Trilha Express 5 com TypeScript</div></div></main></div><script>const links=[...document.querySelectorAll('#toc a')];const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));},{rootMargin:'-15% 0px -70% 0px',threshold:[0,.2,.5]});sections.forEach(s=>observer.observe(s));</script></body></html>

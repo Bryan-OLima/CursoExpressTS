@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Fase 1 do curso Aprendendo Express 5 com TypeScript: aplicação Express, rotas, Request, Response, métodos de resposta, 404, headersSent, exercícios e API de frases em memória.">
+<title>Curso Express 5 + TypeScript — Fase 1: Express básico</title>
+<style>
+:root{--bg:#0a0f1f;--panel:#12192d;--panel2:#17213a;--text:#f4f7ff;--muted:#aeb8d0;--accent:#7c9cff;--accent2:#5eead4;--border:#2b3657;--code:#090e1b;--warning:#fbbf24;--danger:#fb7185;--success:#34d399}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at top right,#7c9cff18,transparent 27%),linear-gradient(180deg,#09101f,#0a0f1f);color:var(--text);line-height:1.72}.layout{display:grid;grid-template-columns:292px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:26px 20px;background:#080d1bf7;border-right:1px solid var(--border)}.brand{font-weight:900;font-size:1.15rem}.subtitle,.small{color:var(--muted);font-size:.9rem}.phase-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.phase-link{display:block;text-align:center;text-decoration:none;padding:8px;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:.78rem}.phase-link:hover,.phase-link.active{color:var(--text);background:var(--panel2);border-color:#7c9cff80}nav{display:flex;flex-direction:column;gap:4px;margin-top:18px}.nav-title{margin:18px 8px 6px;color:var(--text);font-size:.78rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.nav-group{border:1px solid transparent;border-radius:10px}.nav-group summary{list-style:none;padding:7px 8px;color:#dce4fb;font-size:.86rem}.nav-group summary::-webkit-details-marker{display:none}.nav-group summary:before{content:"▸";display:inline-block;width:18px;color:var(--accent2)}.nav-group[open] summary:before{content:"▾"}.nav-group[open]{background:#ffffff04;border-color:#ffffff0b}.nav-links{display:flex;flex-direction:column;padding:0 4px 7px 22px}nav a{color:var(--muted);text-decoration:none;padding:5px 7px;border-radius:7px;font-size:.78rem;line-height:1.3}nav a:hover{background:var(--panel2);color:var(--text)}.nav-progress{margin-top:16px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#ffffff04}.nav-progress strong{display:block;font-size:.8rem}.nav-progress span{display:block;margin-top:4px;color:var(--muted);font-size:.75rem;line-height:1.45}main{width:min(1120px,100%);padding:42px;margin:auto}section{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:32px}.phase{position:relative;overflow:hidden}.phase:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--accent),var(--accent2))}.tag,.pill{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:4px 10px}.tag{color:var(--accent2);font-weight:800;background:#5eead410}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 22px}.pill{color:var(--muted);font-size:.82rem}h1,h2,h3,h4,h5{color:#f8fbff}h1{line-height:1.1}h2{font-size:2rem;margin:10px 0}h3{margin-top:38px;padding-top:10px;border-top:1px solid rgba(43,54,87,.7)}h4{margin-top:26px}h5{font-size:1rem;margin-bottom:6px}p,li{color:#d9def0}strong{color:#f3f6ff}code{font-family:Consolas,"Liberation Mono",monospace;background:var(--code);border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:#dce7ff}pre{overflow:auto;background:var(--code);border:1px solid var(--border);border-radius:12px;padding:18px;line-height:1.58}pre code{border:0;padding:0;background:transparent}.callout,.warning,.danger,.success{border-radius:14px;padding:16px 18px;margin:18px 0}.callout{background:#7c9cff14;border:1px solid #7c9cff40}.warning{background:#fbbf2414;border:1px solid #fbbf2440}.danger{background:#fb718514;border:1px solid #fb718540}.success{background:#34d39914;border:1px solid #34d39940}table{width:100%;border-collapse:collapse;margin:16px 0}th,td{border:1px solid var(--border);padding:10px 12px;vertical-align:top;text-align:left}th{background:var(--panel2)}details{background:#ffffff06;border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0}summary{cursor:pointer;font-weight:800}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:#ffffff05;border:1px solid var(--border);border-radius:14px;padding:16px}.flow{display:grid;gap:8px;margin:18px 0}.flow div{padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#ffffff04}.flow div:not(:last-child):after{content:"↓";display:block;text-align:center;color:var(--accent2);height:0;transform:translateY(11px)}a{color:#9eb3ff}.checklist{padding-left:22px}.route{white-space:nowrap}.kbd{font-family:Consolas,monospace;font-size:.8em;border:1px solid var(--border);border-bottom-width:2px;padding:2px 6px;border-radius:5px;background:#0b1122}.footer-note{text-align:center;color:var(--muted);margin-top:26px;font-size:.88rem}@media(max-width:900px){.layout{grid-template-columns:1fr}aside{position:static;height:auto}.grid{grid-template-columns:1fr}main{padding:18px}section{padding:22px}.phase-switch{max-width:360px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside>
+  <div class="brand">Express 5 + TypeScript</div>
+  <div class="subtitle">Fase 1 expandida — primeiros passos com uma aplicação Express.</div>
+  <div class="phase-switch">
+    <a class="phase-link" href="trilha-express5-typescript-fase0-atualizada.html">← Fase 0</a>
+    <a class="phase-link active" href="#fase1">Fase 1</a>
+  </div>
+  <nav aria-label="Mapa da Fase 1">
+    <a href="#fase1"><strong>Visão geral da fase</strong></a>
+    <div class="nav-title">Mapa do conteúdo</div>
+    <details class="nav-group" open>
+      <summary>A aplicação Express</summary>
+      <div class="nav-links">
+        <a href="#modelo-mental">1. Modelo mental</a>
+        <a href="#express-retorno">2. express()</a>
+        <a href="#aplicacao">3. Aplicação Express</a>
+        <a href="#listen">4. app.listen()</a>
+      </div>
+    </details>
+    <details class="nav-group" open>
+      <summary>Rotas e handlers</summary>
+      <div class="nav-links">
+        <a href="#rotas">5. Métodos de rota</a>
+        <a href="#callback">6. Callback de rota</a>
+        <a href="#request-response">7. Request e Response</a>
+        <a href="#ciclo">8. Ciclo da requisição</a>
+      </div>
+    </details>
+    <details class="nav-group">
+      <summary>Construindo respostas</summary>
+      <div class="nav-links">
+        <a href="#status">9. res.status()</a>
+        <a href="#send">10. res.send()</a>
+        <a href="#json">11. res.json()</a>
+        <a href="#end">12. res.end()</a>
+        <a href="#comparacao-respostas">13. Comparação</a>
+      </div>
+    </details>
+    <details class="nav-group">
+      <summary>Falhas e diagnóstico</summary>
+      <div class="nav-links">
+        <a href="#rota-inexistente">14. Rota inexistente</a>
+        <a href="#resposta-dupla">15. Resposta duplicada</a>
+        <a href="#headers-sent">16. headersSent</a>
+        <a href="#edge-cases">17. Edge cases</a>
+      </div>
+    </details>
+    <details class="nav-group">
+      <summary>Prática e consolidação</summary>
+      <div class="nav-links">
+        <a href="#health">18. Rota /health</a>
+        <a href="#exercicios">19. Exercícios</a>
+        <a href="#mini-projeto">20. API de frases</a>
+        <a href="#checklist">21. Checklist</a>
+        <a href="#referencias">22. Leituras e livros</a>
+      </div>
+    </details>
+    <div class="nav-progress">
+      <strong>O que esta fase cobre</strong>
+      <span>Da criação de <code>app</code> até uma resposta HTTP completa, incluindo rotas, handlers, 404 e erros de resposta duplicada.</span>
+    </div>
+  </nav>
+</aside>
+<main>
+<section class="phase" id="fase1">
+  <span class="tag">Fase 1</span>
+  <h1>Primeiros passos com Express 5</h1>
+  <div class="meta">
+    <span class="pill">Nível: iniciante</span>
+    <span class="pill">Express 5</span>
+    <span class="pill">TypeScript</span>
+    <span class="pill">API sem banco</span>
+    <span class="pill">Explicação detalhada</span>
+  </div>
+  <p>Nesta fase, aprenderemos o funcionamento básico de uma aplicação Express e o ciclo completo de uma requisição dentro de uma rota. O objetivo não é apenas fazer uma URL “funcionar”, mas entender o que foi criado, como o Express escolhe um handler, como a resposta é construída e por que alguns erros comuns acontecem.</p>
+  <div class="callout"><strong>Objetivo da fase:</strong> ao final, você deverá conseguir criar uma aplicação Express, iniciar o servidor, registrar rotas para diferentes métodos HTTP, ler informações básicas da requisição e encerrar corretamente cada ciclo com uma única resposta.</div>
+
+  <h3 id="modelo-mental">1 — O modelo mental desta fase</h3>
+  <p>Na Fase 0, vimos o caminho geral entre cliente e servidor. Agora aproximamos a câmera do processo Express:</p>
+  <div class="flow">
+    <div><strong>1.</strong> O módulo <code>express</code> é importado.</div>
+    <div><strong>2.</strong> <code>express()</code> cria uma aplicação.</div>
+    <div><strong>3.</strong> Métodos como <code>app.get()</code> registram rotas e handlers.</div>
+    <div><strong>4.</strong> <code>app.listen()</code> abre um servidor HTTP em uma porta.</div>
+    <div><strong>5.</strong> Uma requisição chega ao processo Node.js.</div>
+    <div><strong>6.</strong> Express procura uma rota compatível com método e caminho.</div>
+    <div><strong>7.</strong> O handler recebe <code>request</code> e <code>response</code>.</div>
+    <div><strong>8.</strong> O handler constrói e envia exatamente uma resposta.</div>
+  </div>
+  <p>Esses passos formam a base de praticamente tudo que será construído depois. Middlewares, controllers, validação, autenticação e banco de dados entram no meio desse fluxo; não substituem o fluxo.</p>
+
+  <h3 id="express-retorno">2 — O que <code>express()</code> retorna</h3>
+  <pre><code>import express from "express";
+
+const app = express();</code></pre>
+  <p>O import padrão chamado <code>express</code> é uma função exportada pelo pacote. Ao executá-la, recebemos uma <strong>aplicação Express</strong>. Esse valor costuma ser armazenado em uma variável chamada <code>app</code> por convenção.</p>
+  <p>Há um detalhe técnico interessante: a aplicação retornada é uma <strong>função JavaScript enriquecida com propriedades e métodos</strong>. Ela pode ser entregue ao servidor HTTP do Node.js como função responsável por processar requisições e também possui métodos como <code>get</code>, <code>post</code>, <code>use</code>, <code>listen</code> e <code>set</code>.</p>
+  <pre><code>import express, { type Express } from "express";
+
+const app: Express = express();
+
+console.log(typeof app); // "function"
+console.log(typeof app.get); // "function"
+console.log(typeof app.listen); // "function"</code></pre>
+  <div class="warning"><strong>Não confunda:</strong> <code>express</code> é a função/fábrica importada do pacote; <code>express()</code> é a chamada dessa função; <code>app</code> é a aplicação criada por essa chamada.</div>
+  <h4>2.1 — Precisamos escrever <code>: Express</code>?</h4>
+  <p>Normalmente, não. TypeScript infere corretamente o tipo retornado por <code>express()</code>. A anotação explícita pode ser útil para ensino ou para contratos específicos, mas adicionar tipos redundantes em todo lugar não torna o código automaticamente melhor.</p>
+  <pre><code>// Inferência suficiente na maioria dos projetos:
+export const app = express();</code></pre>
+
+  <h3 id="aplicacao">3 — O que é uma aplicação Express</h3>
+  <p>Uma aplicação Express é o objeto central de configuração do backend. Ela mantém uma pilha ordenada de funções que poderão processar requisições: middlewares, rotas e handlers de erro. Também guarda configurações da aplicação.</p>
+  <p>Nesta fase, pense em <code>app</code> como um programa configurável que sabe:</p>
+  <ul>
+    <li>quais caminhos e métodos HTTP existem;</li>
+    <li>qual função deve executar para cada correspondência;</li>
+    <li>em qual ordem as funções foram registradas;</li>
+    <li>como encaminhar uma requisição até alguma função enviar a resposta;</li>
+    <li>quais configurações gerais foram definidas.</li>
+  </ul>
+  <div class="grid">
+    <div class="card"><h4>Configurar</h4><p><code>app.use()</code>, <code>app.set()</code> e outras APIs alteram o comportamento da aplicação.</p></div>
+    <div class="card"><h4>Registrar rotas</h4><p><code>app.get()</code>, <code>app.post()</code> e equivalentes associam método, caminho e handlers.</p></div>
+    <div class="card"><h4>Processar</h4><p>Quando uma requisição chega, a aplicação percorre sua pilha na ordem de registro.</p></div>
+    <div class="card"><h4>Responder</h4><p>O objeto <code>response</code> oferece métodos para produzir a resposta HTTP.</p></div>
+  </div>
+  <h4>3.1 — <code>app.ts</code> e <code>server.ts</code></h4>
+  <p>Mesmo sendo possível criar tudo em um único arquivo, manter a configuração da aplicação separada da abertura da porta traz benefícios para testes e inicialização.</p>
+  <pre><code>// src/app.ts
+import express from "express";
+
+export const app = express();
+
+app.get("/health", (request, response) =&gt; {
+  return response.status(200).json({ status: "ok" });
+});</code></pre>
+  <pre><code>// src/server.ts
+import { app } from "./app.js";
+
+const port = 3000;
+
+app.listen(port, () =&gt; {
+  console.log(`HTTP server running on port ${port}`);
+});</code></pre>
+  <p>Testes da aplicação poderão importar <code>app</code> sem necessariamente abrir uma porta real. O arquivo <code>server.ts</code> fica responsável pelo efeito colateral de iniciar o servidor.</p>
+
+  <h3 id="listen">4 — <code>app.listen()</code></h3>
+  <p><code>app.listen()</code> cria um servidor HTTP do Node.js usando a aplicação Express como função de tratamento das requisições e começa a escutar conexões. A forma mais simples recebe uma porta e, opcionalmente, um callback executado quando o servidor começou a escutar.</p>
+  <pre><code>const server = app.listen(3000, () =&gt; {
+  console.log("Servidor disponível em http://localhost:3000");
+});</code></pre>
+  <p>O valor retornado não é a aplicação Express: é uma instância de servidor HTTP do Node.js. Guardar essa referência será importante em fases futuras para encerramento gracioso, timeouts e testes de integração.</p>
+  <pre><code>import type { Server } from "node:http";
+
+const server: Server = app.listen(3000);</code></pre>
+  <h4>4.1 — O que “escutar a porta” significa</h4>
+  <p>Significa pedir ao sistema operacional que encaminhe ao processo conexões destinadas àquela porta. A porta não é uma pasta nem uma rota. <code>3000</code> identifica o serviço no host; <code>/health</code> identifica um caminho dentro da aplicação.</p>
+  <h4>4.2 — <code>listen()</code> não registra rotas</h4>
+  <p>Registrar rotas e abrir a porta são responsabilidades diferentes. As rotas podem ser configuradas antes de iniciar o servidor. O servidor apenas torna a aplicação acessível pela rede.</p>
+  <h4>4.3 — Erros de inicialização</h4>
+  <p>Se a porta já estiver ocupada, for inválida ou o processo não tiver permissão, o servidor pode emitir um evento de erro. O callback de <code>listen()</code> não é um tratador geral desses erros.</p>
+  <pre><code>const server = app.listen(3000, () =&gt; {
+  console.log("Servidor iniciado");
+});
+
+server.on("error", (error) =&gt; {
+  console.error("Falha ao iniciar o servidor", error);
+});</code></pre>
+
+  <h3 id="rotas">5 — <code>app.get()</code>, <code>app.post()</code> e outros métodos</h3>
+  <p>Os métodos de rota registram funções para combinações específicas de método HTTP e caminho. A forma geral é:</p>
+  <pre><code>app.METODO(CAMINHO, HANDLER);</code></pre>
+  <pre><code>app.get("/quotes", listQuotes);
+app.post("/quotes", createQuote);
+app.put("/quotes/:quoteId", replaceQuote);
+app.patch("/quotes/:quoteId", updateQuote);
+app.delete("/quotes/:quoteId", deleteQuote);</code></pre>
+  <table>
+    <thead><tr><th>Método Express</th><th>Método HTTP</th><th>Intenção comum</th></tr></thead>
+    <tbody>
+      <tr><td><code>app.get()</code></td><td>GET</td><td>Consultar ou listar recursos sem pedir alteração do estado.</td></tr>
+      <tr><td><code>app.post()</code></td><td>POST</td><td>Criar recurso ou disparar uma operação que não se encaixa em simples substituição.</td></tr>
+      <tr><td><code>app.put()</code></td><td>PUT</td><td>Substituir a representação de um recurso.</td></tr>
+      <tr><td><code>app.patch()</code></td><td>PATCH</td><td>Aplicar alteração parcial.</td></tr>
+      <tr><td><code>app.delete()</code></td><td>DELETE</td><td>Remover um recurso.</td></tr>
+      <tr><td><code>app.options()</code></td><td>OPTIONS</td><td>Descrever opções de comunicação; aparece, por exemplo, em CORS.</td></tr>
+      <tr><td><code>app.head()</code></td><td>HEAD</td><td>Obter metadados equivalentes a GET, sem body de resposta.</td></tr>
+    </tbody>
+  </table>
+  <div class="warning"><strong>Express 5:</strong> use <code>app.delete()</code>. O antigo alias <code>app.del()</code> foi removido.</div>
+  <h4>5.1 — Método e path formam a identidade da rota</h4>
+  <p><code>GET /quotes</code> e <code>POST /quotes</code> podem compartilhar o caminho e ainda são rotas diferentes. Uma requisição só combina com uma rota quando as regras de método e caminho forem satisfeitas.</p>
+  <h4>5.2 — A ordem de registro importa</h4>
+  <p>Express percorre as camadas na ordem em que foram registradas. Rotas genéricas colocadas cedo demais podem interceptar requisições que deveriam alcançar rotas mais específicas.</p>
+  <pre><code>// Mais específico primeiro:
+app.get("/quotes/featured", featuredQuote);
+app.get("/quotes/:quoteId", findQuoteById);</code></pre>
+  <h4>5.3 — O caminho não é uma URL completa</h4>
+  <p>Em <code>app.get("/health", handler)</code>, <code>"/health"</code> é o path da aplicação. Protocolo, hostname e porta são tratados fora dessa string.</p>
+
+  <h3 id="callback">6 — Callback de rota ou route handler</h3>
+  <p>O callback de rota é a função chamada quando a requisição corresponde à rota. Também é comum chamá-lo de <em>route handler</em> ou manipulador de rota.</p>
+  <pre><code>app.get("/health", (request, response) =&gt; {
+  return response.status(200).json({ status: "ok" });
+});</code></pre>
+  <p>Express fornece os argumentos. Você não chama esse handler manualmente ao atender uma requisição. Os dois primeiros são o objeto de requisição e o objeto de resposta; um terceiro argumento chamado <code>next</code> será estudado profundamente na fase de middlewares.</p>
+  <h4>6.1 — Os nomes são convencionais, não obrigatórios</h4>
+  <pre><code>app.get("/a", (req, res) =&gt; res.send("A"));
+app.get("/b", (request, response) =&gt; response.send("B"));</code></pre>
+  <p>Os nomes não alteram o comportamento. <code>req</code>/<code>res</code> são abreviações comuns; <code>request</code>/<code>response</code> podem ser mais didáticos.</p>
+  <h4>6.2 — O que o <code>return</code> faz</h4>
+  <p>Na maioria dos handlers, <code>response.json()</code> já envia e encerra a resposta mesmo sem <code>return</code>. O <code>return</code> é útil para encerrar a execução da função e impedir que o código abaixo continue.</p>
+  <pre><code>app.get("/example", (request, response) =&gt; {
+  const allowed = false;
+
+  if (!allowed) {
+    return response.status(403).json({ error: "Forbidden" });
+  }
+
+  // Não executa quando allowed é false.
+  return response.json({ data: "secret" });
+});</code></pre>
+  <div class="danger"><strong>Erro conceitual comum:</strong> “retornar a resposta” e “enviar a resposta HTTP” não são a mesma coisa. Quem envia é <code>res.send()</code>, <code>res.json()</code>, <code>res.end()</code> ou método equivalente. O <code>return</code> controla o fluxo JavaScript.</div>
+  <h4>6.3 — Handlers assíncronos no Express 5</h4>
+  <p>Express 5 encaminha automaticamente para o tratamento de erros uma Promise rejeitada ou um erro lançado por um handler assíncrono. O tratamento completo será estudado depois, mas desde já evite iniciar Promises sem <code>await</code> ou sem retorno.</p>
+  <pre><code>app.get("/async-example", async (request, response) =&gt; {
+  const value = await Promise.resolve("ok");
+  return response.json({ value });
+});</code></pre>
+
+  <h3 id="request-response">7 — Request e Response</h3>
+  <p>Para cada requisição, Express fornece objetos diferentes. Eles existem somente dentro daquele ciclo e representam lados opostos da comunicação.</p>
+  <div class="grid">
+    <div class="card"><h4><code>request</code></h4><p>Representa o que chegou do cliente: método, path, headers, parâmetros, query string, body e dados derivados.</p></div>
+    <div class="card"><h4><code>response</code></h4><p>Representa a resposta que será construída: status, headers e body, além do estado de envio.</p></div>
+  </div>
+  <p>Os objetos do Express estendem os objetos HTTP nativos do Node.js. Isso significa que o Express adiciona conveniências como <code>request.params</code> e <code>response.json()</code> sem abandonar a base de <code>IncomingMessage</code> e <code>ServerResponse</code>.</p>
+  <h4>7.1 — Informações básicas da requisição</h4>
+  <pre><code>app.get("/debug/:itemId", (request, response) =&gt; {
+  return response.json({
+    method: request.method,
+    path: request.path,
+    originalUrl: request.originalUrl,
+    itemId: request.params.itemId,
+    query: request.query,
+    userAgent: request.get("user-agent"),
+  });
+});</code></pre>
+  <h4>7.2 — Tipando parâmetros de rota</h4>
+  <pre><code>import type { Request, Response } from "express";
+
+type QuoteParams = {
+  quoteId: string;
+};
+
+function findQuoteById(
+  request: Request&lt;QuoteParams&gt;,
+  response: Response,
+) {
+  const { quoteId } = request.params;
+  return response.json({ quoteId });
+}</code></pre>
+  <p>Parâmetros de URL chegam como texto. Mesmo quando <code>quoteId</code> parece um número, ele começa como <code>string</code> e precisa ser convertido e validado.</p>
+  <h4>7.3 — TypeScript não valida a rede</h4>
+  <p>Um tipo como <code>Request&lt;QuoteParams&gt;</code> ajuda o compilador a entender seu código. Ele não impede um cliente de enviar um identificador vazio, malformado ou inesperado. Validação em tempo de execução será tratada com mais profundidade depois.</p>
+
+  <h3 id="ciclo">8 — Ciclo completo de uma requisição dentro de uma rota</h3>
+  <p>Considere <code>GET /health</code>:</p>
+  <ol>
+    <li>O cliente abre ou reutiliza uma conexão e envia a requisição.</li>
+    <li>O servidor HTTP do Node.js recebe a mensagem.</li>
+    <li>A aplicação Express recebe os objetos nativos de requisição e resposta.</li>
+    <li>Express percorre sua pilha de camadas na ordem de registro.</li>
+    <li>Encontra uma rota GET cujo path corresponde a <code>/health</code>.</li>
+    <li>Executa o handler e fornece <code>request</code> e <code>response</code>.</li>
+    <li>O handler define status e body.</li>
+    <li><code>response.json()</code> serializa o objeto, prepara headers e finaliza a resposta.</li>
+    <li>O Node.js transmite os bytes ao cliente.</li>
+    <li>Aquela instância de <code>request</code>/<code>response</code> deixa de ser útil após o encerramento.</li>
+  </ol>
+  <div class="warning">Um handler que não envia resposta, não encaminha a execução e não encerra a conexão deixa o cliente esperando até algum timeout ou falha.</div>
+
+  <h3 id="status">9 — <code>res.status()</code></h3>
+  <p><code>response.status(codigo)</code> define o código de status da resposta e devolve o próprio objeto <code>response</code>. Por isso, pode ser encadeado com outro método.</p>
+  <pre><code>return response.status(201).json({
+  id: "quote-1",
+  text: "Simplicidade exige trabalho.",
+});</code></pre>
+  <p><code>status()</code> sozinho não envia a resposta. Este código deixa a requisição pendurada:</p>
+  <pre><code>app.get("/broken", (request, response) =&gt; {
+  response.status(204);
+  // Nenhum método encerrou a resposta.
+});</code></pre>
+  <p>O status padrão costuma ser <code>200</code> se nenhum outro for definido antes do envio. Mesmo assim, definir explicitamente statuses importantes torna a intenção mais clara.</p>
+  <h4>9.1 — O encadeamento não cria outra resposta</h4>
+  <p><code>status()</code> retorna <code>response</code>; depois, <code>json()</code> atua sobre o mesmo objeto. O encadeamento apenas torna a expressão compacta.</p>
+
+  <h3 id="send">10 — <code>res.send()</code></h3>
+  <p><code>response.send(body)</code> envia uma resposta e encerra o ciclo. Ele aceita diferentes tipos de conteúdo e escolhe comportamentos de serialização e <code>Content-Type</code> conforme o valor.</p>
+  <pre><code>app.get("/text", (request, response) =&gt; {
+  return response.status(200).send("Hello, Express!");
+});</code></pre>
+  <pre><code>app.get("/html", (request, response) =&gt; {
+  return response.send("&lt;strong&gt;Hello&lt;/strong&gt;");
+});</code></pre>
+  <p>Para APIs JSON, prefira <code>response.json()</code> quando a intenção é explicitamente enviar JSON. Isso comunica melhor o contrato ao leitor.</p>
+  <div class="warning"><strong>Express 5:</strong> assinaturas antigas como <code>res.send(body, status)</code> e <code>res.send(status)</code> foram removidas. Use <code>res.status(status).send(body)</code> ou <code>res.sendStatus(status)</code>.</div>
+
+  <h3 id="json">11 — <code>res.json()</code></h3>
+  <p><code>response.json(value)</code> serializa um valor JavaScript como JSON, define o tipo de conteúdo apropriado e encerra a resposta.</p>
+  <pre><code>type HealthResponse = {
+  status: "ok";
+};
+
+app.get("/health", (request, response) =&gt; {
+  const body: HealthResponse = { status: "ok" };
+  return response.status(200).json(body);
+});</code></pre>
+  <h4>11.1 — Serializar não é apenas “mostrar o objeto”</h4>
+  <p>Objetos JavaScript existem na memória do processo. Para atravessar a rede, precisam virar bytes em um formato acordado. JSON é uma representação textual. Algumas estruturas não têm representação JSON direta ou se comportam de modo especial.</p>
+  <table>
+    <thead><tr><th>Valor JavaScript</th><th>Resultado ou cuidado</th></tr></thead>
+    <tbody>
+      <tr><td><code>undefined</code> em propriedade</td><td>A propriedade pode ser omitida na serialização.</td></tr>
+      <tr><td><code>Date</code></td><td>Normalmente vira string ISO por meio de <code>toJSON()</code>.</td></tr>
+      <tr><td><code>BigInt</code></td><td><code>JSON.stringify()</code> lança erro sem conversão personalizada.</td></tr>
+      <tr><td>Referência circular</td><td>A serialização lança erro.</td></tr>
+      <tr><td>Função ou <code>Symbol</code></td><td>Não possui representação JSON comum e pode ser omitido.</td></tr>
+    </tbody>
+  </table>
+  <h4>11.2 — Tipando o body da resposta</h4>
+  <pre><code>import type { Request, Response } from "express";
+
+type ErrorBody = {
+  error: string;
+};
+
+function notFound(
+  request: Request,
+  response: Response&lt;ErrorBody&gt;,
+) {
+  return response.status(404).json({
+    error: "Route not found",
+  });
+}</code></pre>
+  <p>Essa tipagem ajuda dentro do código, mas o contrato externo ainda precisa ser testado e documentado.</p>
+
+  <h3 id="end">12 — <code>res.end()</code></h3>
+  <p><code>response.end()</code> vem da resposta HTTP do Node.js e encerra o envio. É útil quando você não precisa que o Express faça uma serialização de alto nível.</p>
+  <pre><code>app.get("/empty", (request, response) =&gt; {
+  response.status(204);
+  return response.end();
+});</code></pre>
+  <p>Para a maioria das respostas de API com body, <code>json()</code> ou <code>send()</code> são mais expressivos. <code>end()</code> não transforma automaticamente um objeto em JSON.</p>
+  <pre><code>// Evite imaginar que isto envia JSON:
+response.end({ status: "ok" }); // tipo e uso incorretos</code></pre>
+  <h4>12.1 — Status 204</h4>
+  <p><code>204 No Content</code> significa que não há conteúdo de resposta. Não envie um objeto JSON junto com 204. Use <code>end()</code> ou deixe o método apropriado finalizar sem body.</p>
+
+  <h3 id="comparacao-respostas">13 — Comparação dos métodos de resposta</h3>
+  <table>
+    <thead><tr><th>Método</th><th>Envia/encerra?</th><th>Uso principal</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td><code>res.status()</code></td><td>Não</td><td>Definir o status.</td><td>Deve ser seguido por um método de envio.</td></tr>
+      <tr><td><code>res.send()</code></td><td>Sim</td><td>Enviar texto, HTML, Buffer ou outros valores aceitos.</td><td>Para JSON explícito, <code>json()</code> comunica melhor.</td></tr>
+      <tr><td><code>res.json()</code></td><td>Sim</td><td>Enviar JSON.</td><td>Serializa o valor e define Content-Type.</td></tr>
+      <tr><td><code>res.end()</code></td><td>Sim</td><td>Encerrar sem serialização de alto nível.</td><td>Útil para respostas vazias.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="rota-inexistente">14 — Rota inexistente</h3>
+  <p>Quando nenhuma rota ou middleware encerra a requisição, Express chega ao fim da pilha. O comportamento padrão produz uma resposta 404. Em uma API, normalmente queremos padronizar esse resultado como JSON.</p>
+  <h4>14.1 — Handler final de 404</h4>
+  <pre><code>app.use((request, response) =&gt; {
+  return response.status(404).json({
+    error: "Route not found",
+    method: request.method,
+    path: request.originalUrl,
+  });
+});</code></pre>
+  <p>Esse handler deve ser registrado <strong>depois</strong> das rotas existentes. Ele não precisa conhecer todos os paths: se a execução chegou até ele, nenhuma camada anterior respondeu.</p>
+  <h4>14.2 — Alternativa com rota curinga no Express 5</h4>
+  <p>Express 5 usa uma versão nova da sintaxe de paths. Um curinga precisa ter nome. Para capturar também a raiz, use chaves:</p>
+  <pre><code>app.all("/{*unmatchedPath}", (request, response) =&gt; {
+  return response.status(404).json({ error: "Route not found" });
+});</code></pre>
+  <div class="warning"><code>app.all("*")</code> e padrões antigos semelhantes podem falhar no Express 5 por causa das mudanças de <em>path-to-regexp</em>. Um <code>app.use()</code> final sem path costuma ser a forma mais simples para o fallback global.</div>
+  <h4>14.3 — Recurso inexistente não é a mesma coisa que rota inexistente</h4>
+  <pre><code>GET /quotes/abc        → a rota existe; talvez a frase não exista.
+GET /unknown-endpoint  → nenhuma rota foi definida.</code></pre>
+  <p>Ambos podem resultar em 404, mas representam problemas diferentes e podem ter mensagens/códigos internos diferentes.</p>
+
+  <h3 id="resposta-dupla">15 — Resposta enviada mais de uma vez</h3>
+  <p>Uma requisição HTTP possui uma resposta. Depois que os headers e o body começaram a ser enviados, não podemos voltar no tempo e montar uma segunda resposta independente para a mesma requisição.</p>
+  <pre><code>app.get("/broken", (request, response) =&gt; {
+  response.status(400).json({ error: "First response" });
+  response.status(200).json({ data: "Second response" });
+});</code></pre>
+  <p>Esse código costuma gerar erro semelhante a <code>ERR_HTTP_HEADERS_SENT</code>, pois a segunda tentativa tenta alterar headers após o envio.</p>
+  <h4>15.1 — O caso mais comum: esquecer <code>return</code></h4>
+  <pre><code>app.get("/quotes/:quoteId", (request, response) =&gt; {
+  const quote = undefined;
+
+  if (!quote) {
+    response.status(404).json({ error: "Quote not found" });
+  }
+
+  // A função continua e tenta responder novamente.
+  return response.status(200).json({ quote });
+});</code></pre>
+  <pre><code>// Corrigido:
+if (!quote) {
+  return response.status(404).json({ error: "Quote not found" });
+}
+
+return response.status(200).json({ quote });</code></pre>
+  <h4>15.2 — Resposta duplicada em callbacks</h4>
+  <p>Também pode acontecer quando duas operações assíncronas, eventos ou callbacks diferentes tentam responder. Nesses casos, apenas adicionar <code>return</code> em um ponto pode não resolver; é preciso controlar qual caminho possui a responsabilidade de finalizar a resposta.</p>
+
+  <h3 id="headers-sent">16 — <code>response.headersSent</code></h3>
+  <p><code>response.headersSent</code> é um booleano que informa se os headers da resposta já foram enviados ao cliente. Como os headers precisam preceder o body, esse valor indica que a resposta já começou a ser transmitida.</p>
+  <pre><code>app.get("/headers", (request, response) =&gt; {
+  console.log(response.headersSent); // false
+
+  response.json({ status: "ok" });
+
+  console.log(response.headersSent); // true
+});</code></pre>
+  <h4>16.1 — Para que serve</h4>
+  <p>É útil principalmente em tratamento de erros, diagnóstico e integrações onde uma falha pode ocorrer depois que a resposta começou. Um handler de erro pode verificar o estado para decidir se ainda consegue produzir uma resposta normal ou se deve delegar/encerrar de outra maneira.</p>
+  <h4>16.2 — Para que não serve</h4>
+  <p>Não use <code>headersSent</code> como remendo para um fluxo confuso:</p>
+  <pre><code>// Evite como estratégia normal:
+if (!response.headersSent) {
+  response.json({ data: "maybe" });
+}</code></pre>
+  <p>O ideal é estruturar o handler para que exatamente um caminho possua responsabilidade pela resposta. <code>headersSent</code> é uma informação de estado, não um substituto para controle de fluxo.</p>
+  <h4>16.3 — Headers enviados não significa que o cliente recebeu tudo</h4>
+  <p>Significa que o envio dos headers começou. A conexão ainda pode falhar durante o body, o cliente pode desconectar e streams podem continuar ativos.</p>
+
+  <h3 id="edge-cases">17 — Edge cases desta fase</h3>
+  <p>Edge cases são situações nos limites ou fora do caminho mais comum. Eles existem porque entradas, rede, ordem de execução e estado do processo não obedecem apenas ao cenário ideal imaginado durante a primeira implementação.</p>
+  <details><summary>17.1 — Porta já está em uso</summary><p>Outro processo pode estar escutando a mesma porta. O servidor emite erro, não inicia normalmente e a aplicação deve registrar uma mensagem útil em vez de parecer “travada”.</p></details>
+  <details><summary>17.2 — Método correto, caminho incorreto</summary><p><code>GET /quote</code> não combina com <code>GET /quotes</code>. O fallback deve responder 404 de forma consistente.</p></details>
+  <details><summary>17.3 — Caminho correto, método incorreto</summary><p><code>POST /health</code> não combina com uma rota registrada apenas como GET. Nesta fase, uma resposta 404 é aceitável; posteriormente poderemos distinguir 404 de 405 conforme o contrato da API.</p></details>
+  <details><summary>17.4 — Handler não responde</summary><p>Um caminho condicional pode terminar sem <code>send</code>, <code>json</code>, <code>end</code> ou <code>next</code>. O cliente fica aguardando.</p></details>
+  <details><summary>17.5 — Resposta após um timeout ou callback tardio</summary><p>O handler pode ter respondido por um caminho e um callback assíncrono antigo tentar responder depois, causando envio duplicado.</p></details>
+  <details><summary>17.6 — Identificador numérico inválido</summary><p><code>Number("abc")</code> vira <code>NaN</code>; <code>parseInt("12abc")</code> pode virar <code>12</code>. A regra de parsing precisa ser explícita.</p></details>
+  <details><summary>17.7 — Coleção vazia</summary><p><code>GET /quotes</code> normalmente deve responder <code>200</code> com <code>[]</code>, não 404. A coleção existe, apenas não possui itens.</p></details>
+  <details><summary>17.8 — JSON contém valor não serializável</summary><p><code>BigInt</code> ou referência circular pode fazer <code>res.json()</code> lançar erro antes de concluir a resposta.</p></details>
+  <details><summary>17.9 — Status 204 com body</summary><p>204 representa ausência de conteúdo. O contrato deve escolher 204 sem body ou outro status com JSON, não misturar as duas ideias.</p></details>
+  <details><summary>17.10 — Cliente desconecta cedo</summary><p>O servidor pode estar processando quando a conexão fecha. Isso se torna importante para operações caras e efeitos persistentes.</p></details>
+  <h4>17.11 — Como pensar em edge cases</h4>
+  <ol>
+    <li>Liste todas as entradas externas.</li>
+    <li>Pergunte o que acontece quando cada entrada está ausente, vazia, inválida ou extrema.</li>
+    <li>Desenhe os caminhos condicionais do handler.</li>
+    <li>Confirme que cada caminho termina em exatamente uma resposta ou encaminhamento.</li>
+    <li>Transforme casos importantes em testes nas fases apropriadas.</li>
+  </ol>
+
+  <h3 id="health">18 — Exemplo completo: rota <code>/health</code></h3>
+  <pre><code>import express from "express";
+
+export const app = express();
+
+app.get("/health", (request, response) =&gt; {
+  return response.status(200).json({
+    status: "ok",
+  });
+});</code></pre>
+  <h4>18.1 — O que cada parte significa</h4>
+  <table>
+    <thead><tr><th>Trecho</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td><code>import express from "express"</code></td><td>Importa a função principal do pacote Express.</td></tr>
+      <tr><td><code>express()</code></td><td>Cria uma nova aplicação Express.</td></tr>
+      <tr><td><code>export const app</code></td><td>Armazena e exporta a aplicação para que outros módulos, como <code>server.ts</code> e testes, possam importá-la.</td></tr>
+      <tr><td><code>app.get</code></td><td>Registra uma rota que responde ao método HTTP GET.</td></tr>
+      <tr><td><code>"/health"</code></td><td>Define o caminho da rota.</td></tr>
+      <tr><td><code>request</code></td><td>Contém informações que chegaram do cliente.</td></tr>
+      <tr><td><code>response</code></td><td>É usado para construir e enviar a resposta.</td></tr>
+      <tr><td><code>status(200)</code></td><td>Define o status HTTP como sucesso.</td></tr>
+      <tr><td><code>json(...)</code></td><td>Serializa o objeto em JSON, define headers apropriados e encerra a resposta.</td></tr>
+      <tr><td><code>return</code></td><td>Encerra a execução do handler naquele ponto; não é o mecanismo que envia os bytes.</td></tr>
+    </tbody>
+  </table>
+  <h4>18.2 — Resposta observável</h4>
+  <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{"status":"ok"}</code></pre>
+  <p>Outros headers podem ser adicionados automaticamente pelo Express, Node.js, proxies ou configurações da aplicação.</p>
+
+  <h3 id="exercicios">19 — Exercícios orientados</h3>
+  <details open><summary>Exercício 1 — Criar três rotas</summary>
+    <p>Crie as rotas abaixo:</p>
+    <ul>
+      <li><code>GET /</code>: retorna uma mensagem apresentando a API.</li>
+      <li><code>GET /health</code>: retorna <code>{ "status": "ok" }</code>.</li>
+      <li><code>GET /version</code>: retorna nome e versão da API.</li>
+    </ul>
+    <p><strong>Restrições:</strong> use JSON nas três respostas; defina os statuses explicitamente; cada handler deve possuir somente um caminho de resposta.</p>
+    <p><strong>Perguntas de revisão:</strong> Qual método registra cada rota? Qual parte é o path? Qual método efetivamente encerra a resposta? O que acontece com <code>POST /version</code>?</p>
+  </details>
+  <details><summary>Exercício 2 — Comparar métodos de resposta</summary>
+    <p>Crie <code>/response/text</code>, <code>/response/json</code> e <code>/response/empty</code>. Use respectivamente <code>send()</code>, <code>json()</code> e <code>end()</code>. Inspecione status, <code>Content-Type</code> e body com um cliente HTTP.</p>
+  </details>
+  <details><summary>Exercício 3 — Encontrar o envio duplicado</summary>
+    <p>Crie intencionalmente um handler com um <code>if</code> que responde 400, mas continua até uma resposta 200. Observe o erro, explique por que ocorre e corrija usando controle de fluxo.</p>
+  </details>
+  <details><summary>Exercício 4 — Fallback 404</summary>
+    <p>Adicione um handler final que responda JSON com status 404, método e URL original. Confirme que ele não impede as rotas válidas de funcionar.</p>
+  </details>
+  <details><summary>Exercício 5 — Inspeção da requisição</summary>
+    <p>Crie <code>GET /inspect/:value</code> e devolva método, path, URL original, parâmetro <code>value</code>, query string e <code>user-agent</code>.</p>
+  </details>
+  <h4>19.1 — Critérios de qualidade</h4>
+  <ul>
+    <li>O servidor inicia sem warnings inesperados.</li>
+    <li>Cada rota usa o método HTTP solicitado.</li>
+    <li>Cada caminho lógico encerra exatamente uma resposta.</li>
+    <li>Statuses e formato do body combinam com a intenção.</li>
+    <li>Rota inexistente responde 404 e não fica pendurada.</li>
+    <li>O código explica sua intenção sem abstrações prematuras.</li>
+  </ul>
+
+  <h3 id="mini-projeto">20 — Mini projeto: API de frases em memória</h3>
+  <p>O projeto consolidará criação da aplicação, rotas, métodos HTTP, parâmetros, statuses e respostas JSON. Os dados existirão apenas em memória; ao reiniciar o processo, voltarão ao estado inicial.</p>
+  <h4>20.1 — Endpoints</h4>
+  <table>
+    <thead><tr><th>Método</th><th>Endpoint</th><th>Responsabilidade</th><th>Status de sucesso sugerido</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td class="route"><code>/quotes</code></td><td>Listar todas as frases.</td><td>200</td></tr>
+      <tr><td>GET</td><td class="route"><code>/quotes/:quoteId</code></td><td>Buscar uma frase.</td><td>200</td></tr>
+      <tr><td>POST</td><td class="route"><code>/quotes</code></td><td>Criar uma frase.</td><td>201</td></tr>
+      <tr><td>PUT</td><td class="route"><code>/quotes/:quoteId</code></td><td>Substituir todos os campos editáveis.</td><td>200</td></tr>
+      <tr><td>PATCH</td><td class="route"><code>/quotes/:quoteId</code></td><td>Alterar parte dos campos.</td><td>200</td></tr>
+      <tr><td>DELETE</td><td class="route"><code>/quotes/:quoteId</code></td><td>Remover uma frase.</td><td>204 ou 200, conforme contrato escolhido</td></tr>
+    </tbody>
+  </table>
+  <h4>20.2 — Modelo inicial</h4>
+  <pre><code>type Quote = {
+  id: string;
+  text: string;
+  author: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type CreateQuoteInput = {
+  text: string;
+  author?: string | null;
+};
+
+type ReplaceQuoteInput = {
+  text: string;
+  author: string | null;
+};
+
+type UpdateQuoteInput = {
+  text?: string;
+  author?: string | null;
+};</code></pre>
+  <p>Mesmo antes de validação formal, separar os tipos ajuda a perceber que o formato armazenado não é idêntico ao formato enviado na criação ou atualização.</p>
+  <h4>20.3 — Armazenamento em memória</h4>
+  <pre><code>const quotes: Quote[] = [
+  {
+    id: "quote-1",
+    text: "Clareza antes de abstração.",
+    author: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];</code></pre>
+  <h4>20.4 — Regras mínimas</h4>
+  <ul>
+    <li><code>text</code> é obrigatório e não pode ser vazio após <code>trim()</code>.</li>
+    <li><code>author</code> pode ser texto ou <code>null</code>.</li>
+    <li>O servidor gera <code>id</code>, <code>createdAt</code> e <code>updatedAt</code>.</li>
+    <li>IDs não podem ser reutilizados enquanto o processo estiver em execução.</li>
+    <li>Buscar, atualizar ou remover ID inexistente resulta em 404.</li>
+    <li>Entrada inválida resulta em 400 nesta etapa do curso.</li>
+    <li><code>PUT</code> exige todos os campos editáveis; <code>PATCH</code> aceita subconjunto.</li>
+  </ul>
+  <h4>20.5 — Contratos sugeridos</h4>
+  <pre><code>POST /quotes
+Content-Type: application/json
+
+{
+  "text": "Simplicidade exige trabalho.",
+  "author": "Desconhecido"
+}</code></pre>
+  <pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "data": {
+    "id": "quote-2",
+    "text": "Simplicidade exige trabalho.",
+    "author": "Desconhecido",
+    "createdAt": "2026-07-10T21:00:00.000Z",
+    "updatedAt": "2026-07-10T21:00:00.000Z"
+  }
+}</code></pre>
+  <h4>20.6 — Estrutura inicial sem camadas prematuras</h4>
+  <pre><code>src/
+├── app.ts
+└── server.ts</code></pre>
+  <p>É aceitável começar com as rotas em <code>app.ts</code> para observar repetição e responsabilidades reais. Depois, poderemos extrair router, controller e service com uma razão concreta.</p>
+  <h4>20.7 — Sequência de implementação</h4>
+  <ol>
+    <li>Configure <code>express.json()</code> para ler bodies JSON.</li>
+    <li>Implemente <code>GET /quotes</code>.</li>
+    <li>Implemente busca por ID e parsing do parâmetro.</li>
+    <li>Implemente criação e geração de ID.</li>
+    <li>Implemente PUT e defina substituição completa.</li>
+    <li>Implemente PATCH e defina atualização parcial.</li>
+    <li>Implemente DELETE e escolha entre 200 com body ou 204 sem body.</li>
+    <li>Adicione fallback 404 por último.</li>
+    <li>Teste manualmente todos os caminhos felizes e edge cases.</li>
+  </ol>
+  <h4>20.8 — Matriz de casos para testar</h4>
+  <table>
+    <thead><tr><th>Caso</th><th>Resultado esperado</th></tr></thead>
+    <tbody>
+      <tr><td>Listar com coleção vazia</td><td>200 e <code>[]</code>.</td></tr>
+      <tr><td>Buscar ID existente</td><td>200 e recurso.</td></tr>
+      <tr><td>Buscar ID inexistente</td><td>404 e erro JSON.</td></tr>
+      <tr><td>Criar texto válido</td><td>201 e recurso criado.</td></tr>
+      <tr><td>Criar texto vazio</td><td>400.</td></tr>
+      <tr><td>PUT sem campo obrigatório</td><td>400.</td></tr>
+      <tr><td>PATCH sem nenhum campo</td><td>Defina e documente: 400 ou no-op 200; prefira uma regra explícita.</td></tr>
+      <tr><td>DELETE existente</td><td>204 sem body ou 200 com representação, conforme contrato.</td></tr>
+      <tr><td>DELETE repetido</td><td>404 na segunda tentativa.</td></tr>
+      <tr><td>Endpoint desconhecido</td><td>404 padronizado.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><strong>Limite intencional:</strong> nesta fase, a API pode manter lógica diretamente nos handlers. A meta é dominar o ciclo HTTP. Separaremos camadas quando houver responsabilidades suficientes para justificar a mudança.</div>
+
+  <h3 id="checklist">21 — Checklist de domínio</h3>
+  <ul class="checklist">
+    <li>Consigo explicar a diferença entre <code>express</code>, <code>express()</code> e <code>app</code>.</li>
+    <li>Sei que a aplicação Express é uma função enriquecida e pode atender requisições HTTP.</li>
+    <li>Consigo separar configuração em <code>app.ts</code> e inicialização em <code>server.ts</code>.</li>
+    <li>Sei o que <code>app.listen()</code> faz e o que retorna.</li>
+    <li>Entendo que método e path identificam uma rota.</li>
+    <li>Consigo criar handlers para GET, POST, PUT, PATCH e DELETE.</li>
+    <li>Sei diferenciar <code>request</code> de <code>response</code>.</li>
+    <li>Entendo que parâmetros de rota chegam como strings.</li>
+    <li>Sei que <code>res.status()</code> não encerra a resposta.</li>
+    <li>Consigo escolher entre <code>send()</code>, <code>json()</code> e <code>end()</code>.</li>
+    <li>Sei implementar um fallback 404 depois das rotas.</li>
+    <li>Consigo explicar por que uma resposta duplicada gera erro.</li>
+    <li>Entendo o que <code>headersSent</code> informa e por que não deve remendar fluxo ruim.</li>
+    <li>Consigo revisar todos os caminhos de um handler e garantir uma única resposta.</li>
+    <li>Consigo implementar a API de frases em memória sem copiar uma solução pronta.</li>
+  </ul>
+
+  <h3 id="referencias">22 — Leituras externas e livros</h3>
+  <h4>22.1 — Documentação oficial recomendada</h4>
+  <ul>
+    <li><a href="https://expressjs.com/en/5x/api/express/" target="_blank" rel="noreferrer">Express 5 — objeto principal <code>express</code></a>.</li>
+    <li><a href="https://expressjs.com/en/5x/api/application/" target="_blank" rel="noreferrer">Express 5 — objeto Application</a>.</li>
+    <li><a href="https://expressjs.com/en/5x/api/request/" target="_blank" rel="noreferrer">Express 5 — objeto Request</a>.</li>
+    <li><a href="https://expressjs.com/en/5x/api/response/" target="_blank" rel="noreferrer">Express 5 — objeto Response</a>.</li>
+    <li><a href="https://expressjs.com/en/guide/routing.html" target="_blank" rel="noreferrer">Express — guia de roteamento</a>.</li>
+    <li><a href="https://expressjs.com/en/starter/hello-world.html" target="_blank" rel="noreferrer">Express — Hello World</a>.</li>
+    <li><a href="https://expressjs.com/en/guide/migrating-5.html" target="_blank" rel="noreferrer">Express — migração para a versão 5</a>.</li>
+    <li><a href="https://nodejs.org/api/http.html" target="_blank" rel="noreferrer">Node.js — módulo HTTP</a>.</li>
+    <li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" target="_blank" rel="noreferrer">RFC 9110 — HTTP Semantics</a>.</li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods" target="_blank" rel="noreferrer">MDN — métodos HTTP</a>.</li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" target="_blank" rel="noreferrer">MDN — códigos de status HTTP</a>.</li>
+  </ul>
+  <h4>22.2 — Ordem de leitura sugerida</h4>
+  <ol>
+    <li>Hello World do Express.</li>
+    <li>Guia de roteamento.</li>
+    <li>Application API: <code>app.listen</code> e métodos de rota.</li>
+    <li>Request API: visão geral, <code>params</code>, <code>query</code> e <code>get</code>.</li>
+    <li>Response API: <code>status</code>, <code>send</code>, <code>json</code>, <code>end</code> e <code>headersSent</code>.</li>
+    <li>Guia de migração do Express 5 para reconhecer exemplos antigos.</li>
+  </ol>
+  <h4>22.3 — Livros recomendados</h4>
+  <ul>
+    <li><strong>Web Development with Node and Express</strong>, Ethan Brown — visão progressiva do ecossistema; confira a edição e adapte exemplos antigos ao Express 5.</li>
+    <li><strong>Node.js Design Patterns</strong>, Mario Casciaro e Luciano Mammino — excelente para aprofundar Node.js, assíncrono e arquitetura após dominar as primeiras fases.</li>
+    <li><strong>HTTP: The Definitive Guide</strong>, David Gourley e Brian Totty — antigo em partes específicas, mas ainda valioso para construir modelo mental de HTTP.</li>
+    <li><strong>API Design Patterns</strong>, JJ Geewax — mais útil nas fases de REST, contratos e evolução de APIs.</li>
+    <li><strong>Designing Data-Intensive Applications</strong>, Martin Kleppmann — leitura posterior para dados, consistência e sistemas distribuídos.</li>
+  </ul>
+  <div class="success"><strong>Critério para avançar:</strong> não basta memorizar os nomes dos métodos. Avance quando conseguir narrar o ciclo de uma requisição, identificar quem encerra a resposta, prever os statuses dos casos principais e localizar caminhos que podem responder duas vezes ou não responder.</div>
+</section>
+<p class="footer-note">Curso Aprendendo Express com TypeScript — Fase 1: Express básico.</p>
+</main>
+</div>
+</body>
+</html>

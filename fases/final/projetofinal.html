@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Projeto final da trilha Express 5 com TypeScript: agenda com chat em tempo real.">
+<title>Projeto Final — Agenda com Chat em Tempo Real</title>
+<style>
+:root{--bg:#090d16;--panel:#101725;--panel2:#151f31;--text:#eef3fb;--muted:#9caac0;--line:#26334a;--brand:#7c8cff;--brand2:#54d6b0;--warn:#f5bf65;--danger:#ff758f;--code:#080c13;--shadow:0 20px 55px rgba(0,0,0,.32);--radius:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:radial-gradient(circle at 90% -10%,rgba(124,140,255,.15),transparent 28%),var(--bg);color:var(--text);font:16px/1.72 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#aeb9ff;text-decoration:none}a:hover{text-decoration:underline}.layout{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:100vh}.sidebar{position:sticky;top:0;height:100vh;padding:22px 18px;border-right:1px solid var(--line);background:rgba(9,13,22,.92);backdrop-filter:blur(16px);overflow:auto}.brand{display:flex;gap:12px;align-items:center;padding:8px 8px 20px}.brand-mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#08101a;font-weight:900}.brand small{display:block;color:var(--muted);font-size:12px}.brand strong{display:block;line-height:1.2}.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#6f7f98;margin:14px 10px 8px}.nav a{display:block;padding:8px 10px;border-radius:9px;color:#b9c5d7;font-size:13px}.nav a:hover,.nav a.active{background:#19243a;color:#fff;text-decoration:none}.progress-box{margin:20px 8px;padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--panel)}.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}.progress{height:7px;background:#273248;border-radius:99px;margin-top:9px;overflow:hidden}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:.3s}.main{min-width:0}.hero{padding:72px clamp(24px,6vw,90px) 48px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(124,140,255,.08),transparent)}.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid #39486c;border-radius:999px;color:#bbc6ff;font-size:12px;text-transform:uppercase;letter-spacing:.12em}.hero h1{font-size:clamp(38px,7vw,76px);line-height:1.03;letter-spacing:-.05em;max-width:980px;margin:24px 0}.hero p{max-width:850px;color:#bac5d7;font-size:clamp(17px,2vw,21px)}.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:34px;max-width:1000px}.stat{border:1px solid var(--line);background:rgba(16,23,37,.72);border-radius:14px;padding:16px}.stat strong{display:block;font-size:20px}.stat span{color:var(--muted);font-size:12px}.content{max-width:1120px;padding:34px clamp(24px,6vw,90px) 100px}.chapter{margin:0 0 32px;padding:clamp(22px,4vw,42px);border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(21,31,49,.88),rgba(16,23,37,.88));box-shadow:var(--shadow)}.chapter h2{font-size:clamp(27px,4vw,40px);line-height:1.15;letter-spacing:-.025em;margin:0 0 16px}.chapter h3{font-size:22px;margin:34px 0 10px}.chapter h4{font-size:17px;margin:24px 0 8px;color:#dfe6ff}.lead{font-size:18px;color:#c5cfde}.muted{color:var(--muted)}.grid2,.grid3{display:grid;gap:14px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.card h4{margin:0 0 7px}.card p:last-child{margin-bottom:0}.tag{display:inline-block;padding:3px 8px;border:1px solid #405073;border-radius:999px;margin:2px 4px 2px 0;color:#c8d0ff;font-size:12px}.callout{margin:20px 0;padding:17px 18px;border-left:4px solid var(--brand);border-radius:0 12px 12px 0;background:#151e32}.callout.warn{border-color:var(--warn)}.callout.danger{border-color:var(--danger)}.callout.ok{border-color:var(--brand2)}pre{position:relative;overflow:auto;background:var(--code);border:1px solid #202b3e;border-radius:13px;padding:20px;color:#dbe6f7;font:13px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.inline{background:#1b263a;padding:.14em .4em;border-radius:5px;color:#dfe6ff}.copy{position:absolute;right:10px;top:10px;border:1px solid #34425e;background:#121a29;color:#c6d1e3;padding:5px 8px;border-radius:7px;cursor:pointer;font-size:11px}table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;display:block;overflow:auto}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#dce5f5;background:#131c2b;position:sticky;top:0}ul,ol{padding-left:22px}.checklist{list-style:none;padding:0}.checklist li{display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed #2a374d}.checklist input{margin-top:7px;accent-color:var(--brand2)}.diagram{white-space:pre;overflow:auto;background:#0d131f;border:1px dashed #35445f;border-radius:14px;padding:18px;color:#b7c6dc;font:13px/1.55 ui-monospace,monospace}.pill{font-size:11px;padding:3px 7px;border-radius:6px;background:#25324a;color:#d7e0f2}.footer{color:var(--muted);text-align:center;padding:30px}.menu-btn{display:none;position:fixed;z-index:20;right:16px;bottom:16px;border:0;border-radius:999px;padding:13px 16px;background:var(--brand);color:#fff;box-shadow:var(--shadow)}
+@media(max-width:920px){.layout{display:block}.sidebar{position:fixed;z-index:15;transform:translateX(-105%);transition:.25s;width:290px;box-shadow:var(--shadow)}.sidebar.open{transform:none}.menu-btn{display:block}.hero-grid,.grid3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.hero{padding-top:44px}.hero-grid,.grid2,.grid3{grid-template-columns:1fr}.chapter{padding:20px}.hero h1{font-size:42px}}
+@media print{.sidebar,.menu-btn,.copy{display:none}.layout{display:block}.hero,.content{padding:24px}.chapter{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+<div class="brand"><div class="brand-mark">E5</div><div><small>Express 5 + TypeScript</small><strong>Projeto Final</strong></div></div>
+<div class="progress-box"><div class="progress-label"><span>Leitura concluída</span><strong id="progressText">0%</strong></div><div class="progress"><span id="progressBar"></span></div></div>
+<div class="nav-title">Nesta página</div><nav class="nav" id="nav">
+<a href="#visao-geral">Visão geral</a>
+<a href="#objetivos">Objetivos e critérios</a>
+<a href="#arquitetura">Arquitetura</a>
+<a href="#dominio">Módulos do domínio</a>
+<a href="#modelo-dados">Modelo de dados</a>
+<a href="#autenticacao">Autenticação e segurança</a>
+<a href="#agenda">Agenda e compromissos</a>
+<a href="#disponibilidade">Disponibilidade, recorrência e fusos</a>
+<a href="#chat">Chat em tempo real</a>
+<a href="#notificacoes">Notificações e tarefas</a>
+<a href="#consistencia">Concorrência e idempotência</a>
+<a href="#api">Contratos HTTP e eventos</a>
+<a href="#testes">Estratégia de testes</a>
+<a href="#producao">Observabilidade e deploy</a>
+<a href="#roadmap">Roadmap de implementação</a>
+<a href="#edge-cases">Edge cases</a>
+<a href="#conclusao">Definition of Done</a>
+<a href="#referencias">Referências</a>
+</nav></aside>
+<main class="main">
+<header class="hero">
+<span class="eyebrow">Fase final · Projeto integrador</span>
+<h1>Agenda com chat em tempo real</h1>
+<p>Uma aplicação backend completa que combina agenda, disponibilidade, convites, autenticação, banco relacional, comunicação em tempo real, filas, testes, segurança, documentação e operação em produção.</p>
+<div class="hero-grid"><div class="stat"><strong>9</strong><span>módulos de domínio</span></div><div class="stat"><strong>HTTP + WS</strong><span>dois canais de comunicação</span></div><div class="stat"><strong>PostgreSQL</strong><span>consistência e concorrência</span></div><div class="stat"><strong>Produção</strong><span>logs, métricas e deploy</span></div></div>
+</header>
+<div class="content">
+
+<section class="chapter" id="visao-geral">
+<h2>1. Visão geral do projeto</h2>
+<p class="lead">O projeto final não deve ser tratado como “mais um CRUD”. O objetivo é construir um sistema em que ações simultâneas, permissões, falhas parciais e passagem do tempo realmente importam.</p>
+<p>Usuários poderão organizar compromissos, convidar participantes, verificar disponibilidade e conversar em tempo real. A API precisará permanecer correta mesmo quando duas requisições chegam juntas, uma notificação falha, o cliente repete uma operação ou um WebSocket reconecta depois de perder eventos.</p>
+<div class="callout ok"><strong>Resultado esperado:</strong> um backend que você consiga explicar, testar, executar em contêiner, documentar e defender tecnicamente em uma entrevista.</div>
+<h3>O que torna este projeto diferente</h3>
+<div class="grid3">
+<div class="card"><h4>Estado com regras</h4><p>Compromissos possuem ciclo de vida, participantes possuem estados de convite e mensagens possuem estados de entrega e leitura.</p></div>
+<div class="card"><h4>Concorrência real</h4><p>Dois usuários podem aceitar um convite, reservar um horário ou enviar ações duplicadas quase ao mesmo tempo.</p></div>
+<div class="card"><h4>Falhas parciais</h4><p>O compromisso pode ser salvo enquanto o e-mail falha. A arquitetura não pode desfazer o dado principal por causa de um efeito secundário.</p></div>
+</div>
+</section>
+
+<section class="chapter" id="objetivos">
+<h2>2. Objetivos de aprendizagem e critérios</h2>
+<p>Ao concluir, você deverá conseguir transformar requisitos em invariantes, escolher limites transacionais, desenhar contratos previsíveis e operar a aplicação fora da sua máquina.</p>
+<h3>Competências demonstradas</h3>
+<ul class="checklist track">
+<li><input type="checkbox"><span>Modelar um domínio relacional com constraints, índices e relações explícitas.</span></li>
+<li><input type="checkbox"><span>Separar HTTP, aplicação, domínio, persistência e infraestrutura sem criar camadas vazias.</span></li>
+<li><input type="checkbox"><span>Implementar autenticação, autorização por papel e autorização por propriedade/participação.</span></li>
+<li><input type="checkbox"><span>Proteger operações contra duplicidade, corrida e inconsistência.</span></li>
+<li><input type="checkbox"><span>Entregar eventos em tempo real sem usar o socket como fonte de verdade.</span></li>
+<li><input type="checkbox"><span>Testar regras, banco, contratos HTTP e comportamento de WebSocket.</span></li>
+<li><input type="checkbox"><span>Documentar, observar, empacotar e encerrar o serviço corretamente em produção.</span></li>
+</ul>
+<div class="callout warn"><strong>Não é requisito inicial:</strong> microserviços, Kubernetes, event sourcing ou uma arquitetura distribuída complexa. Primeiro construa um monólito modular correto.</div>
+</section>
+
+<section class="chapter" id="arquitetura">
+<h2>3. Arquitetura recomendada</h2>
+<p class="lead">Comece com um monólito modular. Todos os módulos vivem no mesmo deploy e no mesmo banco, mas cada um mantém responsabilidades e contratos claros.</p>
+<div class="diagram">Cliente web/mobile
+   ├── HTTP/REST ───────────────┐
+   └── WebSocket/Socket.IO ─────┤
+                               ▼
+                        Express 5 Application
+                 ┌──────────────┼──────────────┐
+                 │              │              │
+              Routes        Socket gateway  Middlewares
+                 │              │              │
+                 └──────► Application services ◄┘
+                              │
+                    Domain rules / policies
+                              │
+                    Repositories + Prisma
+                              │
+                         PostgreSQL
+                              │
+             Outbox / jobs / e-mail / notifications</div>
+<h3>Estrutura de pastas possível</h3>
+<pre><button class="copy">Copiar</button><code>src/
+├── app.ts
+├── server.ts
+├── config/
+├── shared/
+│   ├── errors/
+│   ├── http/
+│   ├── observability/
+│   ├── security/
+│   └── database/
+├── modules/
+│   ├── users/
+│   ├── auth/
+│   ├── profiles/
+│   ├── contacts/
+│   ├── appointments/
+│   ├── availability/
+│   ├── conversations/
+│   ├── messages/
+│   └── notifications/
+├── realtime/
+│   ├── socket-server.ts
+│   ├── socket-auth.ts
+│   └── events.ts
+└── jobs/
+    ├── workers/
+    └── scheduler.ts</code></pre>
+<h3>Responsabilidade das camadas</h3>
+<table><thead><tr><th>Parte</th><th>Responsabilidade</th><th>Não deve</th></tr></thead><tbody>
+<tr><td>Route</td><td>Método, URL e middlewares.</td><td>Executar regra de negócio.</td></tr>
+<tr><td>Controller</td><td>Traduzir HTTP em entrada e saída.</td><td>Conhecer detalhes do Prisma.</td></tr>
+<tr><td>Service/use case</td><td>Orquestrar regras e transações.</td><td>Produzir resposta Express.</td></tr>
+<tr><td>Repository</td><td>Persistir e consultar dados.</td><td>Decidir permissões de negócio.</td></tr>
+<tr><td>Gateway</td><td>Integrar e-mail, socket e fila.</td><td>Virar fonte de verdade do domínio.</td></tr>
+</tbody></table>
+</section>
+
+<section class="chapter" id="dominio">
+<h2>4. Módulos do domínio</h2>
+<div class="grid3">
+<div class="card"><h4>Usuários</h4><p>Identidade principal, status da conta, data de criação e desativação.</p></div>
+<div class="card"><h4>Autenticação</h4><p>Senha, sessões/refresh tokens, rotação, revogação e recuperação.</p></div>
+<div class="card"><h4>Perfis</h4><p>Nome público, foto, locale, fuso horário preferido e configurações.</p></div>
+<div class="card"><h4>Contatos</h4><p>Relacionamento entre usuários, solicitações, bloqueios e busca autorizada.</p></div>
+<div class="card"><h4>Compromissos</h4><p>Criação, edição, cancelamento, participantes, convites e recorrência.</p></div>
+<div class="card"><h4>Disponibilidade</h4><p>Janelas livres, exceções, conflitos e cálculo de horários compatíveis.</p></div>
+<div class="card"><h4>Conversas</h4><p>Conversas individuais e grupos, membros, papéis e remoções.</p></div>
+<div class="card"><h4>Mensagens</h4><p>Histórico persistido, paginação, edição opcional, entrega e leitura.</p></div>
+<div class="card"><h4>Notificações</h4><p>Eventos internos, lembretes, e-mails e preferências por canal.</p></div>
+</div>
+<h3>Dependências saudáveis</h3>
+<p>Compromissos podem solicitar notificações, mas não devem conhecer SMTP. Mensagens podem publicar um evento de nova mensagem, mas não devem depender diretamente da biblioteca de WebSocket. Use interfaces/gateways nos limites externos.</p>
+</section>
+
+<section class="chapter" id="modelo-dados">
+<h2>5. Modelo de dados inicial</h2>
+<p>O modelo abaixo é um ponto de partida. Ele deve evoluir por migrations pequenas, revisáveis e acompanhadas de testes.</p>
+<table><thead><tr><th>Entidade</th><th>Campos essenciais</th><th>Restrições importantes</th></tr></thead><tbody>
+<tr><td>User</td><td>id, email, passwordHash, status</td><td>email único; hash nunca exposto.</td></tr>
+<tr><td>Profile</td><td>userId, displayName, timezone</td><td>um perfil por usuário.</td></tr>
+<tr><td>Appointment</td><td>ownerId, startsAt, endsAt, status, version</td><td>fim posterior ao início; índice temporal.</td></tr>
+<tr><td>AppointmentParticipant</td><td>appointmentId, userId, invitationStatus</td><td>par único appointment/user.</td></tr>
+<tr><td>Conversation</td><td>type, title, createdBy</td><td>tipo DIRECT ou GROUP.</td></tr>
+<tr><td>ConversationMember</td><td>conversationId, userId, joinedAt, leftAt</td><td>par único; leftAt limita mensagens futuras.</td></tr>
+<tr><td>Message</td><td>conversationId, senderId, body, createdAt</td><td>índice por conversa + cursor.</td></tr>
+<tr><td>MessageReceipt</td><td>messageId, userId, deliveredAt, readAt</td><td>um recibo por mensagem/usuário.</td></tr>
+<tr><td>IdempotencyKey</td><td>userId, key, requestHash, response</td><td>chave única por usuário e operação.</td></tr>
+<tr><td>OutboxEvent</td><td>type, payload, occurredAt, processedAt</td><td>gravado na mesma transação do domínio.</td></tr>
+</tbody></table>
+<h3>Trecho de schema Prisma</h3>
+<pre><button class="copy">Copiar</button><code>model Appointment {
+  id        String            @id @default(uuid())
+  ownerId   String
+  title     String
+  startsAt  DateTime          @db.Timestamptz(3)
+  endsAt    DateTime          @db.Timestamptz(3)
+  status    AppointmentStatus @default(SCHEDULED)
+  version   Int               @default(1)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  owner        User                     @relation(fields: [ownerId], references: [id])
+  participants AppointmentParticipant[]
+
+  @@index([ownerId, startsAt])
+  @@index([startsAt, endsAt])
+}
+
+model AppointmentParticipant {
+  appointmentId String
+  userId        String
+  status        InvitationStatus @default(PENDING)
+  respondedAt   DateTime?
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([appointmentId, userId])
+}</code></pre>
+<div class="callout"><strong>Datas:</strong> persista instantes em UTC usando um tipo com fuso no PostgreSQL. Converta para o fuso do usuário apenas nas bordas de apresentação e entrada.</div>
+</section>
+
+<section class="chapter" id="autenticacao">
+<h2>6. Autenticação, autorização e segurança</h2>
+<p>Autenticação prova quem está fazendo a chamada. Autorização verifica se essa pessoa pode executar a ação sobre aquele recurso específico.</p>
+<h3>Fluxo recomendado</h3>
+<ol><li>Cadastro valida e normaliza o e-mail.</li><li>A senha é transformada em hash com algoritmo apropriado.</li><li>Login emite access token curto e refresh token rotacionável.</li><li>Refresh substitui o token anterior e detecta reutilização.</li><li>Logout revoga a sessão correspondente.</li></ol>
+<h3>Exemplo de autorização por participação</h3>
+<pre><button class="copy">Copiar</button><code>const membership = await conversationRepository.findMembership({
+  conversationId,
+  userId: authenticatedUser.id,
+});
+
+if (!membership || membership.leftAt) {
+  throw new ForbiddenError("Você não participa desta conversa.");
+}
+
+await messageService.create({
+  conversationId,
+  senderId: authenticatedUser.id,
+  body: input.body,
+});</code></pre>
+<h3>Controles mínimos</h3>
+<div class="grid2"><div class="card"><h4>HTTP</h4><p>Helmet, CORS explícito, limite de payload, rate limiting, validação Zod e mensagens de erro sem vazamento.</p></div><div class="card"><h4>Dados</h4><p>Seleção explícita de campos, menor privilégio no banco, secrets fora do repositório e logs sem tokens/senhas.</p></div><div class="card"><h4>WebSocket</h4><p>Autenticar handshake, revalidar autorização por evento e limitar tamanho/frequência das mensagens.</p></div><div class="card"><h4>Abuso</h4><p>Proteção de login, criação de convites, spam de mensagens, enumeração de usuários e upload de avatar.</p></div></div>
+</section>
+
+<section class="chapter" id="agenda">
+<h2>7. Agenda e compromissos</h2>
+<h3>Ciclo de vida</h3>
+<div class="diagram">DRAFT (opcional) ──► SCHEDULED ──► COMPLETED
+                         │
+                         └──────────────► CANCELED</div>
+<p>Estados devem limitar operações. Um compromisso cancelado pode permitir leitura e auditoria, mas não deve aceitar alterações comuns de título ou horário.</p>
+<h3>Criação segura</h3>
+<pre><button class="copy">Copiar</button><code>export async function createAppointment(input: CreateAppointmentInput) {
+  assertEndAfterStart(input.startsAt, input.endsAt);
+
+  return prisma.$transaction(async (tx) =&gt; {
+    const conflict = await appointmentRepository.existsOverlap(tx, {
+      userId: input.ownerId,
+      startsAt: input.startsAt,
+      endsAt: input.endsAt,
+    });
+
+    if (conflict) {
+      throw new ConflictError("APPOINTMENT_TIME_CONFLICT");
+    }
+
+    const appointment = await appointmentRepository.create(tx, input);
+    await outboxRepository.add(tx, {
+      type: "appointment.created",
+      aggregateId: appointment.id,
+    });
+
+    return appointment;
+  });
+}</code></pre>
+<h3>Regra de sobreposição</h3>
+<p>Dois intervalos se sobrepõem quando <code class="inline">novoInicio &lt; fimExistente</code> e <code class="inline">novoFim &gt; inicioExistente</code>. Defina conscientemente se compromissos encostados — um termina exatamente quando o outro começa — são permitidos.</p>
+<h3>Convites</h3>
+<table><thead><tr><th>Estado</th><th>Ações permitidas</th></tr></thead><tbody><tr><td>PENDING</td><td>Aceitar, recusar ou expirar.</td></tr><tr><td>ACCEPTED</td><td>Recusar posteriormente, conforme regra do produto.</td></tr><tr><td>DECLINED</td><td>Reabrir apenas por novo convite ou regra explícita.</td></tr><tr><td>REMOVED</td><td>Sem novas ações comuns.</td></tr></tbody></table>
+</section>
+
+<section class="chapter" id="disponibilidade">
+<h2>8. Disponibilidade, recorrência e fusos horários</h2>
+<h3>Disponibilidade</h3>
+<p>Disponibilidade não é somente “não possuir compromisso”. Pode incluir horário de trabalho, bloqueios manuais, intervalo mínimo, duração necessária e preferências por dia.</p>
+<div class="callout warn"><strong>Separe conceitos:</strong> uma regra semanal (“segundas, 09:00–17:00”) é diferente de uma exceção específica (“não disponível em 20 de julho”).</div>
+<h3>Recorrência</h3>
+<p>Uma série recorrente deve possuir uma regra base e exceções. Evite gerar infinitas linhas futuras. Você pode materializar uma janela limitada ou calcular ocorrências sob demanda, sempre definindo um horizonte.</p>
+<ul><li>Editar somente esta ocorrência.</li><li>Editar esta e as seguintes.</li><li>Editar toda a série.</li><li>Cancelar uma ocorrência sem apagar a série.</li></ul>
+<h3>Fusos horários</h3>
+<p>Receba data, hora e zona quando a intenção depende de horário local. “Toda segunda às 09:00 em São Paulo” não é equivalente a repetir sempre o mesmo deslocamento UTC por causa de possíveis alterações históricas de regras de fuso.</p>
+<pre><button class="copy">Copiar</button><code>{
+  "title": "Reunião semanal",
+  "localStart": "2026-07-13T09:00:00",
+  "timezone": "America/Sao_Paulo",
+  "durationMinutes": 45,
+  "recurrence": {
+    "frequency": "WEEKLY",
+    "interval": 1,
+    "byWeekday": ["MO"]
+  }
+}</code></pre>
+</section>
+
+<section class="chapter" id="chat">
+<h2>9. Chat em tempo real</h2>
+<p class="lead">O banco é a fonte de verdade. O WebSocket reduz latência de entrega, mas uma mensagem só existe para o sistema depois de persistida.</p>
+<h3>Fluxo de envio</h3>
+<div class="diagram">Cliente A envia message:send
+        ↓
+Gateway autentica e valida
+        ↓
+Service verifica participação
+        ↓
+Mensagem é persistida
+        ↓
+Servidor confirma ao remetente (ack)
+        ↓
+Evento é emitido para a sala
+        ↓
+Clientes confirmam delivered/read</div>
+<h3>Evento tipado</h3>
+<pre><button class="copy">Copiar</button><code>type ClientToServerEvents = {
+  "message:send": (
+    payload: { conversationId: string; clientMessageId: string; body: string },
+    ack: (result: SendMessageResult) =&gt; void,
+  ) =&gt; void;
+  "message:read": (payload: { conversationId: string; messageId: string }) =&gt; void;
+  "typing:start": (payload: { conversationId: string }) =&gt; void;
+  "typing:stop": (payload: { conversationId: string }) =&gt; void;
+};
+
+type ServerToClientEvents = {
+  "message:created": (message: MessageView) =&gt; void;
+  "message:receipt": (receipt: MessageReceiptView) =&gt; void;
+  "presence:changed": (payload: PresenceView) =&gt; void;
+};</code></pre>
+<h3>Regras essenciais</h3>
+<ul><li>Somente membro ativo entra na sala da conversa.</li><li><code class="inline">clientMessageId</code> evita duplicação após retry/reconexão.</li><li>Histórico usa paginação por cursor, não depende do socket.</li><li>Indicador de digitação é efêmero e não precisa ser persistido.</li><li>Presença é aproximação; desconexões abruptas exigem timeout/heartbeat.</li><li>Remoção da conversa deve impedir acesso a mensagens futuras.</li></ul>
+<div class="callout danger"><strong>Erro comum:</strong> confiar que estar inscrito em uma sala significa estar autorizado. A associação pode ficar obsoleta; ações sensíveis precisam consultar uma autorização válida.</div>
+</section>
+
+<section class="chapter" id="notificacoes">
+<h2>10. Notificações, filas e tarefas agendadas</h2>
+<p>E-mail, push e lembretes são efeitos secundários. A transação principal não deve depender da disponibilidade imediata desses serviços.</p>
+<h3>Padrão Outbox</h3>
+<ol><li>O serviço grava a alteração do domínio.</li><li>Na mesma transação, grava um evento na tabela de outbox.</li><li>Um worker busca eventos pendentes.</li><li>O worker envia e-mail, emite notificação ou agenda lembrete.</li><li>O evento é marcado como processado; falhas recebem retry controlado.</li></ol>
+<pre><button class="copy">Copiar</button><code>await prisma.$transaction(async (tx) =&gt; {
+  await tx.appointment.update({
+    where: { id: appointmentId },
+    data: { status: "CANCELED" },
+  });
+
+  await tx.outboxEvent.create({
+    data: {
+      type: "appointment.canceled",
+      aggregateId: appointmentId,
+      payload: { appointmentId, canceledBy: userId },
+    },
+  });
+});</code></pre>
+<h3>Retry responsável</h3>
+<p>Use backoff, limite de tentativas e dead-letter handling. Nunca repita indiscriminadamente uma operação não idempotente. Registre a causa e exponha métricas de falha.</p>
+</section>
+
+<section class="chapter" id="consistencia">
+<h2>11. Concorrência, consistência e idempotência</h2>
+<h3>Problemas esperados</h3>
+<div class="grid2"><div class="card"><h4>Double submit</h4><p>O cliente repete POST após timeout e cria dois compromissos.</p></div><div class="card"><h4>Lost update</h4><p>Duas edições usam uma versão antiga e a última sobrescreve a primeira.</p></div><div class="card"><h4>Check-then-act</h4><p>Duas transações verificam ausência de conflito antes de ambas gravarem.</p></div><div class="card"><h4>Evento duplicado</h4><p>Worker processa o mesmo item novamente depois de falhar no ack.</p></div></div>
+<h3>Idempotency key</h3>
+<pre><button class="copy">Copiar</button><code>POST /appointments
+Idempotency-Key: 6c71853f-5c9f-43ae-bd70-37f1c5eb9bc9
+
+// No servidor:
+// 1. vincule a chave ao usuário e à operação;
+// 2. compare o hash do payload;
+// 3. retorne a resposta anterior quando a mesma requisição reaparecer;
+// 4. rejeite a reutilização da chave com payload diferente.</code></pre>
+<h3>Optimistic locking</h3>
+<pre><button class="copy">Copiar</button><code>const result = await prisma.appointment.updateMany({
+  where: { id, version: expectedVersion },
+  data: {
+    title: input.title,
+    version: { increment: 1 },
+  },
+});
+
+if (result.count === 0) {
+  throw new ConflictError("APPOINTMENT_CHANGED_BY_ANOTHER_REQUEST");
+}</code></pre>
+<p>Para conflito temporal rigoroso, considere constraints do PostgreSQL e níveis de isolamento adequados. Apenas uma consulta anterior ao insert pode não proteger contra duas transações simultâneas.</p>
+</section>
+
+<section class="chapter" id="api">
+<h2>12. Contratos HTTP e eventos</h2>
+<h3>Endpoints principais</h3>
+<table><thead><tr><th>Método</th><th>Endpoint</th><th>Finalidade</th></tr></thead><tbody>
+<tr><td>POST</td><td>/auth/register</td><td>Criar conta.</td></tr><tr><td>POST</td><td>/auth/login</td><td>Autenticar.</td></tr><tr><td>POST</td><td>/auth/refresh</td><td>Rotacionar sessão.</td></tr>
+<tr><td>GET</td><td>/appointments</td><td>Listar com filtros e cursor.</td></tr><tr><td>POST</td><td>/appointments</td><td>Criar com idempotência.</td></tr><tr><td>PATCH</td><td>/appointments/:id</td><td>Editar com controle de versão.</td></tr><tr><td>POST</td><td>/appointments/:id/cancel</td><td>Executar transição explícita.</td></tr>
+<tr><td>POST</td><td>/appointments/:id/invitations/:invitationId/accept</td><td>Aceitar uma vez.</td></tr><tr><td>GET</td><td>/availability</td><td>Calcular horários livres.</td></tr>
+<tr><td>GET</td><td>/conversations</td><td>Listar conversas autorizadas.</td></tr><tr><td>GET</td><td>/conversations/:id/messages</td><td>Histórico paginado.</td></tr><tr><td>POST</td><td>/conversations/:id/messages</td><td>Fallback HTTP para envio.</td></tr>
+</tbody></table>
+<h3>Formato consistente de erro</h3>
+<pre><button class="copy">Copiar</button><code>{
+  "error": {
+    "code": "APPOINTMENT_TIME_CONFLICT",
+    "message": "Já existe um compromisso nesse intervalo.",
+    "details": {
+      "startsAt": "2026-07-20T13:00:00.000Z",
+      "endsAt": "2026-07-20T14:00:00.000Z"
+    },
+    "requestId": "req_01J..."
+  }
+}</code></pre>
+<h3>Eventos internos</h3>
+<p><span class="tag">appointment.created</span><span class="tag">appointment.updated</span><span class="tag">appointment.canceled</span><span class="tag">invitation.accepted</span><span class="tag">message.created</span><span class="tag">conversation.member_removed</span></p>
+</section>
+
+<section class="chapter" id="testes">
+<h2>13. Estratégia de testes</h2>
+<p>A pirâmide aqui mistura testes unitários para regras puras, integração para banco/transações e testes HTTP/Socket para contratos públicos.</p>
+<h3>Matriz mínima</h3>
+<table><thead><tr><th>Área</th><th>Caso feliz</th><th>Falha/edge case</th></tr></thead><tbody>
+<tr><td>Compromisso</td><td>Cria intervalo válido.</td><td>Rejeita fim anterior, conflito e duplicidade.</td></tr>
+<tr><td>Convite</td><td>Aceita convite pendente.</td><td>Não aceita duas vezes ou por outro usuário.</td></tr>
+<tr><td>Autorização</td><td>Participante lê recurso.</td><td>Terceiro recebe 403/404 conforme política.</td></tr>
+<tr><td>Chat</td><td>Persiste e transmite mensagem.</td><td>Reconexão não duplica; removido não recebe futuras.</td></tr>
+<tr><td>Concorrência</td><td>Uma criação vence.</td><td>Duas criações conflitantes não são ambas confirmadas.</td></tr>
+<tr><td>Outbox</td><td>Processa evento.</td><td>Retry não duplica efeito e falha não corrompe agenda.</td></tr>
+</tbody></table>
+<h3>Exemplo com Vitest</h3>
+<pre><button class="copy">Copiar</button><code>describe("AcceptInvitationService", () =&gt; {
+  it("does not accept the same invitation twice", async () =&gt; {
+    const invitation = await fixtures.pendingInvitation();
+
+    await service.execute({
+      invitationId: invitation.id,
+      userId: invitation.userId,
+    });
+
+    await expect(
+      service.execute({
+        invitationId: invitation.id,
+        userId: invitation.userId,
+      }),
+    ).rejects.toMatchObject({ code: "INVITATION_ALREADY_ANSWERED" });
+  });
+});</code></pre>
+<div class="callout"><strong>Teste concorrência de verdade:</strong> execute operações em paralelo contra o banco de testes e verifique o estado final, não apenas mocks sequenciais.</div>
+</section>
+
+<section class="chapter" id="producao">
+<h2>14. Observabilidade, documentação e deploy</h2>
+<h3>Logs estruturados</h3>
+<p>Use Pino com request ID, usuário quando conhecido, operação, duração e resultado. Redija tokens, cookies, senha, corpo sensível e informações pessoais desnecessárias.</p>
+<h3>Métricas úteis</h3>
+<ul><li>Latência e taxa de erro por rota.</li><li>Conexões WebSocket ativas e reconexões.</li><li>Mensagens criadas, entregues e falhas.</li><li>Tamanho e idade da fila/outbox.</li><li>Retries, dead letters e falhas de e-mail.</li><li>Conflitos de agenda e rejeições por rate limit.</li></ul>
+<h3>Health endpoints</h3>
+<pre><button class="copy">Copiar</button><code>GET /health/live   // processo está vivo
+GET /health/ready  // banco e dependências essenciais estão prontos</code></pre>
+<h3>Graceful shutdown</h3>
+<ol><li>Parar de aceitar novas conexões HTTP.</li><li>Notificar/encerrar sockets quando adequado.</li><li>Parar consumidores e scheduler.</li><li>Aguardar operações em andamento dentro de limite.</li><li>Fechar Prisma e recursos externos.</li></ol>
+<h3>Entrega</h3>
+<p>Inclua Dockerfile multi-stage, configuração por ambiente, migrations no processo de release, OpenAPI, README com decisões e comandos reproduzíveis.</p>
+</section>
+
+<section class="chapter" id="roadmap">
+<h2>15. Roadmap seguro de implementação</h2>
+<p>Evite construir tudo ao mesmo tempo. Cada marco deve deixar o sistema executável e testável.</p>
+<ol>
+<li><strong>Fundação:</strong> app/server, config, erros, logging, banco e health.</li>
+<li><strong>Identidade:</strong> usuários, perfis, login, refresh, logout e testes.</li>
+<li><strong>Agenda básica:</strong> compromisso sem recorrência, filtros e conflito.</li>
+<li><strong>Participação:</strong> convites, respostas e permissões.</li>
+<li><strong>Consistência:</strong> idempotência, locking e testes concorrentes.</li>
+<li><strong>Disponibilidade:</strong> regras semanais, exceções e cálculo.</li>
+<li><strong>Conversas:</strong> criação, membros e histórico HTTP.</li>
+<li><strong>Tempo real:</strong> autenticação do socket, salas, envio e receipts.</li>
+<li><strong>Assíncrono:</strong> outbox, workers, lembretes e e-mails.</li>
+<li><strong>Produção:</strong> documentação, métricas, hardening, Docker e deploy.</li>
+</ol>
+<div class="callout ok"><strong>Regra de progresso:</strong> não avance só porque o endpoint “funcionou no Postman”. Avance quando há regra explícita, teste relevante e comportamento de erro previsível.</div>
+</section>
+
+<section class="chapter" id="edge-cases">
+<h2>16. Edge cases obrigatórios</h2>
+<p>Edge cases são situações menos comuns nas bordas do comportamento normal. Eles importam porque sistemas reais recebem repetições, atrasos, dados incompletos e ações simultâneas.</p>
+<table><thead><tr><th>Cenário</th><th>Risco</th><th>Proteção</th></tr></thead><tbody>
+<tr><td>Fim igual ao início</td><td>Compromisso de duração zero.</td><td>Validação de domínio.</td></tr>
+<tr><td>Dois compromissos simultâneos</td><td>Sobreposição apesar da consulta prévia.</td><td>Transação/constraint/isolamento.</td></tr>
+<tr><td>Aceite repetido</td><td>Efeitos duplicados.</td><td>Estado + operação idempotente.</td></tr>
+<tr><td>Cancelamento durante edição</td><td>Última gravação ressuscita dado.</td><td>Versão/locking e transição válida.</td></tr>
+<tr><td>Retry após timeout</td><td>Dois registros.</td><td>Idempotency-Key.</td></tr>
+<tr><td>Usuário removido com socket aberto</td><td>Acesso a eventos futuros.</td><td>Revogar sala e revalidar autorização.</td></tr>
+<tr><td>Mensagem persistida, emissão falha</td><td>Cliente não vê imediatamente.</td><td>Histórico HTTP e reconexão.</td></tr>
+<tr><td>Emissão ocorre duas vezes</td><td>UI duplica mensagem.</td><td>ID estável e deduplicação no cliente.</td></tr>
+<tr><td>E-mail indisponível</td><td>Operação principal falha.</td><td>Outbox + retry.</td></tr>
+<tr><td>Horário local ambíguo</td><td>Instante incorreto.</td><td>Zona IANA e política explícita.</td></tr>
+<tr><td>Cursor aponta para item apagado</td><td>Paginação quebra.</td><td>Cursor composto estável.</td></tr>
+<tr><td>Conta desativada durante sessão</td><td>Token ainda válido.</td><td>Checagem de status em ações sensíveis.</td></tr>
+</tbody></table>
+<h3>Perguntas para cada caso</h3>
+<ul><li>Qual invariante precisa continuar verdadeira?</li><li>Essa garantia pertence à validação, ao serviço ou ao banco?</li><li>A operação pode ser repetida com segurança?</li><li>O estado final permanece correto se houver falha entre duas etapas?</li><li>Como o cliente descobre o resultado verdadeiro depois de um timeout?</li></ul>
+</section>
+
+<section class="chapter" id="conclusao">
+<h2>17. Definition of Done</h2>
+<ul class="checklist track">
+<li><input type="checkbox"><span>Aplicação sobe do zero com instruções do README.</span></li>
+<li><input type="checkbox"><span>Migrations e seed funcionam em ambiente limpo.</span></li>
+<li><input type="checkbox"><span>OpenAPI descreve rotas, schemas, autenticação e erros.</span></li>
+<li><input type="checkbox"><span>Regras críticas possuem testes de integração, inclusive concorrência.</span></li>
+<li><input type="checkbox"><span>WebSocket possui autenticação, autorização e estratégia de reconexão.</span></li>
+<li><input type="checkbox"><span>Operações de criação importantes suportam idempotência.</span></li>
+<li><input type="checkbox"><span>Efeitos secundários usam processamento resiliente.</span></li>
+<li><input type="checkbox"><span>Logs são estruturados e não vazam segredos.</span></li>
+<li><input type="checkbox"><span>Health, graceful shutdown e Docker foram testados.</span></li>
+<li><input type="checkbox"><span>Há uma documentação de decisões e limitações conhecidas.</span></li>
+</ul>
+<h3>Como apresentar no portfólio</h3>
+<p>Mostre o problema, as regras difíceis, um diagrama, decisões com alternativas rejeitadas, cobertura de cenários críticos e uma demonstração reproduzível. O valor está menos na quantidade de endpoints e mais na correção das decisões.</p>
+</section>
+
+<section class="chapter" id="referencias">
+<h2>18. Referências recomendadas</h2>
+<p>Priorize documentação oficial durante a implementação:</p>
+<ul>
+<li><a href="https://expressjs.com/" target="_blank" rel="noreferrer">Express</a> — aplicação, middlewares e tratamento de erros.</li>
+<li><a href="https://www.typescriptlang.org/docs/" target="_blank" rel="noreferrer">TypeScript</a> — tipos, narrowing e configuração.</li>
+<li><a href="https://zod.dev/" target="_blank" rel="noreferrer">Zod</a> — validação e schemas.</li>
+<li><a href="https://www.prisma.io/docs" target="_blank" rel="noreferrer">Prisma</a> — schema, client, migrations e transações.</li>
+<li><a href="https://www.postgresql.org/docs/" target="_blank" rel="noreferrer">PostgreSQL</a> — constraints, índices, isolamento e tipos temporais.</li>
+<li><a href="https://vitest.dev/" target="_blank" rel="noreferrer">Vitest</a> e <a href="https://github.com/ladjs/supertest" target="_blank" rel="noreferrer">Supertest</a>.</li>
+<li><a href="https://socket.io/docs/v4/" target="_blank" rel="noreferrer">Socket.IO</a> ou documentação do pacote WebSocket escolhido.</li>
+<li><a href="https://spec.openapis.org/oas/latest.html" target="_blank" rel="noreferrer">OpenAPI Specification</a>.</li>
+<li><a href="https://docs.docker.com/" target="_blank" rel="noreferrer">Docker</a> e <a href="https://getpino.io/" target="_blank" rel="noreferrer">Pino</a>.</li>
+</ul>
+<h3>Livros</h3>
+<ul><li><em>Designing Data-Intensive Applications</em>, Martin Kleppmann.</li><li><em>Release It!</em>, Michael T. Nygard.</li><li><em>Patterns of Enterprise Application Architecture</em>, Martin Fowler.</li><li><em>Web API Design</em>, Brian Mulloy.</li></ul>
+<div class="callout"><strong>Uso correto das referências:</strong> consulte a versão compatível com as dependências realmente instaladas no projeto e registre versões no lockfile.</div>
+</section>
+
+</div>
+<footer class="footer">Projeto Final · Trilha Express 5 com TypeScript</footer>
+</main></div>
+<button class="menu-btn" id="menuBtn">Conteúdo</button>
+<script>
+const sidebar=document.getElementById('sidebar');document.getElementById('menuBtn').onclick=()=>sidebar.classList.toggle('open');
+const links=[...document.querySelectorAll('#nav a')];const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-15% 0px -75% 0px'});document.querySelectorAll('.chapter').forEach(s=>obs.observe(s));
+links.forEach(a=>a.onclick=()=>sidebar.classList.remove('open'));
+document.querySelectorAll('.copy').forEach(b=>b.onclick=async()=>{await navigator.clipboard.writeText(b.parentElement.innerText.replace('Copiar','').trim());const old=b.textContent;b.textContent='Copiado';setTimeout(()=>b.textContent=old,1200)});
+const checks=[...document.querySelectorAll('.track input')];const key='express-final-progress';let saved=JSON.parse(localStorage.getItem(key)||'[]');checks.forEach((c,i)=>{c.checked=!!saved[i];c.onchange=save});function save(){saved=checks.map(c=>c.checked);localStorage.setItem(key,JSON.stringify(saved));const p=Math.round(100*saved.filter(Boolean).length/checks.length);document.getElementById('progressText').textContent=p+'%';document.getElementById('progressBar').style.width=p+'%'}save();
+</script>
+</body></html>

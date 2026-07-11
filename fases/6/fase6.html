@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Fase 6 — Camadas | Express 5 + TypeScript</title><style>
+:root{--bg:#09111f;--panel:#101b2e;--panel2:#142239;--text:#e8edf7;--muted:#a8b4c8;--line:#283854;--accent:#68d391;--accent2:#63b3ed;--warn:#f6c85f;--danger:#fc8181;--code:#07101d;--shadow:0 18px 48px rgba(0,0,0,.25)}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:linear-gradient(135deg,#08101d,#0d1728 48%,#07111f);color:var(--text);font:16px/1.72 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.layout{display:grid;grid-template-columns:330px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:rgba(7,16,29,.96)}main{min-width:0;padding:34px 5vw 80px}.content{max-width:1080px;margin:auto}.brand{font-size:1.3rem;font-weight:800}.subtitle{color:var(--muted);font-size:.92rem;margin:4px 0 18px}.phase-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.phase-link{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);text-decoration:none;font-size:.82rem}.phase-link.active{border-color:var(--accent);color:var(--accent);background:rgba(104,211,145,.08)}nav>a,summary{color:var(--text)}nav>a{display:block;padding:9px 11px;margin:3px 0;border-radius:8px;text-decoration:none}nav>a:hover,.nav-links a:hover,.nav-links a.active{background:var(--panel2);color:var(--accent)}.nav-title{text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-size:.72rem;font-weight:800;margin:20px 10px 8px}.nav-group{border-top:1px solid rgba(40,56,84,.62)}summary{cursor:pointer;padding:12px 10px;font-weight:700}.nav-links{padding:0 0 9px 10px}.nav-links a{display:block;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:7px;font-size:.88rem}.nav-progress{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.nav-progress strong{display:block;color:var(--accent);margin-bottom:5px}.nav-progress span{font-size:.84rem;color:var(--muted)}section{padding:36px 0 14px}.phase{padding-top:0}.tag,.pill{display:inline-flex;border-radius:999px}.tag{padding:5px 10px;background:rgba(104,211,145,.12);color:var(--accent);font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px}.pill{padding:5px 10px;border:1px solid var(--line);color:var(--muted);font-size:.83rem}h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;margin:14px 0 18px;letter-spacing:-.045em}h3{font-size:1.42rem;margin:48px 0 14px;padding-top:8px;border-top:1px solid var(--line)}h4{font-size:1.08rem;margin:28px 0 9px;color:#cfe2ff}p,li{color:#cbd5e5}strong{color:#f3f6fb}code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;color:#b5f4d0}pre{position:relative;overflow:auto;background:var(--code);border:1px solid var(--line);border-radius:13px;padding:18px 20px;box-shadow:var(--shadow);line-height:1.55}pre code{color:#d7e4f6}.callout,.warning,.danger,.note{padding:16px 18px;margin:20px 0;border-radius:12px;border-left:4px solid}.callout{background:rgba(99,179,237,.08);border-color:var(--accent2)}.warning{background:rgba(246,200,95,.08);border-color:var(--warn)}.danger{background:rgba(252,129,129,.08);border-color:var(--danger)}.note{background:rgba(104,211,145,.08);border-color:var(--accent)}.grid,.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:18px}.card h4{margin-top:0}.flow{display:grid;gap:9px;margin:20px 0}.flow div{padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}table{width:100%;border-collapse:collapse;margin:18px 0;display:block;overflow:auto}th,td{text-align:left;padding:12px 13px;border:1px solid var(--line);min-width:150px}th{background:var(--panel2);color:#fff}td{color:#cbd5e5}.pipeline{font-family:monospace;text-align:center;white-space:pre;overflow:auto;background:var(--code);border:1px solid var(--line);padding:20px;border-radius:12px;color:#b5f4d0}.checklist{list-style:none;padding-left:0}.checklist li{padding:8px 0 8px 30px;position:relative}.checklist li:before{content:"□";position:absolute;left:3px;color:var(--accent);font-size:1.2rem}.footer-note{margin-top:55px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}a{color:#8ecdf7}@media(max-width:940px){.layout{grid-template-columns:1fr}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:28px 20px 60px}.grid,.columns{grid-template-columns:1fr}}
+</style></head><body><div class="layout"><aside><div class="brand">Express 5 + TypeScript</div><div class="subtitle">Curso detalhado focado em APIs.</div><div class="phase-links"><a class="phase-link active" href="#fase6">Fase 6 · Camadas</a></div><nav id="toc" aria-label="Mapa da Fase 6"><a href="#fase6"><strong>Visão geral da fase</strong></a><div class="nav-title">Mapa do conteúdo</div>
+<details class="nav-group" open><summary>Fundamentos</summary><div class="nav-links"><a href="#modelo">1. Modelo mental</a><a href="#problema">2. O problema</a><a href="#responsabilidade">3. Responsabilidade</a><a href="#fluxo">4. Fluxo completo</a><a href="#regra-negocio">5. Regra de negócio</a></div></details>
+<details class="nav-group" open><summary>As camadas</summary><div class="nav-links"><a href="#route">6. Route</a><a href="#controller">7. Controller</a><a href="#service">8. Service / use case</a><a href="#repository">9. Repository</a><a href="#schema">10. Schema</a><a href="#mapper">11. Mapper</a><a href="#types">12. Types e DTOs</a></div></details>
+<details class="nav-group"><summary>Design e dependências</summary><div class="nav-links"><a href="#dependencias">13. Dependências</a><a href="#injecao">14. Injeção</a><a href="#interfaces">15. Interfaces</a><a href="#transacoes">16. Transações</a><a href="#concorrencia">17. Concorrência</a><a href="#pureza">18. Regras puras</a></div></details>
+<details class="nav-group"><summary>Organização</summary><div class="nav-links"><a href="#por-camada">19. Por camada</a><a href="#por-modulo">20. Por módulo</a><a href="#shared">21. Shared</a><a href="#frontend">22. Comparação frontend</a><a href="#crescimento">23. Quando separar</a></div></details>
+<details class="nav-group"><summary>Prática</summary><div class="nav-links"><a href="#anti-patterns">24. Erros comuns</a><a href="#edge-cases">25. Edge cases</a><a href="#exemplo">26. Exemplo integrado</a><a href="#testabilidade">27. Testabilidade</a><a href="#exercicios">28. Exercícios</a><a href="#mini-projeto">29. Mini projeto</a><a href="#checklist">30. Checklist</a><a href="#referencias">31. Referências</a></div></details>
+<div class="nav-progress"><strong>O que esta fase cobre</strong><span>Como separar tradução HTTP, regras de negócio e persistência sem criar abstrações vazias ou acoplamento desnecessário.</span></div></nav></aside><main><div class="content"><section class="phase" id="fase6"><span class="tag">Fase 6</span><h1>Controllers, services, repositories e regras de negócio</h1><div class="meta"><span class="pill">Express 5</span><span class="pill">TypeScript</span><span class="pill">Arquitetura em camadas</span><span class="pill">Regras de negócio</span><span class="pill">Sistema de pedidos</span></div>
+<p>Esta fase ensina a separar responsabilidades sem transformar a aplicação em uma coleção de arquivos vazios. A meta não é seguir uma arquitetura por aparência, mas criar limites que tornem o código compreensível, testável e seguro para evoluir.</p><div class="callout"><strong>Objetivo:</strong> reconhecer o papel de routes, controllers, services, repositories, schemas, mappers e DTOs; decidir onde cada regra pertence; controlar dependências; organizar módulos; e implementar um fluxo de pedidos com regras reais de estoque, pagamento, cupom e cancelamento.</div>
+<div class="pipeline">requisição HTTP
+    ↓
+route + middlewares + schema
+    ↓
+controller — traduz HTTP
+    ↓
+service / use case — executa o negócio
+    ↓
+repository — lê e grava dados
+    ↓
+service decide o resultado
+    ↓
+controller traduz para HTTP
+    ↓
+resposta</div>
+<h3 id="modelo">1 — Modelo mental</h3><div class="flow"><div><strong>1.</strong> A borda HTTP recebe uma intenção em formato de rota, parâmetros e body.</div><div><strong>2.</strong> O schema garante que a entrada tem formato aceitável.</div><div><strong>3.</strong> O controller extrai contexto HTTP e chama um caso de uso.</div><div><strong>4.</strong> O service consulta dados e aplica regras de negócio.</div><div><strong>5.</strong> O repository esconde detalhes de persistência.</div><div><strong>6.</strong> O resultado volta e é traduzido para uma resposta HTTP.</div></div><div class="danger"><strong>Regra central:</strong> uma camada não existe para mover linhas de lugar. Ela deve possuir uma responsabilidade identificável e reduzir algum tipo de acoplamento.</div>
+<h3 id="problema">2 — O problema do handler que faz tudo</h3><pre><code>app.post("/orders", async (request, response) =&gt; {
+  const input = createOrderSchema.parse(request.body);
+  const product = await prisma.product.findUnique({ where: { id: input.productId } });
+  if (!product) return response.status(404).json({ error: "Produto não encontrado" });
+  if (!product.active) return response.status(409).json({ error: "Produto inativo" });
+  if (input.quantity &lt;= 0) return response.status(422).json({ error: "Quantidade inválida" });
+  if (product.stock &lt; input.quantity) return response.status(409).json({ error: "Estoque insuficiente" });
+  const order = await prisma.order.create({ data: { /* ... */ } });
+  return response.status(201).json(order);
+});</code></pre><p>O código pode funcionar, mas mistura protocolo HTTP, validação, persistência, regras, cálculo e serialização. Ao crescer, cada mudança exige entender tudo ao mesmo tempo.</p>
+<h3 id="responsabilidade">3 — Responsabilidade e motivo para mudar</h3><p>Uma forma útil de pensar responsabilidade é perguntar: <strong>por qual motivo este código mudaria?</strong></p><table><thead><tr><th>Parte</th><th>Muda quando...</th></tr></thead><tbody><tr><td>Route</td><td>a URL, método ou pipeline de middlewares muda</td></tr><tr><td>Controller</td><td>o contrato HTTP ou formato da resposta muda</td></tr><tr><td>Service</td><td>uma regra ou fluxo da aplicação muda</td></tr><tr><td>Repository</td><td>a estratégia de persistência ou consulta muda</td></tr><tr><td>Schema</td><td>o formato permitido na fronteira muda</td></tr><tr><td>Mapper</td><td>a representação exposta ou persistida muda</td></tr></tbody></table>
+<h3 id="fluxo">4 — Fluxo completo e direção das dependências</h3><div class="pipeline">route → controller → service → repository
+            ↓            ↓
+          HTTP       regras de negócio
+
+schema protege a entrada
+mapper protege a saída</div><p>A seta representa conhecimento direto. O repository não deveria importar Express. O service não deveria receber <code>Request</code> nem devolver <code>Response</code>. Quanto mais para dentro, menos o código deve saber sobre transporte.</p>
+<h3 id="regra-negocio">5 — O que é uma regra de negócio</h3><p>Regra de negócio é uma restrição, decisão ou cálculo que existe por causa do domínio da aplicação, não por causa do Express.</p><div class="grid"><div class="card"><h4>Regras de formato</h4><ul><li>quantity deve ser número inteiro positivo.</li><li>couponCode tem no máximo 40 caracteres.</li></ul><p>Normalmente ficam no schema.</p></div><div class="card"><h4>Regras de negócio</h4><ul><li>produto inativo não pode ser comprado.</li><li>pedido pago não pode ser alterado.</li><li>cancelar restaura estoque.</li></ul><p>Normalmente ficam no service/domínio.</p></div></div><div class="warning"><strong>Validade sintática não é validade de negócio:</strong> um UUID pode estar bem formado e ainda representar um produto inexistente ou indisponível.</div>
+<h3 id="route">6 — Route: URL, método e pipeline</h3><pre><code>ordersRouter.post(
+  "/",
+  authenticate,
+  validate({ body: createOrderSchema }),
+  orderController.create,
+);</code></pre><p>A route associa o endpoint às etapas. Ela não deve calcular total, consultar estoque ou montar queries extensas.</p>
+<h3 id="controller">7 — Controller: traduz HTTP para aplicação</h3><pre><code>export class OrderController {
+  constructor(private readonly createOrder: CreateOrderService) {}
+
+  create = async (request: Request, response: Response): Promise&lt;void&gt; =&gt; {
+    const input = response.locals.validated.body;
+    const userId = response.locals.auth.userId;
+
+    const order = await this.createOrder.execute({ userId, ...input });
+
+    response.status(201).json(toOrderResponse(order));
+  };
+}</code></pre><p>O controller conhece HTTP: status, headers, request, response e autenticação já extraída. Ele orquestra pouco e não decide regras do domínio.</p><div class="note"><strong>Teste prático:</strong> se você precisaria copiar a regra para executar o mesmo caso de uso por uma fila ou CLI, ela provavelmente não pertence ao controller.</div>
+<h3 id="service">8 — Service / use case: executa o negócio</h3><pre><code>export class CreateOrderService {
+  constructor(
+    private readonly products: ProductRepository,
+    private readonly orders: OrderRepository,
+  ) {}
+
+  async execute(input: CreateOrderInput): Promise&lt;Order&gt; {
+    if (input.items.length === 0) throw new EmptyOrderError();
+
+    const products = await this.products.findManyByIds(
+      input.items.map(item =&gt; item.productId),
+    );
+
+    const order = Order.create({ customerId: input.userId, items: input.items, products });
+    await this.orders.save(order);
+    return order;
+  }
+}</code></pre><p>O service representa uma ação da aplicação: criar pedido, pagar pedido, cancelar pedido. Nomes orientados a caso de uso costumam ser mais precisos que um enorme <code>OrderService</code> genérico.</p>
+<h3 id="repository">9 — Repository: lê e grava dados</h3><pre><code>export interface OrderRepository {
+  findById(id: string): Promise&lt;Order | null&gt;;
+  save(order: Order): Promise&lt;void&gt;;
+}
+
+export class InMemoryOrderRepository implements OrderRepository {
+  private readonly items = new Map&lt;string, Order&gt;();
+
+  async findById(id: string): Promise&lt;Order | null&gt; {
+    return this.items.get(id) ?? null;
+  }
+
+  async save(order: Order): Promise&lt;void&gt; {
+    this.items.set(order.id, order);
+  }
+}</code></pre><p>O repository expressa operações necessárias pelo domínio. Ele não deve virar apenas um espelho de todos os métodos do ORM.</p><div class="warning"><strong>Evite abstração cosmética:</strong> um método que apenas chama <code>prisma.order.create(data)</code> pode ser aceitável, mas só vale a camada se ela criar um limite útil: consultas próprias, mapeamento, substituição em testes ou isolamento do ORM.</div>
+<h3 id="schema">10 — Schema: valida a fronteira</h3><pre><code>const createOrderSchema = z.strictObject({
+  items: z.array(z.object({
+    productId: z.uuid(),
+    quantity: z.number().int().positive(),
+  })).min(1),
+  couponCode: z.string().trim().max(40).optional(),
+});</code></pre><p>O schema verifica forma, tipos, limites básicos e normalização. Ele não deve consultar banco para decidir toda regra do domínio.</p>
+<h3 id="mapper">11 — Mapper: traduz representações</h3><pre><code>export function toOrderResponse(order: Order): OrderResponse {
+  return {
+    id: order.id,
+    status: order.status,
+    totalInCents: order.totalInCents,
+    items: order.items.map(item =&gt; ({
+      productId: item.productId,
+      quantity: item.quantity,
+      unitPriceInCents: item.unitPriceInCents,
+    })),
+    createdAt: order.createdAt.toISOString(),
+  };
+}</code></pre><p>Não exponha diretamente modelos do ORM. O mapper impede vazamento de campos internos, converte datas e mantém o contrato da API explícito.</p>
+<h3 id="types">12 — Types, DTOs, entidades e contratos</h3><table><thead><tr><th>Tipo</th><th>Função</th></tr></thead><tbody><tr><td><code>CreateOrderBody</code></td><td>entrada HTTP validada</td></tr><tr><td><code>CreateOrderInput</code></td><td>entrada do caso de uso, incluindo contexto como userId</td></tr><tr><td><code>Order</code></td><td>estado e comportamento do domínio</td></tr><tr><td><code>OrderRecord</code></td><td>formato usado na persistência</td></tr><tr><td><code>OrderResponse</code></td><td>contrato JSON público</td></tr></tbody></table><p>Esses formatos podem coincidir em projetos pequenos, mas são conceitos diferentes. Separá-los quando necessário reduz acoplamento.</p>
+<h3 id="dependencias">13 — Dependências e acoplamento</h3><p>Uma dependência é algo que uma parte precisa conhecer para funcionar. Dependências inevitáveis devem apontar para direções previsíveis.</p><div class="columns"><div class="card"><h4>Acoplamento aceitável</h4><ul><li>controller conhece service.</li><li>service conhece contrato do repository.</li><li>implementação do repository conhece Prisma.</li></ul></div><div class="card"><h4>Acoplamento problemático</h4><ul><li>service importa <code>Response</code>.</li><li>entidade chama Prisma diretamente.</li><li>repository decide status HTTP.</li></ul></div></div>
+<h3 id="injecao">14 — Injeção de dependências sem framework</h3><pre><code>const productRepository = new PrismaProductRepository(prisma);
+const orderRepository = new PrismaOrderRepository(prisma);
+const createOrderService = new CreateOrderService(productRepository, orderRepository);
+const orderController = new OrderController(createOrderService);</code></pre><p>Injeção de dependências significa fornecer colaboradores pelo lado de fora. Não exige container ou decorators. Construtores explícitos são suficientes em muitos projetos.</p>
+<h3 id="interfaces">15 — Interfaces: quando ajudam</h3><p>Interfaces ajudam quando existe uma fronteira relevante: banco real versus memória, provedor de pagamento, relógio, gerador de IDs, e-mail ou fila.</p><pre><code>export interface Clock { now(): Date; }
+export interface PaymentGateway {
+  charge(input: ChargeInput): Promise&lt;ChargeResult&gt;;
+}</code></pre><div class="danger"><strong>Não crie interface por ritual:</strong> uma interface com uma única implementação não é automaticamente ruim, mas precisa justificar o custo com testabilidade, isolamento de tecnologia ou estabilidade do contrato.</div>
+<h3 id="transacoes">16 — Transações e regras que atravessam repositories</h3><p>Criar pedido pode reduzir estoque e gravar o pedido. Se uma operação falhar depois da outra, o sistema fica inconsistente. Esse conjunto deve ser atômico.</p><pre><code>await unitOfWork.run(async ({ products, orders }) =&gt; {
+  await products.decreaseStock(items);
+  await orders.save(order);
+});</code></pre><p>A transação é uma preocupação de persistência, mas o service define quais operações precisam acontecer juntas. A implementação concreta pode usar a transação do ORM.</p>
+<h3 id="concorrencia">17 — Concorrência: estoque não é apenas um if</h3><pre><code>if (product.stock &lt; quantity) throw new InsufficientStockError();
+await products.decreaseStock(product.id, quantity);</code></pre><p>Duas requisições podem ler o mesmo estoque antes da redução. A solução real precisa de atualização condicional, lock, controle otimista ou outra estratégia do banco.</p><div class="warning"><strong>Regra em memória não garante consistência:</strong> o service expressa a intenção, e o repository deve oferecer uma operação segura, como <code>reserveStock()</code>, cujo sucesso é decidido atomicamente.</div>
+<h3 id="pureza">18 — Regras puras e entidades</h3><pre><code>export function calculateOrderTotal(items: readonly PricedItem[]): number {
+  return items.reduce((total, item) =&gt; total + item.unitPriceInCents * item.quantity, 0);
+}</code></pre><p>Regras puras não acessam rede, banco ou relógio global. São fáceis de testar. Regras que dependem de horário devem receber um relógio ou o instante atual.</p>
+<h3 id="por-camada">19 — Estrutura inicial por camada</h3><pre><code>src/
+├── app.ts
+├── server.ts
+├── routes/
+├── controllers/
+├── services/
+├── repositories/
+├── middlewares/
+├── schemas/
+├── errors/
+└── config/</code></pre><p>É simples e didática. Em aplicações pequenas, localizar “todos os controllers” é fácil. Com muitos módulos, arquivos do mesmo recurso ficam distantes.</p>
+<h3 id="por-modulo">20 — Estrutura por módulo</h3><pre><code>src/
+├── modules/
+│   ├── orders/
+│   │   ├── order.routes.ts
+│   │   ├── order.controller.ts
+│   │   ├── create-order.service.ts
+│   │   ├── cancel-order.service.ts
+│   │   ├── order.repository.ts
+│   │   ├── order.schema.ts
+│   │   ├── order.mapper.ts
+│   │   └── order.types.ts
+│   └── products/
+└── shared/</code></pre><p>Organizar por feature favorece coesão: arquivos que mudam juntos ficam próximos. Não significa que tudo dentro do módulo pode se importar livremente.</p>
+<h3 id="shared">21 — A pasta <code>shared</code></h3><p><code>shared</code> deve conter elementos realmente compartilhados: configuração, banco, logger, middleware genérico e abstrações estáveis. Evite transformá-la em uma gaveta de utilitários sem dono.</p>
+<h3 id="frontend">22 — Comparação aproximada com frontend</h3><table><thead><tr><th>Frontend</th><th>Backend</th></tr></thead><tbody><tr><td>evento ou rota da UI</td><td>rota HTTP</td></tr><tr><td>controller/hook da tela</td><td>controller</td></tr><tr><td>service de chamada/regra</td><td>service / use case</td></tr><tr><td>cache/estado remoto</td><td>repository / banco</td></tr><tr><td>schema de formulário</td><td>schema da API</td></tr><tr><td>view model</td><td>response DTO / mapper</td></tr></tbody></table><p>A comparação ajuda, mas não é identidade. O backend é a autoridade das regras e precisa lidar com concorrência, persistência, segurança e múltiplos clientes.</p>
+<h3 id="crescimento">23 — Quando separar arquivos e classes</h3><ul><li>Separe quando existe uma responsabilidade identificável.</li><li>Separe quando a parte pode ser testada isoladamente.</li><li>Separe quando a dependência tecnológica precisa ficar contida.</li><li>Não separe uma função de três linhas apenas para obedecer a uma árvore de pastas.</li><li>Comece simples e extraia quando o limite ficar claro.</li></ul><div class="note"><strong>Arquitetura saudável é proporcional:</strong> um CRUD pequeno pode usar funções e módulos simples. Um fluxo de pagamento merece limites mais fortes.</div>
+<h3 id="anti-patterns">24 — Erros comuns</h3><div class="grid"><div class="card"><h4>Controller gordo</h4><p>Consulta banco, calcula, valida regra e serializa tudo.</p></div><div class="card"><h4>Service HTTP</h4><p>Recebe <code>Request</code> ou devolve status code.</p></div><div class="card"><h4>Repository genérico</h4><p>CRUD universal que não expressa operações do domínio.</p></div><div class="card"><h4>Entidade anêmica por obrigação</h4><p>Todo comportamento fica em services gigantes.</p></div><div class="card"><h4>Arquivo vazio</h4><p>Cada camada apenas chama a próxima sem acrescentar limite.</p></div><div class="card"><h4>ORM vazando</h4><p>Tipos e modelos do Prisma atravessam toda a aplicação.</p></div></div>
+<h3 id="edge-cases">25 — Edge cases arquiteturais e de negócio</h3><ul><li>Pedido sem itens.</li><li>Mesmo produto repetido em várias linhas.</li><li>Produto removido entre validação e gravação.</li><li>Produto ativo ao consultar e inativo ao confirmar.</li><li>Estoque suficiente para uma requisição, mas não para duas concorrentes.</li><li>Cupom expira exatamente durante a criação.</li><li>Cupom válido, mas incompatível com o cliente ou produtos.</li><li>Total calculado com preço antigo enquanto o catálogo muda.</li><li>Pedido pago recebe tentativa de edição ou cancelamento.</li><li>Cancelamento chamado duas vezes.</li><li>Estoque restaurado parcialmente e operação falha.</li><li>Gateway cobra, mas a gravação do pagamento falha.</li><li>Retry cria pedido ou cobrança duplicada.</li></ul><p>Edge cases mostram por que separar responsabilidades importa: validação, regra, transação, idempotência e integração são problemas diferentes.</p>
+<h3 id="exemplo">26 — Exemplo integrado: cancelar pedido</h3><pre><code>export class CancelOrderService {
+  constructor(
+    private readonly orders: OrderRepository,
+    private readonly inventory: InventoryRepository,
+    private readonly unitOfWork: UnitOfWork,
+    private readonly clock: Clock,
+  ) {}
+
+  async execute(input: { orderId: string; actorId: string }): Promise&lt;Order&gt; {
+    return this.unitOfWork.run(async () =&gt; {
+      const order = await this.orders.findById(input.orderId);
+      if (!order) throw new OrderNotFoundError();
+
+      order.cancel({ actorId: input.actorId, cancelledAt: this.clock.now() });
+      await this.inventory.restore(order.items);
+      await this.orders.save(order);
+
+      return order;
+    });
+  }
+}</code></pre><pre><code>cancel = async (request: Request, response: Response): Promise&lt;void&gt; =&gt; {
+  const { orderId } = response.locals.validated.params;
+  const actorId = response.locals.auth.userId;
+  const order = await this.cancelOrder.execute({ orderId, actorId });
+  response.status(200).json(toOrderResponse(order));
+};</code></pre><p>O controller traduz. O service coordena. A entidade protege estado. Repositories persistem. A transação garante atomicidade.</p>
+<h3 id="testabilidade">27 — Como as camadas melhoram testes</h3><pre><code>it("bloqueia produto inativo", async () =&gt; {
+  const products = new InMemoryProductRepository([
+    productFactory({ id: "p1", active: false }),
+  ]);
+  const orders = new InMemoryOrderRepository();
+  const service = new CreateOrderService(products, orders);
+
+  await expect(service.execute({
+    userId: "u1",
+    items: [{ productId: "p1", quantity: 1 }],
+  })).rejects.toBeInstanceOf(InactiveProductError);
+});</code></pre><p>O teste de regra não precisa subir Express nem banco real. Testes de controller verificam tradução HTTP; testes de repository verificam integração com o banco.</p>
+<h3 id="exercicios">28 — Exercícios orientados</h3><ol><li>Pegue uma rota que contém acesso a banco e extraia apenas o caso de uso.</li><li>Liste o motivo de mudança de cada arquivo criado.</li><li>Crie um repository em memória e faça o mesmo service funcionar sem Express.</li><li>Modele <code>payOrder</code> sem retornar status HTTP.</li><li>Crie um mapper que nunca exponha <code>internalNotes</code>.</li><li>Decida quais regras de cupom pertencem ao schema e quais pertencem ao service.</li><li>Desenhe uma operação atômica de reserva de estoque.</li><li>Refatore um <code>OrderService</code> genérico em casos de uso menores.</li></ol>
+<h3 id="mini-projeto">29 — Mini projeto: sistema de pedidos</h3><p>Implemente uma API de pedidos em memória primeiro; depois ela poderá receber Prisma na Fase 9.</p><h4>29.1 — Recursos e rotas</h4><pre><code>POST   /orders
+GET    /orders/:orderId
+POST   /orders/:orderId/pay
+POST   /orders/:orderId/cancel
+GET    /orders?status=PENDING&amp;page=1&amp;limit=20</code></pre><h4>29.2 — Regras obrigatórias</h4><ul><li>Pedido vazio é proibido.</li><li>Produto inativo é bloqueado.</li><li>Quantidade deve ser positiva.</li><li>Estoque precisa ser suficiente.</li><li>Cupom expirado não pode ser aplicado.</li><li>Pedido pago é imutável.</li><li>Cancelamento restaura estoque.</li><li>Cancelamento repetido não restaura estoque duas vezes.</li><li>Preço usado no pedido deve ser registrado como snapshot.</li></ul><h4>29.3 — Camadas mínimas</h4><pre><code>orders/
+├── order.routes.ts
+├── order.controller.ts
+├── create-order.service.ts
+├── pay-order.service.ts
+├── cancel-order.service.ts
+├── order.repository.ts
+├── order.schema.ts
+├── order.mapper.ts
+├── order.entity.ts
+├── order.errors.ts
+└── order.types.ts</code></pre><h4>29.4 — Critérios</h4><ul><li>Nenhum service importa Express.</li><li>Nenhum repository decide status HTTP.</li><li>Schemas não substituem regras de negócio.</li><li>Controllers não consultam banco diretamente.</li><li>Erros do domínio são específicos.</li><li>Casos de uso funcionam com repositories em memória.</li><li>Cancelamento e restauração de estoque são tratados como uma unidade lógica.</li></ul>
+<h3 id="checklist">30 — Checklist para avançar</h3><ul class="checklist"><li>Consigo explicar o motivo de existir de cada camada.</li><li>Sei diferenciar validação de formato e regra de negócio.</li><li>Meu controller apenas traduz HTTP e chama um caso de uso.</li><li>Meu service não depende de Express.</li><li>Meu repository não expõe detalhes desnecessários do ORM.</li><li>Sei quando uma interface ajuda e quando é ritual.</li><li>Entendo por que transações são necessárias em operações compostas.</li><li>Reconheço que concorrência exige garantia no banco.</li><li>Consigo organizar por camada e por módulo.</li><li>Sei testar regras sem iniciar servidor.</li><li>Consigo identificar uma abstração vazia.</li><li>Implementei o sistema de pedidos e seus edge cases essenciais.</li></ul>
+<h3 id="referencias">31 — Referências</h3><div class="columns"><div><h4>Leituras técnicas</h4><ul><li><a href="https://expressjs.com/en/guide/routing.html" target="_blank" rel="noopener">Express — Routing</a></li><li><a href="https://www.typescriptlang.org/docs/handbook/2/classes.html" target="_blank" rel="noopener">TypeScript — Classes</a></li><li><a href="https://www.typescriptlang.org/docs/handbook/2/objects.html" target="_blank" rel="noopener">TypeScript — Object Types</a></li><li><a href="https://martinfowler.com/eaaCatalog/repository.html" target="_blank" rel="noopener">Martin Fowler — Repository</a></li><li><a href="https://martinfowler.com/eaaCatalog/serviceLayer.html" target="_blank" rel="noopener">Martin Fowler — Service Layer</a></li></ul></div><div><h4>Livros</h4><ul><li><em>Clean Architecture</em>, Robert C. Martin.</li><li><em>Patterns of Enterprise Application Architecture</em>, Martin Fowler.</li><li><em>Domain-Driven Design Distilled</em>, Vaughn Vernon.</li><li><em>Implementing Domain-Driven Design</em>, Vaughn Vernon.</li><li><em>Node.js Design Patterns</em>, Mario Casciaro e Luciano Mammino.</li><li><em>Designing Data-Intensive Applications</em>, Martin Kleppmann.</li></ul></div></div><div class="callout"><strong>Próxima fase:</strong> com as responsabilidades separadas, a Fase 7 poderá criar erros de aplicação e um tratamento centralizado sem espalhar respostas HTTP por todos os casos de uso.</div>
+</section><div class="footer-note">Fase 6 · Camadas e regras de negócio — Trilha Express 5 com TypeScript</div></div></main></div><script>const links=[...document.querySelectorAll('#toc a')];const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));},{rootMargin:'-15% 0px -70% 0px',threshold:[0,.2,.5]});sections.forEach(s=>observer.observe(s));</script></body></html>

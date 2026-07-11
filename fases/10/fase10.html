@@ -1,0 +1,520 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fase 10 — Autenticação | Express 5 + TypeScript</title><style>
+:root{--bg:#08111f;--panel:#0d1a2b;--panel2:#102239;--line:#213852;--text:#eaf2ff;--muted:#a8bad0;--accent:#64d8cb;--accent2:#82aaff;--warn:#ffd580;--danger:#ff8f9c;--code:#07101c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(135deg,#07101c,#0b1728 55%,#0b1f2e);color:var(--text);font:16px/1.72 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+.layout{display:grid;grid-template-columns:310px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:rgba(7,16,28,.94);backdrop-filter:blur(12px)}
+.brand{font-weight:850;font-size:1.12rem}.subtitle{color:var(--muted);font-size:.9rem;margin:6px 0 22px}.nav-group{border-top:1px solid var(--line);padding:10px 0}.nav-group summary{cursor:pointer;font-weight:750;color:#dbe9fb}.nav-links{display:grid;gap:2px;padding-top:7px}.nav-links a{color:var(--muted);text-decoration:none;font-size:.86rem;padding:5px 8px;border-radius:7px}.nav-links a:hover,.nav-links a.active{color:var(--text);background:#142a43}.nav-progress{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#0d1d30}.nav-progress strong{display:block;margin-bottom:5px}.nav-progress span{display:block;color:var(--muted);font-size:.84rem;line-height:1.5}
+main{min-width:0}.content{max-width:1040px;margin:auto;padding:56px 54px 100px}.phase>h1{font-size:clamp(2.3rem,5vw,4.6rem);line-height:1.03;letter-spacing:-.045em;margin:.25rem 0 1rem}.phase>p:first-of-type{font-size:1.16rem;color:#cad8e9}.tag,.pill{display:inline-flex;border:1px solid #31526e;border-radius:999px;padding:5px 10px;color:var(--accent);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.meta{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 28px}.pill{color:#c8dcff;text-transform:none;letter-spacing:0;background:#0d2137}
+h3{font-size:1.65rem;line-height:1.2;margin:62px 0 16px;padding-top:16px;border-top:1px solid var(--line)}h4{font-size:1.08rem;margin:28px 0 8px;color:#dceaff}p,li{color:#c2d0e0}strong{color:#f4f8ff}a{color:#89d7ff}code{font:0.91em ui-monospace,SFMono-Regular,Consolas,monospace;color:#b8f5e9;background:#10243a;padding:.12em .34em;border-radius:5px}pre{overflow:auto;background:var(--code);border:1px solid var(--line);border-radius:14px;padding:19px 21px;line-height:1.55}pre code{background:none;padding:0;color:#d8e8f7}
+.callout,.warning,.danger{margin:22px 0;padding:18px 20px;border:1px solid #2e5866;border-left:4px solid var(--accent);border-radius:12px;background:#0d2130}.warning{border-left-color:var(--warn);background:#241e12}.danger{border-left-color:var(--danger);background:#28151c}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card,.flow>div{padding:18px;border:1px solid var(--line);border-radius:13px;background:var(--panel)}.flow{display:grid;gap:10px}.pipeline{white-space:pre;overflow:auto;text-align:center;padding:22px;border:1px solid var(--line);border-radius:13px;background:#091521;color:#c9f6ed;font-family:ui-monospace,monospace}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line)}th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#ecf5ff;background:#10243a}.checklist li{margin:8px 0}.footer-note{margin-top:68px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+@media(max-width:900px){.layout{display:block}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}.content{padding:38px 22px 80px}.columns{grid-template-columns:1fr}}
+</style></head><body><div class="layout"><aside><div class="brand">Express 5 + TypeScript</div><div class="subtitle">Fase 10 · Autenticação e autorização</div><nav id="toc"><details class="nav-group" open><summary>Fundamentos</summary><div class="nav-links"><a href="#modelo-mental">1. Modelo mental</a><a href="#identidade">2. Identidade, autenticação e autorização</a><a href="#fluxo">3. Fluxo completo</a><a href="#senhas">4. Senhas não são armazenadas</a><a href="#hash">5. Hash, salt e pepper</a><a href="#algoritmos">6. Argon2id, scrypt e bcrypt</a><a href="#cadastro">7. Cadastro seguro</a><a href="#login">8. Login seguro</a></div></details>
+<details class="nav-group" ><summary>Sessões e tokens</summary><div class="nav-links"><a href="#sessao">9. Sessões</a><a href="#cookies">10. Cookies</a><a href="#jwt">11. JWT</a><a href="#comparacao">12. Sessão ou JWT?</a><a href="#access-refresh">13. Access e refresh tokens</a><a href="#rotacao">14. Rotação e reuse detection</a><a href="#logout">15. Logout e revogação</a></div></details>
+<details class="nav-group" ><summary>Navegador e transporte</summary><div class="nav-links"><a href="#cookie-flags">16. HttpOnly, Secure e SameSite</a><a href="#csrf">17. CSRF</a><a href="#cors">18. CORS e credenciais</a></div></details>
+<details class="nav-group" ><summary>Autorização</summary><div class="nav-links"><a href="#middleware">19. Middleware de autenticação</a><a href="#contexto">20. Contexto autenticado</a><a href="#rbac">21. RBAC</a><a href="#ownership">22. Ownership</a><a href="#politicas">23. Políticas de autorização</a></div></details>
+<details class="nav-group" ><summary>Fluxos de conta</summary><div class="nav-links"><a href="#recuperacao">24. Recuperação de senha</a><a href="#email">25. Verificação de e-mail</a><a href="#rate-limit">26. Rate limiting</a><a href="#respostas">27. Respostas e enumeração</a></div></details>
+<details class="nav-group" ><summary>Persistência e prática</summary><div class="nav-links"><a href="#modelagem">28. Modelagem com Prisma</a><a href="#testes">29. Testes</a><a href="#erros">30. Erros comuns</a><a href="#edge-cases">31. Edge cases</a><a href="#estrutura">32. Estrutura sugerida</a><a href="#integrado">33. Exemplo integrado</a><a href="#exercicios">34. Exercícios</a><a href="#mini-projeto">35. Mini projeto</a><a href="#checklist">36. Checklist</a><a href="#referencias">37. Referências</a></div></details><div class="nav-progress"><strong>O que esta fase cobre</strong><span>Como provar identidade, manter sessões, renovar credenciais e autorizar ações sem expor senhas, tokens ou dados de outros usuários.</span></div></nav></aside><main><div class="content">
+<section class="phase" id="fase10">
+<span class="tag">Fase 10</span>
+<h1>Autenticação e autorização</h1>
+<div class="meta"><span class="pill">Express 5</span><span class="pill">TypeScript</span><span class="pill">Prisma</span><span class="pill">Cookies</span><span class="pill">JWT</span><span class="pill">Notas privadas</span></div>
+<p>Autenticação responde <strong>“quem está fazendo esta requisição?”</strong>. Autorização responde <strong>“essa identidade pode executar esta ação sobre este recurso?”</strong>. As duas aparecem juntas com frequência, mas resolvem problemas diferentes.</p>
+<div class="callout"><strong>Objetivo da fase:</strong> construir um sistema de login que trate senha, sessão, tokens, cookies, logout, recuperação de conta e autorização como partes de um mesmo modelo de segurança — não como trechos isolados copiados de um tutorial.</div>
+<div class="pipeline">credencial apresentada
+        ↓
+identidade verificada
+        ↓
+sessão ou tokens emitidos
+        ↓
+requisição autenticada
+        ↓
+permissão + propriedade verificadas
+        ↓
+ação permitida ou negada</div>
+
+<h3 id="modelo-mental">1 — O modelo mental desta fase</h3>
+<div class="flow"><div><strong>1.</strong> O usuário prova uma identidade com uma credencial, como senha ou provedor externo.</div><div><strong>2.</strong> A aplicação não repete o login em cada requisição; ela cria continuidade por sessão ou token.</div><div><strong>3.</strong> O servidor valida a credencial de continuidade e produz um contexto autenticado.</div><div><strong>4.</strong> A regra de autorização avalia papel, permissão, propriedade e estado do recurso.</div><div><strong>5.</strong> Logout, expiração, troca de senha e suspeita de comprometimento precisam encerrar ou limitar essa continuidade.</div></div>
+<p>O ponto mais importante é perceber que <em>estar logado</em> não significa <em>poder fazer qualquer coisa</em>. Também não significa que o servidor deva confiar em um <code>userId</code> enviado no body.</p>
+
+<h3 id="identidade">2 — Identidade, autenticação e autorização</h3>
+<div class="columns"><div class="card"><h4>Identificação</h4><p>O usuário afirma quem é: informa um e-mail, username ou ID.</p></div><div class="card"><h4>Autenticação</h4><p>Ele apresenta uma prova: senha, passkey, código temporário ou identidade federada.</p></div><div class="card"><h4>Autorização</h4><p>A aplicação decide se a identidade autenticada pode executar determinada ação.</p></div><div class="card"><h4>Auditoria</h4><p>O sistema registra quem fez o quê, quando e sobre qual recurso.</p></div></div>
+<div class="warning"><strong>401 e 403:</strong> em geral, <code>401 Unauthorized</code> significa que não há autenticação válida; <code>403 Forbidden</code> significa que a identidade é conhecida, mas não possui autorização. O nome histórico do 401 é confuso.</div>
+
+<h3 id="fluxo">3 — Fluxo completo de autenticação</h3>
+<ol><li><strong>Cadastro:</strong> validar entrada, normalizar e-mail, gerar hash da senha e criar usuário.</li><li><strong>Login:</strong> localizar a conta, comparar a senha de forma segura e aplicar controles contra abuso.</li><li><strong>Emissão:</strong> criar uma sessão opaca ou um par de tokens.</li><li><strong>Persistência no cliente:</strong> configurar cookies e política de transporte.</li><li><strong>Autenticação das rotas:</strong> extrair credencial, validar, carregar contexto mínimo e rejeitar credenciais expiradas ou revogadas.</li><li><strong>Autorização:</strong> verificar papel, permissão e ownership.</li><li><strong>Renovação:</strong> prolongar a sessão de maneira controlada.</li><li><strong>Encerramento:</strong> invalidar a sessão ou família de refresh tokens e limpar cookies.</li></ol>
+
+<h3 id="senhas">4 — Senhas não são armazenadas</h3>
+<p>O banco não deve guardar a senha original nem uma versão reversivelmente criptografada. Deve guardar o resultado de uma função de derivação de chave para senhas. No login, a aplicação executa a função de verificação usando o hash armazenado.</p>
+<pre><code>const user = await usersRepository.findByEmail(email);
+
+if (!user) {
+  throw new InvalidCredentialsError();
+}
+
+const passwordMatches = await passwordHasher.verify(
+  user.passwordHash,
+  password,
+);
+
+if (!passwordMatches) {
+  throw new InvalidCredentialsError();
+}</code></pre>
+<p>Use a mesma resposta para e-mail inexistente e senha incorreta. Caso contrário, a API ajuda um atacante a descobrir quais contas existem.</p>
+
+<h3 id="hash">5 — Hash, salt e pepper</h3>
+<div class="columns"><div><h4>Hash de senha</h4><p>Resultado unidirecional produzido por um algoritmo deliberadamente caro. A verificação compara a senha candidata com o hash armazenado.</p></div><div><h4>Salt</h4><p>Valor aleatório único por senha. Evita hashes iguais para senhas iguais e dificulta tabelas pré-computadas. Bibliotecas modernas normalmente geram e embutem o salt no hash.</p></div><div><h4>Pepper</h4><p>Segredo adicional mantido fora do banco, por exemplo em secret manager. É uma defesa extra, não substitui salt nem algoritmo adequado.</p></div><div><h4>Work factor</h4><p>Configuração de custo. Deve tornar tentativas em massa caras sem causar indisponibilidade no servidor.</p></div></div>
+<div class="danger"><strong>Não invente criptografia.</strong> Não use SHA-256 puro, MD5 ou uma sequência manual de hashes para senhas. Use uma biblioteca reconhecida e mantenha parâmetros versionáveis.</div>
+
+<h3 id="algoritmos">6 — Argon2id, scrypt e bcrypt</h3>
+<p>Para um projeto novo, Argon2id costuma ser a primeira opção; scrypt é uma alternativa sólida. bcrypt ainda é amplamente usado, mas possui limitações, inclusive de tamanho de entrada. O curso pode encapsular a implementação para não acoplar regras de negócio a uma biblioteca.</p>
+<pre><code>export interface PasswordHasher {
+  hash(plainText: string): Promise&lt;string&gt;;
+  verify(hash: string, plainText: string): Promise&lt;boolean&gt;;
+}
+
+export class CreateUserService {
+  constructor(
+    private readonly users: UsersRepository,
+    private readonly hasher: PasswordHasher,
+  ) {}
+}</code></pre>
+<p>Esse contrato melhora testes, permite migração futura e evita espalhar chamadas de biblioteca por controllers e services.</p>
+
+<h3 id="cadastro">7 — Cadastro seguro</h3>
+<ul><li>Valide formato, tamanho e política de senha na fronteira.</li><li>Normalize e-mail de maneira consciente, sem alterar identificadores arbitrariamente.</li><li>Garanta unicidade também no banco.</li><li>Não confie apenas em uma consulta “já existe?”; duas requisições podem competir.</li><li>Gere o hash antes de persistir.</li><li>Nunca retorne <code>passwordHash</code>.</li><li>Considere verificação de e-mail antes de liberar ações sensíveis.</li></ul>
+<pre><code>const email = input.email.trim().toLowerCase();
+
+const passwordHash = await hasher.hash(input.password);
+
+try {
+  const user = await users.create({ email, passwordHash });
+  return toPublicUser(user);
+} catch (error) {
+  if (isUniqueConstraintViolation(error)) {
+    throw new EmailAlreadyInUseError();
+  }
+  throw error;
+}</code></pre>
+
+<h3 id="login">8 — Login seguro</h3>
+<p>O login é uma superfície de ataque. Além de verificar credenciais, precisa limitar tentativas, evitar enumeração, registrar eventos relevantes e controlar contas desabilitadas ou não verificadas.</p>
+<pre><code>const GENERIC_MESSAGE = "E-mail ou senha inválidos.";
+
+if (!user || !(await hasher.verify(user.passwordHash, password))) {
+  throw new InvalidCredentialsError(GENERIC_MESSAGE);
+}
+
+if (user.status !== "ACTIVE") {
+  throw new InvalidCredentialsError(GENERIC_MESSAGE);
+}</code></pre>
+<div class="warning"><strong>Tempo de resposta:</strong> retornar imediatamente para usuário inexistente e executar um hash caro apenas para usuários existentes pode criar diferença mensurável. Sistemas mais sensíveis usam um hash fictício para reduzir esse sinal.</div>
+
+<h3 id="sessao">9 — Sessões</h3>
+<p>Em autenticação baseada em sessão, o navegador recebe um identificador aleatório. O estado real fica no servidor, geralmente em Redis ou banco. O cookie contém somente o identificador opaco.</p>
+<pre><code>type Session = {
+  id: string;
+  userId: string;
+  expiresAt: Date;
+  revokedAt: Date | null;
+};
+
+const session = await sessions.create({
+  userId: user.id,
+  expiresAt: addDays(new Date(), 7),
+});
+
+response.cookie("__Host-session", session.id, cookieOptions);</code></pre>
+<p>Vantagens: revogação simples, estado centralizado e cookie pequeno. Custos: armazenamento e consulta compartilhados quando a aplicação escala horizontalmente.</p>
+
+<h3 id="cookies">10 — Cookies</h3>
+<p>Cookie é um mecanismo HTTP do navegador. O servidor envia <code>Set-Cookie</code>; o navegador armazena o valor e o envia em requisições futuras que correspondam a domínio, path e política de SameSite.</p>
+<pre><code>response.cookie("__Host-refresh", refreshToken, {
+  httpOnly: true,
+  secure: env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/",
+  maxAge: 1000 * 60 * 60 * 24 * 30,
+});</code></pre>
+<p>Cookie não é sinônimo de sessão. Um cookie pode transportar ID de sessão, refresh token ou preferência visual. JWT também não é sinônimo de “armazenar no localStorage”.</p>
+
+<h3 id="jwt">11 — JWT</h3>
+<p>JWT é um formato compacto de claims assinado. A assinatura permite detectar alteração; ela não torna o payload secreto. Qualquer pessoa que possua o token normalmente consegue decodificar o payload.</p>
+<pre><code>type AccessTokenClaims = {
+  sub: string;       // subject: ID do usuário
+  sid: string;       // sessão ou família
+  role: "USER" | "ADMIN";
+  iat: number;
+  exp: number;
+  iss: string;
+  aud: string;
+};</code></pre>
+<ul><li>Valide algoritmo permitido, assinatura, <code>exp</code>, <code>iss</code> e <code>aud</code>.</li><li>Não coloque senha, documentos ou dados sensíveis no payload.</li><li>Mantenha claims pequenas e estáveis.</li><li>Não use JWT só porque a aplicação possui React.</li></ul>
+
+<h3 id="comparacao">12 — Sessão ou JWT?</h3>
+<div class="table-wrap"><table><thead><tr><th>Critério</th><th>Sessão opaca</th><th>Access token JWT</th></tr></thead><tbody><tr><td>Estado no servidor</td><td>Normalmente necessário.</td><td>A validação pode ser local, mas revogação e refresh frequentemente reintroduzem estado.</td></tr><tr><td>Revogação</td><td>Direta: invalidar sessão.</td><td>Access token já emitido pode continuar válido até expirar, salvo mecanismos adicionais.</td></tr><tr><td>Tamanho</td><td>ID pequeno.</td><td>Maior, contendo header, claims e assinatura.</td></tr><tr><td>Arquitetura</td><td>Excelente para aplicação web tradicional e BFF.</td><td>Útil entre serviços e ecossistemas com emissores/consumidores separados.</td></tr><tr><td>Complexidade</td><td>Menor para muitos produtos.</td><td>Maior quando refresh, rotação, chaves e revogação são feitos corretamente.</td></tr></tbody></table></div>
+<div class="callout"><strong>Regra prática:</strong> comece pela opção mais simples que satisfaça a arquitetura. “Stateless” não é uma virtude automática, e refresh token seguro quase sempre exige persistência.</div>
+
+<h3 id="access-refresh">13 — Access token e refresh token</h3>
+<p>O access token autoriza chamadas à API e deve ter vida curta. O refresh token possui vida maior e serve apenas para obter um novo par. Ele é uma credencial de alto valor.</p>
+<div class="pipeline">POST /sessions
+  → access token curto
+  → refresh token longo
+
+GET /notes
+  Authorization: Bearer &lt;access&gt;
+
+POST /sessions/refresh
+  cookie refresh
+  → novo access
+  → novo refresh</div>
+<p>Não use refresh token como access token. Restrinja seu uso ao endpoint de renovação e armazene no servidor somente uma representação segura, como hash do token.</p>
+
+<h3 id="rotacao">14 — Rotação e detecção de reutilização</h3>
+<p>Na rotação, cada refresh consome o token atual e emite outro. O token anterior deixa de ser válido. Os tokens pertencem a uma família para que reutilização de um token antigo possa indicar vazamento.</p>
+<pre><code>await prisma.$transaction(async (tx) =&gt; {
+  const stored = await tx.refreshToken.findUnique({
+    where: { tokenHash },
+  });
+
+  if (!stored || stored.revokedAt || stored.expiresAt &lt;= new Date()) {
+    throw new InvalidRefreshTokenError();
+  }
+
+  await tx.refreshToken.update({
+    where: { id: stored.id },
+    data: { revokedAt: new Date(), replacedById: nextTokenId },
+  });
+
+  await tx.refreshToken.create({ data: nextTokenData });
+});</code></pre>
+<p>A operação precisa ser atômica. Duas renovações simultâneas exigem uma política clara: uma vence e a outra é rejeitada, ou existe uma pequena janela de tolerância cuidadosamente projetada.</p>
+
+<h3 id="logout">15 — Logout e revogação</h3>
+<p>Limpar o cookie no navegador não basta quando existe credencial válida no servidor ou um refresh token roubado. Logout deve revogar a sessão ou token atual. “Sair de todos os dispositivos” revoga toda a família ou incrementa uma versão de sessão da conta.</p>
+<pre><code>await sessions.revokeById(auth.sessionId);
+
+response.clearCookie("__Host-refresh", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "lax",
+  path: "/",
+});
+
+return response.status(204).end();</code></pre>
+<p>Os atributos usados em <code>clearCookie</code> precisam corresponder aos atributos relevantes usados na criação.</p>
+
+<h3 id="cookie-flags">16 — HttpOnly, Secure e SameSite</h3>
+<div class="columns"><div class="card"><h4>HttpOnly</h4><p>Impede leitura pelo JavaScript da página. Reduz roubo direto por XSS, embora não impeça um script malicioso de disparar requisições.</p></div><div class="card"><h4>Secure</h4><p>Faz o navegador enviar o cookie apenas por HTTPS, com exceções de desenvolvimento para localhost.</p></div><div class="card"><h4>SameSite</h4><p>Controla envio em contexto cross-site. <code>Strict</code>, <code>Lax</code> e <code>None</code> representam compromissos diferentes.</p></div><div class="card"><h4>Prefixo __Host-</h4><p>Exige <code>Secure</code>, <code>Path=/</code> e ausência de <code>Domain</code>, restringindo o cookie ao host.</p></div></div>
+<div class="warning"><code>SameSite=None</code> exige <code>Secure</code>. Defina SameSite explicitamente; não dependa de defaults de navegador.</div>
+
+<h3 id="csrf">17 — CSRF</h3>
+<p>CSRF explora credenciais enviadas automaticamente pelo navegador, especialmente cookies. Um site malicioso tenta induzir o navegador autenticado a executar uma ação em outro site.</p>
+<ul><li>Use SameSite adequado como uma camada.</li><li>Para cenários cross-site, use token anti-CSRF ou padrão equivalente.</li><li>Valide <code>Origin</code> ou <code>Referer</code> em ações sensíveis quando apropriado.</li><li>Não aceite mudança de estado por GET.</li><li>Reautentique ou exija confirmação para ações de alto impacto.</li></ul>
+<pre><code>const origin = request.get("origin");
+
+if (!origin || !allowedOrigins.has(origin)) {
+  throw new ForbiddenError("Origem não permitida.");
+}</code></pre>
+<p>HttpOnly não resolve CSRF. CORS também não deve ser tratado como mecanismo primário de autorização.</p>
+
+<h3 id="cors">18 — CORS e credenciais</h3>
+<p>CORS é uma política aplicada por navegadores que controla leitura de respostas cross-origin. Para enviar cookies em uma requisição cross-origin, o frontend usa credenciais e o servidor autoriza uma origem específica.</p>
+<pre><code>app.use(cors({
+  origin: "https://app.example.com",
+  credentials: true,
+}));</code></pre>
+<pre><code>await fetch("https://api.example.com/sessions/refresh", {
+  method: "POST",
+  credentials: "include",
+});</code></pre>
+<div class="danger"><strong>Não combine credenciais com origem curinga.</strong> Quando há cookies, responda apenas para origens explicitamente confiáveis e mantenha a política coerente com CSRF.</div>
+
+<h3 id="middleware">19 — Middleware de autenticação</h3>
+<p>O middleware transforma uma credencial externa em contexto confiável para as próximas camadas. Ele não deve assumir que decodificar um JWT equivale a verificar assinatura e claims.</p>
+<pre><code>export const authenticate: RequestHandler = async (
+  request,
+  response,
+  next,
+) =&gt; {
+  const token = extractBearerToken(request);
+
+  if (!token) {
+    throw new UnauthorizedError();
+  }
+
+  const claims = await accessTokens.verify(token);
+
+  response.locals.auth = {
+    userId: claims.sub,
+    sessionId: claims.sid,
+    role: claims.role,
+  };
+
+  next();
+};</code></pre>
+
+<h3 id="contexto">20 — Contexto autenticado</h3>
+<p>Use um objeto pequeno e explícito. Não espalhe o payload inteiro do token pela aplicação. Quando a regra precisa do usuário atual, carregue os dados necessários do repositório.</p>
+<pre><code>type AuthContext = {
+  userId: string;
+  sessionId: string;
+  role: "USER" | "ADMIN";
+};
+
+declare global {
+  namespace Express {
+    interface Locals {
+      auth: AuthContext;
+    }
+  }
+}</code></pre>
+<p>Outra opção é tipar <code>Response&lt;Body, AuthLocals&gt;</code> localmente. Evite afirmações globais que tornem <code>auth</code> aparentemente obrigatório em rotas públicas.</p>
+
+<h3 id="rbac">21 — RBAC</h3>
+<p>Role-Based Access Control associa permissões a papéis, como <code>USER</code>, <code>MODERATOR</code> e <code>ADMIN</code>. É útil para capacidades amplas, mas não substitui ownership.</p>
+<pre><code>export function requireRole(
+  ...allowed: AuthContext["role"][]
+): RequestHandler {
+  return (_request, response, next) =&gt; {
+    if (!allowed.includes(response.locals.auth.role)) {
+      throw new ForbiddenError();
+    }
+    next();
+  };
+}</code></pre>
+<p>Evite <code>if (role === "ADMIN")</code> espalhado em dezenas de services. Centralize políticas ou expresse permissões do domínio.</p>
+
+<h3 id="ownership">22 — Ownership</h3>
+<p>Ownership verifica se o recurso pertence ao usuário autenticado ou está legitimamente compartilhado com ele.</p>
+<pre><code>const note = await notesRepository.findById(noteId);
+
+if (!note) {
+  throw new NotFoundError("Note");
+}
+
+if (note.userId !== auth.userId) {
+  throw new ForbiddenError();
+}</code></pre>
+<p>Em muitos sistemas, buscar diretamente por <code>id + userId</code> é melhor: reduz risco de esquecer a checagem e pode responder 404 tanto para inexistente quanto para recurso alheio.</p>
+<pre><code>const note = await notesRepository.findOwnedById({
+  noteId,
+  userId: auth.userId,
+});
+
+if (!note) {
+  throw new NotFoundError("Note");
+}</code></pre>
+
+<h3 id="politicas">23 — Políticas de autorização</h3>
+<p>Autorização pode considerar mais do que papel e dono: status da conta, compartilhamento, organização, plano contratado, horário, estado do recurso e ação solicitada.</p>
+<pre><code>function canUpdateNote(
+  auth: AuthContext,
+  note: Note,
+): boolean {
+  return auth.role === "ADMIN" || note.userId === auth.userId;
+}</code></pre>
+<p>Para regras importantes, prefira funções nomeadas ou serviços de política testáveis. O controller autentica a entrada HTTP; a regra de domínio decide o acesso.</p>
+
+<h3 id="recuperacao">24 — Recuperação de senha</h3>
+<ol><li>Cliente solicita recuperação com e-mail.</li><li>API responde genericamente, exista ou não a conta.</li><li>Servidor gera token aleatório de uso único.</li><li>Banco guarda hash do token, expiração e estado de consumo.</li><li>E-mail contém o token original em URL HTTPS.</li><li>Na redefinição, o token é verificado e consumido atomicamente.</li><li>A senha recebe novo hash e sessões existentes podem ser revogadas.</li></ol>
+<pre><code>type PasswordResetToken = {
+  id: string;
+  userId: string;
+  tokenHash: string;
+  expiresAt: Date;
+  usedAt: Date | null;
+};</code></pre>
+<div class="warning">Não envie senha nova por e-mail. Não use token previsível. Não armazene o token original. Não permita reutilização.</div>
+
+<h3 id="email">25 — Verificação de e-mail</h3>
+<p>O fluxo é semelhante ao de recuperação, mas confirma posse do endereço. O token deve expirar, ser de uso único e apontar para uma finalidade específica.</p>
+<ul><li>Não reutilize token de verificação como token de recuperação.</li><li>Ao trocar o e-mail, marque o novo endereço como não verificado.</li><li>Limite reenvios para evitar spam.</li><li>Considere invalidar tokens antigos quando um novo for emitido.</li><li>Não confunda e-mail verificado com identidade juridicamente comprovada.</li></ul>
+
+<h3 id="rate-limit">26 — Rate limiting</h3>
+<p>Rotas de login, refresh, recuperação, verificação e cadastro precisam de limites próprios. Um único limite global pode ser insuficiente ou prejudicar usuários legítimos.</p>
+<div class="columns"><div class="card"><h4>Por IP</h4><p>Útil contra rajadas, mas NAT e redes corporativas agrupam usuários.</p></div><div class="card"><h4>Por conta</h4><p>Ajuda contra ataques direcionados, mas pode permitir bloqueio malicioso de uma vítima.</p></div><div class="card"><h4>Combinado</h4><p>IP, identificador normalizado, dispositivo, janela e sinais de risco.</p></div><div class="card"><h4>Distribuído</h4><p>Em múltiplas instâncias, use armazenamento compartilhado e operações atômicas.</p></div></div>
+
+<h3 id="respostas">27 — Respostas, status e enumeração</h3>
+<div class="table-wrap"><table><thead><tr><th>Situação</th><th>Status típico</th><th>Observação</th></tr></thead><tbody><tr><td>Login bem-sucedido</td><td>200</td><td>Retorna perfil público e/ou access token.</td></tr><tr><td>Credenciais inválidas</td><td>401</td><td>Mensagem genérica.</td></tr><tr><td>Sem credencial em rota privada</td><td>401</td><td>Pode incluir <code>WWW-Authenticate</code>.</td></tr><tr><td>Autenticado sem permissão</td><td>403</td><td>Ou 404 para ocultar existência conforme política.</td></tr><tr><td>Refresh inválido/expirado</td><td>401</td><td>Limpar cookie pode melhorar recuperação do cliente.</td></tr><tr><td>Limite excedido</td><td>429</td><td>Considere <code>Retry-After</code>.</td></tr></tbody></table></div>
+
+<h3 id="modelagem">28 — Modelagem com Prisma</h3>
+<pre><code>model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  passwordHash   String
+  role           Role           @default(USER)
+  emailVerifiedAt DateTime?
+  sessions       Session[]
+  notes          Note[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Session {
+  id        String    @id
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, updatedAt])
+}
+
+enum Role {
+  USER
+  ADMIN
+}</code></pre>
+<p>Para refresh token rotativo, modele família, hash, expiração, revogação e relacionamento de substituição. Índices devem refletir consultas reais e limpeza de expirados.</p>
+
+<h3 id="testes">29 — Testes de autenticação e autorização</h3>
+<ul><li>Cadastro cria hash e nunca retorna hash.</li><li>E-mail duplicado é rejeitado mesmo sob concorrência.</li><li>Login aceita credencial correta e rejeita incorreta com mensagem genérica.</li><li>Token expirado, assinatura inválida, issuer errado e audience errada são rejeitados.</li><li>Refresh rotaciona e invalida o anterior.</li><li>Reutilização revoga a família conforme política.</li><li>Logout invalida sessão e limpa cookie.</li><li>Usuário não lê, edita nem exclui nota de outro usuário.</li><li>Admin só recebe exceções explicitamente previstas.</li><li>Reset token é de uso único e expira.</li></ul>
+<pre><code>it("should not allow a user to read another user's note", async () =&gt; {
+  const owner = await createUser();
+  const stranger = await createUser();
+  const note = await createNote({ userId: owner.id });
+
+  const response = await request(app)
+    .get(`/notes/${note.id}`)
+    .set("Authorization", bearerFor(stranger));
+
+  expect(response.status).toBe(404);
+});</code></pre>
+
+<h3 id="erros">30 — Erros comuns</h3>
+<ul><li>Guardar senha em texto ou usar hash rápido.</li><li>Confiar no <code>userId</code> recebido no body.</li><li>Tratar JWT como criptografia.</li><li>Access token com duração excessiva.</li><li>Refresh token eterno, sem rotação ou revogação.</li><li>Guardar refresh token puro no banco.</li><li>Colocar token de longa duração em localStorage sem avaliar XSS.</li><li>Acreditar que HttpOnly elimina CSRF.</li><li>Usar CORS como autorização.</li><li>Retornar “e-mail não cadastrado” no login ou reset.</li><li>Permitir que <code>role</code> seja definido no cadastro público.</li><li>Fazer logout apenas no frontend.</li></ul>
+
+<h3 id="edge-cases">31 — Edge cases</h3>
+<h4>31.1 — Concorrência no refresh</h4><p>Duas abas renovam ao mesmo tempo. O primeiro token é consumido e o segundo parece reutilização. Defina sincronização no cliente ou uma janela controlada no servidor.</p>
+<h4>31.2 — Troca de senha</h4><p>Decida se revoga todas as sessões, exceto a atual, ou todas sem exceção. Para conta comprometida, revogação ampla é mais segura.</p>
+<h4>31.3 — Mudança de papel</h4><p>Se o papel estiver em um JWT de longa duração, a permissão antiga permanece até expirar. Tokens curtos ou consulta de estado reduzem a janela.</p>
+<h4>31.4 — Usuário excluído ou suspenso</h4><p>Um token criptograficamente válido pode apontar para conta que já não deve operar. Avalie estado da sessão/conta nas ações sensíveis.</p>
+<h4>31.5 — Clock skew</h4><p>Relógios podem divergir. Use pequena tolerância, NTP e tempos em UTC; não transforme tolerância em validade excessiva.</p>
+<h4>31.6 — Reenvio de e-mail</h4><p>Vários tokens ativos criam confusão. Invalide anteriores ou aceite apenas o mais recente.</p>
+<h4>31.7 — Cookie em desenvolvimento</h4><p><code>Secure</code>, domínios, portas e SameSite podem se comportar diferente em localhost. Mantenha configuração explícita por ambiente sem enfraquecer produção.</p>
+<h4>31.8 — Conta criada por OAuth sem senha</h4><p><code>passwordHash</code> pode ser nulo. O fluxo para definir senha exige prova adicional e não pode assumir que toda conta possui credencial local.</p>
+<h4>31.9 — E-mail com caixa e Unicode</h4><p>Normalização ingênua pode fundir identidades distintas. Defina política e preserve o valor de apresentação quando necessário.</p>
+<h4>31.10 — Recurso compartilhado</h4><p>Ownership simples deixa de bastar. Modele membros, permissões e remoção de acesso com integridade transacional.</p>
+
+<h3 id="estrutura">32 — Estrutura sugerida</h3>
+<pre><code>src/
+├── modules/
+│   ├── auth/
+│   │   ├── auth.routes.ts
+│   │   ├── auth.controller.ts
+│   │   ├── create-session.service.ts
+│   │   ├── refresh-session.service.ts
+│   │   ├── revoke-session.service.ts
+│   │   ├── password-hasher.ts
+│   │   ├── token-service.ts
+│   │   └── auth.schemas.ts
+│   ├── users/
+│   └── notes/
+├── middlewares/
+│   ├── authenticate.ts
+│   └── require-role.ts
+├── policies/
+│   └── note.policy.ts
+├── config/
+│   └── auth.ts
+└── errors/</code></pre>
+<p>A divisão exata pode variar. O objetivo é manter criptografia, transporte HTTP, persistência e regras de autorização separáveis e testáveis.</p>
+
+<h3 id="integrado">33 — Exemplo integrado: criar nota privada</h3>
+<pre><code>notesRouter.post(
+  "/",
+  authenticate,
+  validate({ body: createNoteSchema }),
+  notesController.create,
+);
+
+export async function create(
+  request: Request,
+  response: Response&lt;CreateNoteResponse, AuthLocals&gt;,
+): Promise&lt;Response&gt; {
+  const note = await createNoteService.execute({
+    userId: response.locals.auth.userId,
+    title: request.body.title,
+    content: request.body.content,
+  });
+
+  return response.status(201).json({ note });
+}</code></pre>
+<div class="callout"><strong>Observe:</strong> o <code>userId</code> não vem do body. Ele nasce da credencial verificada. A propriedade da nota é determinada pelo contexto autenticado.</div>
+<pre><code>export async function updateNote(input: {
+  noteId: string;
+  userId: string;
+  title?: string;
+  content?: string;
+}) {
+  const note = await notesRepository.findOwnedById({
+    noteId: input.noteId,
+    userId: input.userId,
+  });
+
+  if (!note) {
+    throw new NotFoundError("Note");
+  }
+
+  return notesRepository.update(note.id, {
+    title: input.title,
+    content: input.content,
+  });
+}</code></pre>
+
+<h3 id="exercicios">34 — Exercícios orientados</h3>
+<ol><li>Explique por que salt pode ficar armazenado junto do hash, mas pepper não.</li><li>Desenhe o fluxo de sessão opaca e compare com access/refresh token.</li><li>Implemente uma interface <code>PasswordHasher</code> e um fake para testes.</li><li>Crie middleware que rejeite Bearer ausente, malformado, expirado e com issuer incorreto.</li><li>Implemente <code>findOwnedById</code> para notas.</li><li>Projete logout atual e logout de todos os dispositivos.</li><li>Modele refresh token rotativo e escreva a transação.</li><li>Escreva testes de duas renovações concorrentes.</li><li>Projete recuperação de senha sem enumeração de conta.</li><li>Compare 403 e 404 para recurso alheio e documente sua decisão.</li></ol>
+<div class="warning"><strong>Perguntas para guiar cada solução:</strong> qual credencial está sendo provada? Quem emite confiança? Onde o estado vive? Como expira? Como revoga? O que acontece se a requisição repetir? Que informação a resposta revela?</div>
+
+<h3 id="mini-projeto">35 — Mini projeto: API de notas privadas</h3>
+<h4>35.1 — Funcionalidades</h4>
+<ul><li>Cadastro com e-mail e senha.</li><li>Verificação de e-mail.</li><li>Login com access token curto.</li><li>Refresh token rotativo em cookie HttpOnly.</li><li>Logout da sessão atual e de todas as sessões.</li><li>Recuperação e redefinição de senha.</li><li>CRUD de notas privadas.</li><li>Rota administrativa limitada para listar usuários, sem expor credenciais.</li></ul>
+<h4>35.2 — Rotas sugeridas</h4>
+<pre><code>POST   /users
+POST   /email-verifications
+POST   /email-verifications/confirm
+POST   /sessions
+POST   /sessions/refresh
+DELETE /sessions/current
+DELETE /sessions
+POST   /password-resets
+POST   /password-resets/confirm
+
+POST   /notes
+GET    /notes
+GET    /notes/:noteId
+PATCH  /notes/:noteId
+DELETE /notes/:noteId</code></pre>
+<h4>35.3 — Regras obrigatórias</h4>
+<ul><li>Senha nunca é persistida ou registrada em logs.</li><li>Refresh token é rotacionado e armazenado como hash.</li><li>Usuário só acessa as próprias notas.</li><li>IDs recebidos do cliente não definem ownership.</li><li>Tokens de e-mail e reset são de uso único e expiram.</li><li>Troca de senha revoga sessões segundo política documentada.</li><li>Login e recuperação possuem rate limiting.</li><li>Mensagens não permitem enumerar contas.</li><li>Cookies possuem configuração segura por ambiente.</li><li>Testes cobrem sucesso, expiração, revogação, concorrência e acesso cruzado.</li></ul>
+
+<h3 id="checklist">36 — Checklist para avançar</h3>
+<ul class="checklist"><li>Sei diferenciar identificação, autenticação, autorização e auditoria.</li><li>Consigo explicar hash, salt, pepper e work factor.</li><li>Não uso hash rápido para senhas.</li><li>Sei comparar sessão opaca e JWT sem declarar um vencedor universal.</li><li>Entendo que JWT assinado não esconde o payload.</li><li>Sei por que access token deve ser curto e refresh token precisa de proteção adicional.</li><li>Consigo explicar rotação, família e reuse detection.</li><li>Entendo logout local, logout no servidor e logout global.</li><li>Sei o papel de HttpOnly, Secure e SameSite.</li><li>Não confundo CORS com CSRF ou autorização.</li><li>Sei implementar RBAC e ownership separadamente.</li><li>Não confio em <code>userId</code> enviado pelo cliente.</li><li>Consigo projetar reset e verificação com tokens aleatórios, hash, expiração e uso único.</li><li>Sei testar acesso cruzado e concorrência no refresh.</li></ul>
+
+<h3 id="referencias">37 — Referências</h3>
+<div class="columns"><div><h4>Documentação e padrões</h4><ul><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP — Authentication Cheat Sheet</a></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP — Password Storage</a></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP — Session Management</a></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP — Forgot Password</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie" target="_blank" rel="noopener">MDN — Set-Cookie</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS" target="_blank" rel="noopener">MDN — CORS</a></li><li><a href="https://datatracker.ietf.org/doc/rfc9700/" target="_blank" rel="noopener">RFC 9700 — OAuth 2.0 Security BCP</a></li></ul></div><div><h4>Livros</h4><ul><li><em>Web API Security</em>, José Haro Peralta.</li><li><em>OAuth 2 in Action</em>, Justin Richer e Antonio Sanso.</li><li><em>API Security in Action</em>, Neil Madden.</li><li><em>Real-World Cryptography</em>, David Wong.</li><li><em>Designing Data-Intensive Applications</em>, Martin Kleppmann.</li></ul></div></div>
+<div class="callout"><strong>Próxima fase conceitual:</strong> a autenticação fornece identidade e controle de acesso. A segurança da aplicação ampliará o olhar para headers, injeção, mass assignment, secrets, proxies, HTTPS, uploads e abuso de recursos.</div>
+</section>
+<div class="footer-note">Fase 10 · Autenticação e autorização — Trilha Express 5 com TypeScript</div>
+</div></main></div><script>
+const links=[...document.querySelectorAll('#toc a')];
+const targets=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer=new IntersectionObserver(entries=>{
+ const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+ if(!visible)return;
+ links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));
+},{rootMargin:'-15% 0px -70% 0px',threshold:[0,.2,.5]});
+targets.forEach(s=>observer.observe(s));
+</script></body></html>

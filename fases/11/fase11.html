@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fase 11 — Segurança de APIs | Express 5 + TypeScript</title>
+  <style>
+    :root{
+      --bg:#08111f;--panel:#0d192b;--panel2:#12213a;--text:#e8eef8;--muted:#a8b6ca;
+      --line:#263a56;--accent:#60a5fa;--accent2:#a78bfa;--good:#34d399;--warn:#fbbf24;
+      --danger:#fb7185;--code:#07101d;--shadow:0 18px 44px rgba(0,0,0,.24)
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);
+      font:16px/1.68 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:#8ecdf7;text-decoration:none}a:hover{text-decoration:underline}
+    .layout{display:grid;grid-template-columns:310px minmax(0,1fr);min-height:100vh}
+    aside{position:sticky;top:0;height:100vh;overflow:auto;padding:25px 18px;background:#091525;border-right:1px solid var(--line)}
+    .brand{font-weight:800;font-size:1.15rem}.subtitle{color:var(--muted);font-size:.9rem;margin:4px 0 18px}
+    .phase-links{margin-bottom:18px}.phase-link{display:block;padding:10px 12px;border-radius:10px;background:var(--panel2);
+      border:1px solid #345175;font-weight:700}
+    .nav-title{margin:17px 8px 8px;color:#d3deed;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em}
+    #toc>a,.nav-links a{display:block;padding:7px 10px;border-radius:8px;color:#bfd0e5;font-size:.91rem}
+    #toc a:hover,#toc a.active{background:#152946;color:#fff;text-decoration:none}
+    .nav-group{border:1px solid #203650;border-radius:10px;margin:8px 0;background:rgba(255,255,255,.015)}
+    .nav-group summary{cursor:pointer;padding:10px;font-weight:700;color:#dce7f6}.nav-links{padding:0 5px 8px}
+    .nav-progress{margin-top:18px;padding:13px;border:1px solid #29415f;border-radius:12px;color:var(--muted);font-size:.86rem}
+    .nav-progress strong{display:block;color:var(--text);margin-bottom:4px}
+    main{min-width:0;padding:45px clamp(22px,5vw,78px) 80px}.content{max-width:1100px;margin:auto}
+    section{background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,.008));border:1px solid #1d3048;
+      border-radius:18px;padding:clamp(22px,4vw,46px);box-shadow:var(--shadow)}
+    h1{font-size:clamp(2.1rem,4.5vw,4rem);line-height:1.08;margin:.25em 0 .3em}
+    h2{font-size:1.75rem}h3{font-size:1.42rem;margin-top:2.6em;padding-top:.45em;border-top:1px solid #1d3048}
+    h4{font-size:1.1rem;margin-top:1.6em}.tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#1d4f82;color:#dcedff;font-weight:800}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 24px}.pill{padding:5px 9px;border:1px solid #315071;border-radius:999px;color:#c5d6e9;font-size:.86rem}
+    p,li{max-width:82ch}.lead{font-size:1.14rem;color:#d6e1ef}.small{font-size:.9rem;color:var(--muted)}
+    .grid,.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:18px 0}
+    .cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
+    .card{padding:17px;border:1px solid #29415e;border-radius:13px;background:var(--panel)}.card h4{margin-top:0}
+    .callout,.success,.warning,.danger{padding:16px 18px;border-radius:12px;margin:18px 0;border-left:4px solid}
+    .callout{background:#10243b;border-color:var(--accent)}.success{background:#0c2d27;border-color:var(--good)}
+    .warning{background:#33280d;border-color:var(--warn)}.danger{background:#351522;border-color:var(--danger)}
+    pre{background:var(--code);border:1px solid #243955;border-radius:12px;padding:17px;overflow:auto;line-height:1.5}
+    code{font-family:"Cascadia Code","Fira Code",Consolas,monospace;font-size:.91em;color:#d9ebff}
+    :not(pre)>code{background:#132640;padding:.12em .36em;border-radius:5px}
+    table{width:100%;border-collapse:collapse;margin:18px 0;display:block;overflow:auto}
+    th,td{border:1px solid #2a405d;padding:11px 13px;text-align:left;vertical-align:top}th{background:#13253e}
+    .pipeline,.flow{white-space:pre-wrap;background:#0a1728;border:1px dashed #3a5a7d;border-radius:12px;padding:16px;margin:18px 0;color:#d4e6fb}
+    .checklist li{margin:.45em 0}.checklist li::marker{color:var(--good)}
+    details.exercise{border:1px solid #29415f;border-radius:12px;margin:12px 0;background:#0c1a2d}
+    details.exercise summary{cursor:pointer;padding:14px 16px;font-weight:750}.exercise>div{padding:0 16px 16px}
+    .footer-note{text-align:center;color:var(--muted);margin-top:25px;font-size:.9rem}
+    @media(max-width:940px){.layout{grid-template-columns:1fr}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+      main{padding:28px 17px 60px}.grid,.columns,.cards3{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand">Express 5 + TypeScript</div>
+    <div class="subtitle">Curso detalhado focado em APIs.</div>
+    <div class="phase-links"><a class="phase-link active" href="#fase11">Fase 11 · Segurança</a></div>
+    <nav id="toc" aria-label="Mapa da Fase 11">
+      <a href="#fase11"><strong>Visão geral da fase</strong></a>
+      <div class="nav-title">Mapa do conteúdo</div>
+      <details class="nav-group" open><summary>Fundamentos</summary><div class="nav-links">
+        <a href="#modelo">1. Modelo mental</a><a href="#ameacas">2. Ameaças e risco</a><a href="#camadas">3. Defesa em profundidade</a>
+        <a href="#validacao">4. Validação não basta</a><a href="#superficie">5. Superfície de ataque</a>
+      </div></details>
+      <details class="nav-group" open><summary>HTTP e perímetro</summary><div class="nav-links">
+        <a href="#cors">6. CORS</a><a href="#helmet">7. Helmet</a><a href="#https">8. HTTPS</a>
+        <a href="#proxy">9. Proxy reverso</a><a href="#trust-proxy">10. trust proxy</a>
+      </div></details>
+      <details class="nav-group"><summary>Abuso e disponibilidade</summary><div class="nav-links">
+        <a href="#rate-limit">11. Rate limiting</a><a href="#bruteforce">12. Brute force</a><a href="#payload">13. Limite de payload</a>
+        <a href="#timeouts">14. Timeout e recursos</a>
+      </div></details>
+      <details class="nav-group"><summary>Dados e código</summary><div class="nav-links">
+        <a href="#mass-assignment">15. Mass assignment</a><a href="#injecao">16. Injeção</a><a href="#vazamento">17. Vazamento</a>
+        <a href="#logs">18. Logs sensíveis</a><a href="#secrets">19. Secrets</a>
+      </div></details>
+      <details class="nav-group"><summary>Arquivos e privilégios</summary><div class="nav-links">
+        <a href="#uploads">20. Uploads</a><a href="#arquivos">21. Validação de arquivos</a><a href="#privilegio">22. Menor privilégio</a>
+        <a href="#dependencias">23. Dependências</a>
+      </div></details>
+      <details class="nav-group"><summary>Prática</summary><div class="nav-links">
+        <a href="#baseline">24. Baseline seguro</a><a href="#auditoria">25. Auditoria</a><a href="#antipatterns">26. Erros comuns</a>
+        <a href="#edgecases">27. Edge cases</a><a href="#testes">28. Testes</a><a href="#exercicios">29. Exercícios</a>
+        <a href="#projeto">30. Mini projeto</a><a href="#checklist">31. Checklist</a><a href="#referencias">32. Referências</a>
+      </div></details>
+      <div class="nav-progress"><strong>O que esta fase cobre</strong><span>Como reduzir riscos reais sem tratar segurança como um único middleware ou uma lista de pacotes.</span></div>
+    </nav>
+  </aside>
+
+  <main><div class="content">
+    <section class="phase" id="fase11">
+      <span class="tag">Fase 11</span>
+      <h1>Segurança de APIs</h1>
+      <div class="meta"><span class="pill">Express 5</span><span class="pill">TypeScript</span><span class="pill">Defesa em profundidade</span><span class="pill">OWASP</span><span class="pill">Auditoria prática</span></div>
+      <p class="lead">Segurança não é um recurso isolado que “ligamos” no fim do projeto. Ela aparece no desenho das rotas, na validação, na autenticação, no banco, nos logs, no deploy e até nas permissões do processo que executa a aplicação.</p>
+      <div class="callout"><strong>Objetivo:</strong> reconhecer ameaças comuns, reduzir a superfície de ataque, configurar proteções HTTP, controlar abuso, evitar exposição de dados, tratar uploads com desconfiança e auditar uma API deliberadamente vulnerável.</div>
+      <div class="pipeline">cliente não confiável
+    ↓
+proxy / TLS / limites de conexão
+    ↓
+CORS + headers defensivos
+    ↓
+rate limit + autenticação
+    ↓
+parsing com limite + validação
+    ↓
+autorização + regras de negócio
+    ↓
+queries parametrizadas + menor privilégio
+    ↓
+resposta mínima + logs redigidos</div>
+
+      <h3 id="modelo">1 — Modelo mental: segurança é gestão de risco</h3>
+      <p>Não existe API “100% segura”. Existe uma API cujo risco foi identificado, reduzido, monitorado e aceito de forma consciente. Segurança envolve responder quatro perguntas:</p>
+      <div class="cards3">
+        <div class="card"><h4>O que protegemos?</h4><p>Dados pessoais, credenciais, dinheiro, disponibilidade, reputação, infraestrutura e ações privilegiadas.</p></div>
+        <div class="card"><h4>De quem?</h4><p>Usuário curioso, bot automatizado, invasor externo, dependência comprometida ou operador interno com acesso excessivo.</p></div>
+        <div class="card"><h4>Com qual impacto?</h4><p>Exposição, alteração, destruição, indisponibilidade, fraude ou uso indevido de recursos.</p></div>
+      </div>
+      <div class="warning"><strong>Erro de iniciante:</strong> pensar que “uso JWT e Helmet” significa que a API está segura. Esses mecanismos cobrem apenas partes específicas do problema.</div>
+
+      <h3 id="ameacas">2 — Ameaça, vulnerabilidade, exploração e impacto</h3>
+      <table><thead><tr><th>Termo</th><th>Significado</th><th>Exemplo</th></tr></thead><tbody>
+        <tr><td>Ameaça</td><td>Algo capaz de causar dano.</td><td>Um bot tentando milhares de senhas.</td></tr>
+        <tr><td>Vulnerabilidade</td><td>Fraqueza que permite o dano.</td><td>Login sem limite de tentativas.</td></tr>
+        <tr><td>Exploração</td><td>Uso prático da vulnerabilidade.</td><td>Automação de credential stuffing.</td></tr>
+        <tr><td>Impacto</td><td>Consequência para o sistema.</td><td>Contas comprometidas e fraude.</td></tr>
+        <tr><td>Mitigação</td><td>Controle que reduz probabilidade ou impacto.</td><td>Rate limit, MFA, alertas e revogação.</td></tr>
+      </tbody></table>
+      <p>Essa separação evita soluções superficiais. Antes de instalar uma biblioteca, descreva o abuso que deseja impedir e o que acontecerá se o controle falhar.</p>
+
+      <h3 id="camadas">3 — Defesa em profundidade</h3>
+      <p>Defesa em profundidade significa não depender de um único controle. Se a validação falhar, a query parametrizada ainda dificulta injeção. Se uma credencial vazar, o menor privilégio limita o estrago. Se uma senha for descoberta, rate limit, rotação de sessão e alertas reduzem o impacto.</p>
+      <div class="grid">
+        <div class="card"><h4>Preventivo</h4><p>Evita ou dificulta: validação, autorização, limites, TLS, isolamento e permissões mínimas.</p></div>
+        <div class="card"><h4>Detectivo</h4><p>Revela comportamento anormal: logs estruturados, métricas, alertas, auditoria e trilha de eventos.</p></div>
+        <div class="card"><h4>Corretivo</h4><p>Reduz o dano após o incidente: revogação, rotação de secrets, restauração, bloqueio e resposta a incidentes.</p></div>
+        <div class="card"><h4>Recuperação</h4><p>Permite retornar ao estado confiável: backups testados, migrações reversíveis e runbooks.</p></div>
+      </div>
+
+      <h3 id="validacao">4 — Validação é necessária, mas não suficiente</h3>
+      <p>Zod pode provar que <code>role</code> é uma string permitida, mas não prova que o usuário atual pode alterar essa role. Pode validar que <code>amount</code> é positivo, mas não que a conta possui saldo. Pode validar um nome de arquivo, mas não provar que o conteúdo é inofensivo.</p>
+      <pre><code>const updateProfileSchema = z.object({
+  displayName: z.string().trim().min(2).max(80),
+});
+
+// Validação estrutural: o valor tem formato aceitável.
+// Autorização: quem está fazendo a alteração?
+// Regra de negócio: esta alteração é permitida agora?
+// Persistência: apenas campos explicitamente autorizados serão gravados.</code></pre>
+      <div class="danger"><strong>Regra:</strong> dados válidos ainda podem ser maliciosos, indevidos para aquele usuário ou perigosos naquele contexto.</div>
+
+      <h3 id="superficie">5 — Superfície de ataque</h3>
+      <p>Superfície de ataque é o conjunto de pontos pelos quais alguém pode interagir com o sistema. Cada rota pública, header aceito, parser, upload, webhook, painel administrativo, porta exposta e dependência adiciona possibilidades de abuso.</p>
+      <ul>
+        <li>Remova rotas, métodos e campos que não são necessários.</li>
+        <li>Não exponha documentação administrativa publicamente sem necessidade.</li>
+        <li>Não habilite parsers globais para formatos que a API não utiliza.</li>
+        <li>Evite retornar propriedades internas “porque já estão no objeto”.</li>
+        <li>Desabilite ou proteja endpoints de debug, métricas e health detalhado.</li>
+      </ul>
+
+      <h3 id="cors">6 — CORS</h3>
+      <p>CORS é uma política aplicada por navegadores que controla quais origens podem ler respostas de outra origem. Ele não é autenticação, não bloqueia chamadas de servidores, scripts fora do navegador, cURL ou ferramentas como Postman.</p>
+      <pre><code>import cors from "cors";
+
+const allowedOrigins = new Set([
+  "https://app.example.com",
+  "https://admin.example.com",
+]);
+
+app.use(cors({
+  origin(origin, callback) {
+    // Requisições sem Origin podem vir de ferramentas, mobile ou servidor.
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Origin não permitida"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Request-Id"],
+}));</code></pre>
+      <h4>6.1 — Origem não é URL completa</h4>
+      <p>Uma origem combina esquema, host e porta. Paths não fazem parte dela. <code>https://app.example.com/a</code> e <code>https://app.example.com/b</code> possuem a mesma origem.</p>
+      <h4>6.2 — Credenciais e wildcard</h4>
+      <p>Quando cookies ou credenciais cross-origin são usados, a origem deve ser tratada explicitamente. Uma configuração permissiva copiada sem entender pode expor respostas para frontends não autorizados.</p>
+      <div class="warning"><strong>CORS não protege sua API contra acesso:</strong> ele controla a leitura da resposta pelo JavaScript do navegador. A API continua precisando de autenticação e autorização.</div>
+
+      <h3 id="helmet">7 — Helmet e headers defensivos</h3>
+      <p>Helmet configura diversos headers HTTP defensivos. Em uma API JSON, alguns têm impacto maior que outros; ainda assim, a configuração cria uma base consistente e reduz comportamentos inseguros do navegador.</p>
+      <pre><code>import helmet from "helmet";
+
+app.use(helmet({
+  // Ajuste políticas conscientemente caso a mesma aplicação sirva HTML.
+  contentSecurityPolicy: false,
+}));
+
+app.disable("x-powered-by");</code></pre>
+      <p>Não desative políticas apenas para “sumir com um erro”. Descubra se a aplicação serve HTML, documentação, arquivos ou somente JSON e configure conforme o contexto.</p>
+      <div class="callout"><strong>Sobre <code>X-Powered-By</code>:</strong> ocultá-lo reduz informação trivial sobre a stack, mas não substitui atualização, correções e controles reais.</div>
+
+      <h3 id="https">8 — HTTPS</h3>
+      <p>HTTPS protege a comunicação em trânsito contra leitura e alteração por intermediários. Tokens, cookies, senhas e dados pessoais não devem atravessar redes em HTTP simples.</p>
+      <ul>
+        <li>Em produção, normalmente o TLS termina no proxy reverso, load balancer ou plataforma.</li>
+        <li>A comunicação interna também pode exigir TLS conforme o ambiente e o risco.</li>
+        <li>Cookies de autenticação em produção devem usar <code>Secure</code>.</li>
+        <li>Redirecione HTTP para HTTPS no perímetro, não apenas dentro da aplicação.</li>
+      </ul>
+      <div class="danger"><strong>HTTPS não torna conteúdo confiável:</strong> ele protege o canal. Um cliente autenticado ainda pode enviar payload malicioso por uma conexão criptografada.</div>
+
+      <h3 id="proxy">9 — Proxy reverso</h3>
+      <p>Um proxy reverso recebe conexões externas e encaminha requisições para a aplicação. Pode terminar TLS, aplicar limites, comprimir respostas, distribuir carga e esconder a porta interna do processo Node.js.</p>
+      <div class="flow">internet → proxy reverso / load balancer → aplicação Express → banco</div>
+      <p>O proxy adiciona uma fronteira. Headers como <code>X-Forwarded-For</code> e <code>X-Forwarded-Proto</code> passam a influenciar IP e protocolo percebidos pela aplicação. Por isso, confiar neles indiscriminadamente é perigoso.</p>
+
+      <h3 id="trust-proxy">10 — <code>trust proxy</code></h3>
+      <p>O Express usa <code>trust proxy</code> para decidir se deve confiar nas informações enviadas pelo proxy. Isso afeta <code>request.ip</code>, <code>request.ips</code>, <code>request.protocol</code> e cookies seguros.</p>
+      <pre><code>// Exemplo comum quando existe exatamente um proxy confiável à frente.
+app.set("trust proxy", 1);</code></pre>
+      <p>O valor correto depende da topologia. Usar <code>true</code> sem entender a cadeia pode fazer a aplicação confiar em headers forjados pelo cliente, afetando rate limiting, auditoria e decisões de segurança.</p>
+      <div class="warning"><strong>Não copie a configuração do provedor às cegas:</strong> documente quantos proxies confiáveis existem e teste qual IP a aplicação realmente observa.</div>
+
+      <h3 id="rate-limit">11 — Rate limiting</h3>
+      <p>Rate limiting restringe quantas requisições uma identidade pode fazer em uma janela. A identidade pode ser IP, usuário, token, chave de API ou uma combinação. O objetivo é reduzir abuso, custo e indisponibilidade — não “garantir” que ataques sejam impossíveis.</p>
+      <pre><code>import { rateLimit } from "express-rate-limit";
+
+const apiLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 120,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
+
+app.use("/api", apiLimiter);</code></pre>
+      <h4>11.1 — Limite global versus limite por operação</h4>
+      <table><thead><tr><th>Operação</th><th>Estratégia</th></tr></thead><tbody>
+        <tr><td>Leitura pública barata</td><td>Limite moderado e cache quando possível.</td></tr>
+        <tr><td>Login</td><td>Limite mais rígido por IP e identificador normalizado.</td></tr>
+        <tr><td>Recuperação de senha</td><td>Limite rígido, resposta genérica e cooldown.</td></tr>
+        <tr><td>Relatório caro</td><td>Limite por usuário, fila e controle de concorrência.</td></tr>
+      </tbody></table>
+      <h4>11.2 — Ambiente distribuído</h4>
+      <p>Armazenamento em memória não é suficiente quando existem várias instâncias, porque cada processo conta separadamente. Uma store compartilhada ou controle no gateway mantém a política consistente.</p>
+
+      <h3 id="bruteforce">12 — Proteção contra brute force</h3>
+      <p>Brute force tenta muitas combinações para descobrir um segredo. Credential stuffing reutiliza credenciais vazadas de outros serviços. Proteções precisam considerar tanto IP quanto a conta alvo.</p>
+      <pre><code>const loginLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 10,
+  keyGenerator(request) {
+    const email = String(request.body?.email ?? "")
+      .trim()
+      .toLowerCase();
+
+    return `${request.ip}:${email}`;
+  },
+  skipSuccessfulRequests: true,
+});</code></pre>
+      <ul>
+        <li>Não revele se o e-mail existe com mensagens diferentes.</li>
+        <li>Use hash de senha adequado, MFA quando aplicável e sessões revogáveis.</li>
+        <li>Considere atraso progressivo e alertas de comportamento anormal.</li>
+        <li>Evite bloqueio permanente fácil de explorar contra vítimas.</li>
+      </ul>
+      <div class="warning"><strong>Trade-off:</strong> uma regra agressiva por IP pode bloquear vários usuários atrás de NAT corporativo. Uma regra apenas por conta permite ataque distribuído. Combine sinais.</div>
+
+      <h3 id="payload">13 — Limite de payload</h3>
+      <p>Parsers precisam de limites. Sem eles, um cliente pode consumir memória e CPU enviando bodies enormes. Configure apenas os formatos usados pela aplicação.</p>
+      <pre><code>app.use(express.json({
+  limit: "100kb",
+  strict: true,
+}));
+
+app.use(express.urlencoded({
+  extended: false,
+  limit: "50kb",
+}));</code></pre>
+      <p>O limite ideal depende da rota. Uma API de notas talvez aceite poucos quilobytes; upload de arquivos deve usar fluxo e limites próprios, não um JSON gigantesco em Base64.</p>
+
+      <h3 id="timeouts">14 — Timeouts, concorrência e consumo de recursos</h3>
+      <p>Disponibilidade também é segurança. Requisições lentas, queries caras e integrações sem timeout podem ocupar conexões até o serviço colapsar.</p>
+      <ul>
+        <li>Defina timeout para chamadas HTTP externas e banco quando suportado.</li>
+        <li>Limite paginação, profundidade de filtros e tamanho de resultados.</li>
+        <li>Use filas para tarefas demoradas e controle concorrência.</li>
+        <li>Não faça processamento pesado de arquivo no event loop sem estratégia.</li>
+        <li>Considere cancelamento quando o cliente desconectar.</li>
+      </ul>
+
+      <h3 id="mass-assignment">15 — Mass assignment</h3>
+      <p>Mass assignment ocorre quando propriedades recebidas do cliente são copiadas diretamente para uma entidade ou update do banco. O atacante envia campos que não deveriam ser alteráveis.</p>
+      <pre><code>// Vulnerável:
+await prisma.user.update({
+  where: { id: userId },
+  data: request.body,
+});
+
+// Explícito:
+const input = updateProfileSchema.parse(request.body);
+
+await prisma.user.update({
+  where: { id: userId },
+  data: {
+    displayName: input.displayName,
+    bio: input.bio,
+  },
+});</code></pre>
+      <p>Mesmo que o TypeScript mostre um DTO sem <code>role</code>, o objeto real em runtime pode possuir propriedades extras. Use schemas estritos quando adequado e mapeie campos de escrita explicitamente.</p>
+      <div class="danger"><strong>Nunca:</strong> <code>data: { ...request.body }</code> em operações sensíveis.</div>
+
+      <h3 id="injecao">16 — Injeção</h3>
+      <p>Injeção acontece quando dado não confiável é interpretado como comando, query ou código. SQL injection é a forma clássica, mas existem injeções em shell, templates, LDAP, NoSQL e logs.</p>
+      <h4>16.1 — SQL</h4>
+      <pre><code>// Evite concatenar entrada:
+const unsafe = `SELECT * FROM users WHERE email = '${email}'`;
+
+// Prefira APIs parametrizadas / ORM:
+const user = await prisma.user.findUnique({
+  where: { email },
+});</code></pre>
+      <h4>16.2 — Shell</h4>
+      <pre><code>// Perigoso quando filename vem do cliente:
+// exec(`convert ${filename} output.png`);
+
+// Prefira biblioteca nativa; se processo externo for inevitável,
+// use argumentos separados, allowlist e ambiente isolado.</code></pre>
+      <h4>16.3 — Ordenação dinâmica</h4>
+      <pre><code>const allowedSorts = {
+  createdAt: "createdAt",
+  title: "title",
+} as const;
+
+const sortField = allowedSorts[input.sortBy] ?? "createdAt";</code></pre>
+      <div class="callout"><strong>Validação por allowlist:</strong> quando a entrada escolhe comportamento estrutural — coluna, operação, formato — aceite somente opções conhecidas.</div>
+
+      <h3 id="vazamento">17 — Vazamento de dados</h3>
+      <p>Uma API pode cumprir a ação e ainda vazar informações na resposta. Entidades internas quase nunca devem ser serializadas diretamente.</p>
+      <pre><code>type UserResponse = {
+  id: string;
+  name: string;
+  avatarUrl: string | null;
+};
+
+function toUserResponse(user: User): UserResponse {
+  return {
+    id: user.id,
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+  };
+}</code></pre>
+      <p>Campos como <code>passwordHash</code>, token de recuperação, flags internas, dados de auditoria, e-mails privados e identificadores de provedores devem ser excluídos por desenho, não “lembrados” em cada controller.</p>
+      <h4>17.1 — Erros também vazam</h4>
+      <p>Stack trace, SQL, paths do servidor, nomes de tabela e detalhes de dependências ajudam diagnóstico interno, mas não devem ser enviados ao cliente em produção.</p>
+
+      <h3 id="logs">18 — Logs sensíveis</h3>
+      <p>Logs são dados persistidos. Tudo que vai para eles pode ser copiado para agregadores, backups e sistemas de terceiros. Não registre senhas, tokens, cookies, números completos de documentos ou bodies inteiros por padrão.</p>
+      <pre><code>function redactHeaders(headers: Record&lt;string, unknown&gt;) {
+  const copy = { ...headers };
+
+  if ("authorization" in copy) copy.authorization = "[REDACTED]";
+  if ("cookie" in copy) copy.cookie = "[REDACTED]";
+
+  return copy;
+}</code></pre>
+      <ul>
+        <li>Use request ID para correlação sem depender de dados pessoais.</li>
+        <li>Defina retenção e acesso aos logs.</li>
+        <li>Separe log operacional de trilha de auditoria.</li>
+        <li>Sanitize caracteres de controle em campos livres quando necessário.</li>
+      </ul>
+
+      <h3 id="secrets">19 — Secrets</h3>
+      <p>Secrets incluem senhas de banco, chaves de assinatura, tokens de provedores e credenciais de serviço. Eles não devem ser versionados, embutidos no bundle ou enviados ao frontend.</p>
+      <pre><code>const envSchema = z.object({
+  DATABASE_URL: z.string().min(1),
+  JWT_SECRET: z.string().min(32),
+  NODE_ENV: z.enum(["development", "test", "production"]),
+});
+
+export const env = envSchema.parse(process.env);</code></pre>
+      <ul>
+        <li>Use gerenciador de secrets da plataforma quando disponível.</li>
+        <li>Rotacione credenciais periodicamente e imediatamente após suspeita de vazamento.</li>
+        <li>Use secrets distintos por ambiente.</li>
+        <li>Não imprima o objeto completo de variáveis de ambiente.</li>
+        <li>Planeje rotação sem indisponibilidade quando a chave assina tokens.</li>
+      </ul>
+
+      <h3 id="uploads">20 — Uploads</h3>
+      <p>Upload combina várias ameaças: esgotamento de disco e memória, conteúdo executável, nomes maliciosos, arquivos poliglotas, metadados sensíveis e processamento vulnerável.</p>
+      <pre><code>import multer from "multer";
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 1,
+    fields: 5,
+  },
+});
+
+app.post(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  uploadAvatarController,
+);</code></pre>
+      <p>Memória não é automaticamente mais segura: arquivos grandes ou concorrência podem esgotar o processo. Armazenamento temporário em disco também exige limpeza, permissões e isolamento.</p>
+
+      <h3 id="arquivos">21 — Validação de arquivos</h3>
+      <p>Extensão e <code>Content-Type</code> declarados pelo cliente não provam o conteúdo. Valide tamanho, assinatura conhecida quando possível, dimensões, quantidade e fluxo de processamento.</p>
+      <ul>
+        <li>Gere um nome interno aleatório; não use o nome original como path.</li>
+        <li>Evite servir uploads no mesmo domínio com execução permissiva.</li>
+        <li>Armazene fora da raiz pública quando não precisarem ser públicos.</li>
+        <li>Reencode imagens em vez de confiar no arquivo original quando adequado.</li>
+        <li>Faça varredura antimalware para cenários que exigem isso.</li>
+        <li>Remova metadados que possam conter localização ou informação pessoal.</li>
+      </ul>
+      <div class="danger"><strong>Path traversal:</strong> um nome como <code>../../config.env</code> não pode decidir onde o servidor escreverá.</div>
+
+      <h3 id="privilegio">22 — Princípio do menor privilégio</h3>
+      <p>Cada componente deve possuir apenas as permissões necessárias e pelo menor tempo possível.</p>
+      <div class="grid">
+        <div class="card"><h4>Banco</h4><p>A aplicação não precisa ser superusuária. Separe credenciais de migration e runtime.</p></div>
+        <div class="card"><h4>Sistema operacional</h4><p>O processo Node não deve executar como root nem escrever em diretórios desnecessários.</p></div>
+        <div class="card"><h4>Cloud</h4><p>A identidade da aplicação deve acessar apenas buckets, filas e secrets usados.</p></div>
+        <div class="card"><h4>Aplicação</h4><p>Roles e ownership devem restringir ações e dados, não apenas esconder botões no frontend.</p></div>
+      </div>
+
+      <h3 id="dependencias">23 — Dependências e cadeia de suprimentos</h3>
+      <p>Dependências executam dentro do seu processo e recebem acesso aos mesmos dados e permissões. Reduza quantidade, mantenha lockfile, revise atualizações e remova pacotes sem uso.</p>
+      <ul>
+        <li>Prefira pacotes amplamente mantidos e com escopo claro.</li>
+        <li>Revise scripts de instalação e mudanças relevantes.</li>
+        <li>Use auditoria automática como sinal, não como substituto de análise.</li>
+        <li>Atualize com testes; versões antigas acumulam vulnerabilidades e incompatibilidades.</li>
+        <li>Não instale um pacote para algo trivial que a plataforma já oferece.</li>
+      </ul>
+
+      <h3 id="baseline">24 — Baseline seguro para Express</h3>
+      <pre><code>import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
+
+export const app = express();
+
+app.set("trust proxy", 1);
+app.disable("x-powered-by");
+
+app.use(helmet());
+app.use(cors({
+  origin: ["https://app.example.com"],
+  credentials: true,
+}));
+
+app.use(rateLimit({
+  windowMs: 60_000,
+  limit: 120,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+}));
+
+app.use(express.json({
+  limit: "100kb",
+  strict: true,
+}));
+
+app.get("/health", (_request, response) => {
+  return response.status(200).json({ status: "ok" });
+});</code></pre>
+      <div class="warning"><strong>Baseline não é receita universal:</strong> <code>trust proxy</code>, CORS, limites, CSP e cookies dependem da topologia e dos clientes reais.</div>
+
+      <h3 id="auditoria">25 — Como auditar uma rota</h3>
+      <p>Use um roteiro repetível em vez de procurar apenas “código estranho”.</p>
+      <ol class="checklist">
+        <li>Quem consegue chamar a rota?</li>
+        <li>Qual identidade foi autenticada e onde ela é armazenada?</li>
+        <li>Há autorização por role e ownership?</li>
+        <li>Todos os dados externos passam por parsing e validação?</li>
+        <li>Campos gravados são explicitamente selecionados?</li>
+        <li>Queries são parametrizadas?</li>
+        <li>A resposta contém somente dados públicos necessários?</li>
+        <li>O custo da operação é limitado?</li>
+        <li>Logs evitam dados sensíveis?</li>
+        <li>Erros retornam contrato previsível sem detalhes internos?</li>
+      </ol>
+      <h4>25.1 — Exemplo vulnerável</h4>
+      <pre><code>app.patch("/users/:id", async (request, response) => {
+  const user = await prisma.user.update({
+    where: { id: request.params.id },
+    data: request.body,
+  });
+
+  console.log("updated user", user);
+
+  return response.json(user);
+});</code></pre>
+      <h4>25.2 — Problemas</h4>
+      <ul>
+        <li>Sem autenticação e autorização.</li>
+        <li>Mass assignment.</li>
+        <li>Sem validação de params e body.</li>
+        <li>Possível vazamento de hash e campos internos na resposta e no log.</li>
+        <li>Sem contrato de erro previsível.</li>
+      </ul>
+      <h4>25.3 — Direção corrigida</h4>
+      <pre><code>app.patch(
+  "/me/profile",
+  authenticate,
+  validate(updateProfileSchema),
+  updateProfileController,
+);
+
+// O service usa authenticatedUser.id.
+// O repository recebe apenas displayName e bio.
+// O mapper retorna somente o perfil público.</code></pre>
+
+      <h3 id="antipatterns">26 — Erros comuns</h3>
+      <table><thead><tr><th>Anti-padrão</th><th>Por que falha</th><th>Direção melhor</th></tr></thead><tbody>
+        <tr><td>“CORS bloqueia invasores”</td><td>Clientes fora do navegador ignoram CORS.</td><td>Autenticação, autorização e limites reais.</td></tr>
+        <tr><td><code>data: request.body</code></td><td>Permite mass assignment.</td><td>Schema + mapeamento explícito.</td></tr>
+        <tr><td>Logar body completo</td><td>Credenciais e PII persistem em logs.</td><td>Allowlist e redação.</td></tr>
+        <tr><td>Confiar em extensão</td><td>Nome não prova conteúdo.</td><td>Inspeção, reencode e isolamento.</td></tr>
+        <tr><td><code>trust proxy: true</code> sempre</td><td>IP e protocolo podem ser forjados.</td><td>Configuração baseada na topologia.</td></tr>
+        <tr><td>Rate limit apenas em memória</td><td>Instâncias contam separadamente.</td><td>Store compartilhada ou gateway.</td></tr>
+        <tr><td>Retornar entidade Prisma</td><td>Novos campos internos podem vazar.</td><td>DTO de resposta e mapper.</td></tr>
+      </tbody></table>
+
+      <h3 id="edgecases">27 — Edge cases de segurança</h3>
+      <p>Edge cases são situações menos óbvias que quebram uma suposição do fluxo principal. Em segurança, atacantes procuram exatamente essas bordas.</p>
+      <div class="columns">
+        <div>
+          <h4>Identidade e rede</h4>
+          <ul>
+            <li>Vários usuários compartilham o mesmo IP.</li>
+            <li>IPv6 muda a estratégia de agrupamento.</li>
+            <li>Proxy adiciona múltiplos valores encaminhados.</li>
+            <li>Token válido pertence a usuário desativado.</li>
+            <li>Conta muda de role enquanto sessão continua ativa.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Dados e parsing</h4>
+          <ul>
+            <li>JSON duplicado ou profundamente aninhado.</li>
+            <li>Unicode visualmente semelhante em e-mail ou nome.</li>
+            <li>Payload comprimido pequeno que expande muito.</li>
+            <li>Campo extra é ignorado pelo tipo, mas persiste em runtime.</li>
+            <li>Número válido causa custo extremo numa query.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Uploads</h4>
+          <ul>
+            <li>Arquivo vazio com MIME permitido.</li>
+            <li>Imagem com dimensões gigantes e poucos bytes.</li>
+            <li>Nome reservado ou com separadores de path.</li>
+            <li>Arquivo válido no início e malicioso no restante.</li>
+            <li>Upload interrompido deixa arquivo temporário.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Disponibilidade</h4>
+          <ul>
+            <li>Muitas requisições lentas abaixo do limite.</li>
+            <li>Relatório válido consome toda a CPU.</li>
+            <li>Store do rate limiter fica indisponível.</li>
+            <li>Cliente desconecta durante operação cara.</li>
+            <li>Logs excessivos saturam disco ou provedor.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 id="testes">28 — Testes de segurança</h3>
+      <p>Testes não provam ausência de vulnerabilidades, mas impedem regressões nos controles conhecidos.</p>
+      <pre><code>describe("PATCH /me/profile", () => {
+  it("rejects an unauthenticated request", async () => {});
+  it("ignores or rejects forbidden fields such as role", async () => {});
+  it("does not expose passwordHash in the response", async () => {});
+  it("rejects a body above the configured limit", async () => {});
+});
+
+describe("POST /sessions", () => {
+  it("applies a limit after repeated failed attempts", async () => {});
+  it("returns the same public message for unknown email and wrong password", async () => {});
+});</code></pre>
+      <h4>28.1 — O que testar além do happy path</h4>
+      <ul>
+        <li>Ausência, expiração e revogação de credenciais.</li>
+        <li>Usuário autenticado tentando recurso de outro usuário.</li>
+        <li>Campos extras, tipos inesperados e payload grande.</li>
+        <li>Headers de segurança esperados.</li>
+        <li>Respostas sem stack trace e sem campos internos.</li>
+        <li>Rate limit sob múltiplas identidades.</li>
+      </ul>
+
+      <h3 id="exercicios">29 — Exercícios orientados</h3>
+      <details class="exercise"><summary>Exercício 1 — Classifique os controles</summary><div>
+        <p>Classifique CORS, rate limiting, logs, backup e revogação como preventivo, detectivo, corretivo ou recuperação. Alguns podem ocupar mais de uma categoria.</p>
+        <p class="small">Pergunte: esse controle impede, revela, reduz dano ou restaura?</p>
+      </div></details>
+      <details class="exercise"><summary>Exercício 2 — Audite um update</summary><div>
+        <p>Receba uma rota que usa <code>data: request.body</code>. Liste todas as propriedades que um atacante tentaria enviar e proponha DTO, schema, autorização e mapper.</p>
+      </div></details>
+      <details class="exercise"><summary>Exercício 3 — Desenhe uma política de login</summary><div>
+        <p>Defina limite por IP, por conta, janela, resposta pública, monitoramento e comportamento quando a store do limiter falhar.</p>
+      </div></details>
+      <details class="exercise"><summary>Exercício 4 — Upload de avatar</summary><div>
+        <p>Defina formatos aceitos, tamanho máximo, dimensões, nome interno, armazenamento, limpeza temporária e resposta.</p>
+      </div></details>
+      <details class="exercise"><summary>Exercício 5 — CORS de três ambientes</summary><div>
+        <p>Modele origens de development, preview e production sem usar reflexão irrestrita da origem recebida.</p>
+      </div></details>
+
+      <h3 id="projeto">30 — Mini projeto: auditoria de uma API vulnerável</h3>
+      <p>Você receberá uma API de documentos deliberadamente vulnerável. O objetivo não é adicionar bibliotecas aleatórias, mas produzir um relatório de risco, corrigir os fluxos e provar as correções com testes.</p>
+      <h4>30.1 — Funcionalidades</h4>
+      <pre><code>POST   /sessions
+POST   /password-recovery
+GET    /documents
+POST   /documents
+PATCH  /documents/:documentId
+DELETE /documents/:documentId
+POST   /avatars
+GET    /admin/audit</code></pre>
+      <h4>30.2 — Vulnerabilidades inseridas</h4>
+      <ul>
+        <li>CORS refletindo qualquer origem com credenciais.</li>
+        <li>Login sem limite e mensagens que enumeram usuários.</li>
+        <li>Body sem limite.</li>
+        <li>Update com mass assignment.</li>
+        <li>Falta de ownership.</li>
+        <li>Resposta retornando entidade completa.</li>
+        <li>Logs com token e senha.</li>
+        <li>Secret hardcoded.</li>
+        <li><code>trust proxy</code> configurado incorretamente.</li>
+        <li>Upload baseado apenas em extensão e nome original.</li>
+        <li>Credencial de banco com privilégios excessivos.</li>
+      </ul>
+      <h4>30.3 — Entregáveis</h4>
+      <ol>
+        <li>Inventário de ativos e superfície de ataque.</li>
+        <li>Tabela com vulnerabilidade, exploração, impacto, severidade e correção.</li>
+        <li>Configuração de baseline HTTP.</li>
+        <li>Refatoração de rotas, schemas, services, repositories e mappers.</li>
+        <li>Testes de regressão para cada falha corrigida.</li>
+        <li>Documento curto com riscos residuais e decisões de trade-off.</li>
+      </ol>
+      <h4>30.4 — Critério de sucesso</h4>
+      <div class="success">A API não precisa apenas “funcionar”. Você deve conseguir explicar qual ameaça cada controle reduz, onde ele pode falhar e como detectar abuso ou regressão.</div>
+
+      <h3 id="checklist">31 — Checklist para avançar</h3>
+      <ul class="checklist">
+        <li>Consigo explicar por que CORS não é autenticação.</li>
+        <li>Sei o papel de Helmet sem tratá-lo como solução completa.</li>
+        <li>Configuro limite de body e entendo o motivo.</li>
+        <li>Sei diferenciar rate limit global, por rota, IP, conta e usuário.</li>
+        <li>Entendo brute force e credential stuffing.</li>
+        <li>Não uso <code>request.body</code> diretamente em updates.</li>
+        <li>Sei reconhecer injeção e usar allowlists e parametrização.</li>
+        <li>Uso DTOs de resposta para impedir vazamento acidental.</li>
+        <li>Sei quais dados não devem aparecer em logs.</li>
+        <li>Valido secrets no startup e planejo rotação.</li>
+        <li>Entendo proxy reverso e configuro <code>trust proxy</code> conforme a topologia.</li>
+        <li>Trato uploads como conteúdo não confiável.</li>
+        <li>Aplico menor privilégio no banco, sistema e cloud.</li>
+        <li>Consigo auditar uma rota de ponta a ponta.</li>
+      </ul>
+
+      <h3 id="referencias">32 — Referências</h3>
+      <div class="columns">
+        <div>
+          <h4>Documentação e guias</h4>
+          <ul>
+            <li><a href="https://expressjs.com/en/advanced/best-practice-security.html" target="_blank" rel="noopener">Express — Security best practices</a></li>
+            <li><a href="https://expressjs.com/en/guide/behind-proxies.html" target="_blank" rel="noopener">Express — Behind proxies</a></li>
+            <li><a href="https://helmetjs.github.io/" target="_blank" rel="noopener">Helmet</a></li>
+            <li><a href="https://github.com/express-rate-limit/express-rate-limit" target="_blank" rel="noopener">express-rate-limit</a></li>
+            <li><a href="https://owasp.org/www-project-api-security/" target="_blank" rel="noopener">OWASP API Security Project</a></li>
+            <li><a href="https://cheatsheetseries.owasp.org/" target="_blank" rel="noopener">OWASP Cheat Sheet Series</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" target="_blank" rel="noopener">MDN — CORS</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Livros recomendados</h4>
+          <ul>
+            <li><em>Web API Security</em>, José Haro Peralta.</li>
+            <li><em>API Security in Action</em>, Neil Madden.</li>
+            <li><em>Threat Modeling</em>, Adam Shostack.</li>
+            <li><em>Security Engineering</em>, Ross Anderson.</li>
+            <li><em>Release It!</em>, Michael T. Nygard.</li>
+            <li><em>Designing Data-Intensive Applications</em>, Martin Kleppmann.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout"><strong>Encerramento da fase:</strong> segurança madura não nasce de medo nem de checklists mecânicos. Ela nasce de modelo de ameaça, controles em camadas, defaults restritivos, observabilidade e capacidade de corrigir rapidamente.</div>
+    </section>
+    <div class="footer-note">Fase 11 · Segurança de APIs — Trilha Express 5 com TypeScript</div>
+  </div></main>
+</div>
+<script>
+const links=[...document.querySelectorAll('#toc a')];
+const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer=new IntersectionObserver(entries=>{
+  const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+  if(!visible)return;
+  links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));
+},{rootMargin:'-15% 0px -70% 0px',threshold:[0,.2,.5]});
+sections.forEach(s=>observer.observe(s));
+</script>
+</body>
+</html>

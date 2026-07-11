@@ -1,0 +1,477 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Fase 9 — Banco e Prisma | Express 5 + TypeScript</title><style>
+:root{--bg:#09111f;--panel:#101b2e;--panel2:#142239;--text:#e8edf7;--muted:#a8b4c8;--line:#283854;--accent:#68d391;--accent2:#63b3ed;--warn:#f6c85f;--danger:#fc8181;--code:#07101d;--shadow:0 18px 48px rgba(0,0,0,.25)}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:linear-gradient(135deg,#08101d,#0d1728 48%,#07111f);color:var(--text);font:16px/1.72 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.layout{display:grid;grid-template-columns:330px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:rgba(7,16,29,.96)}main{min-width:0;padding:34px 5vw 80px}.content{max-width:1080px;margin:auto}.brand{font-size:1.3rem;font-weight:800}.subtitle{color:var(--muted);font-size:.92rem;margin:4px 0 18px}.phase-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.phase-link{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);text-decoration:none;font-size:.82rem}.phase-link.active{border-color:var(--accent);color:var(--accent);background:rgba(104,211,145,.08)}nav>a,summary{color:var(--text)}nav>a{display:block;padding:9px 11px;margin:3px 0;border-radius:8px;text-decoration:none}nav>a:hover,.nav-links a:hover,.nav-links a.active{background:var(--panel2);color:var(--accent)}.nav-title{text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-size:.72rem;font-weight:800;margin:20px 10px 8px}.nav-group{border-top:1px solid rgba(40,56,84,.62)}summary{cursor:pointer;padding:12px 10px;font-weight:700}.nav-links{padding:0 0 9px 10px}.nav-links a{display:block;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:7px;font-size:.88rem}.nav-progress{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.nav-progress strong{display:block;color:var(--accent);margin-bottom:5px}.nav-progress span{font-size:.84rem;color:var(--muted)}section{padding:36px 0 14px}.phase{padding-top:0}.tag,.pill{display:inline-flex;border-radius:999px}.tag{padding:5px 10px;background:rgba(104,211,145,.12);color:var(--accent);font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px}.pill{padding:5px 10px;border:1px solid var(--line);color:var(--muted);font-size:.83rem}h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;margin:14px 0 18px;letter-spacing:-.045em}h3{font-size:1.42rem;margin:48px 0 14px;padding-top:8px;border-top:1px solid var(--line)}h4{font-size:1.08rem;margin:28px 0 9px;color:#cfe2ff}p,li{color:#cbd5e5}strong{color:#f3f6fb}code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;color:#b5f4d0}pre{position:relative;overflow:auto;background:var(--code);border:1px solid var(--line);border-radius:13px;padding:18px 20px;box-shadow:var(--shadow);line-height:1.55}pre code{color:#d7e4f6}.callout,.warning,.danger,.note{padding:16px 18px;margin:20px 0;border-radius:12px;border-left:4px solid}.callout{background:rgba(99,179,237,.08);border-color:var(--accent2)}.warning{background:rgba(246,200,95,.08);border-color:var(--warn)}.danger{background:rgba(252,129,129,.08);border-color:var(--danger)}.note{background:rgba(104,211,145,.08);border-color:var(--accent)}.grid,.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:18px}.card h4{margin-top:0}.flow{display:grid;gap:9px;margin:20px 0}.flow div{padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}table{width:100%;border-collapse:collapse;margin:18px 0;display:block;overflow:auto}th,td{text-align:left;padding:12px 13px;border:1px solid var(--line);min-width:150px}th{background:var(--panel2);color:#fff}td{color:#cbd5e5}.pipeline{font-family:monospace;text-align:center;white-space:pre;overflow:auto;background:var(--code);border:1px solid var(--line);padding:20px;border-radius:12px;color:#b5f4d0}.checklist{list-style:none;padding-left:0}.checklist li{padding:8px 0 8px 30px;position:relative}.checklist li:before{content:"□";position:absolute;left:3px;color:var(--accent);font-size:1.2rem}.footer-note{margin-top:55px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}a{color:#8ecdf7}@media(max-width:940px){.layout{grid-template-columns:1fr}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:28px 20px 60px}.grid,.columns{grid-template-columns:1fr}}
+</style></head><body><div class="layout"><aside><div class="brand">Express 5 + TypeScript</div><div class="subtitle">Curso detalhado focado em APIs.</div><div class="phase-links"><a class="phase-link active" href="#fase9">Fase 9 · Banco e Prisma</a></div><nav id="toc" aria-label="Mapa da Fase 9"><a href="#fase9"><strong>Visão geral da fase</strong></a><div class="nav-title">Mapa do conteúdo</div><details class="nav-group" open><summary>Fundamentos relacionais</summary><div class="nav-links"><a href="#modelo">1. Modelo mental</a><a href="#relacional">2. Banco relacional</a><a href="#tabela">3. Tabela, linha e coluna</a><a href="#tipos">4. Tipos de dados</a><a href="#chaves">5. Chaves</a><a href="#relacionamentos">6. Relacionamentos</a></div></details><details class="nav-group" open><summary>Integridade e desempenho</summary><div class="nav-links"><a href="#constraints">7. Constraints</a><a href="#indices">8. Índices</a><a href="#sql">9. SQL essencial</a><a href="#joins">10. JOINs</a><a href="#transacoes">11. Transações e ACID</a><a href="#concorrencia">12. Concorrência</a><a href="#paginacao">13. Paginação</a><a href="#nmaisum">14. Problema N+1</a></div></details><details class="nav-group" ><summary>Prisma ORM</summary><div class="nav-links"><a href="#orm">15. ORM sem caixa-preta</a><a href="#instalacao">16. Instalação atual</a><a href="#schema">17. Prisma Schema</a><a href="#models">18. Models e relations</a><a href="#migrations">19. Migrations</a><a href="#client">20. Prisma Client</a><a href="#crud">21. CRUD</a><a href="#selectinclude">22. select e include</a><a href="#filtros">23. Filtros e ordenação</a><a href="#prisma-pagination">24. Paginação no Prisma</a><a href="#prisma-transactions">25. Transações no Prisma</a><a href="#erros">26. Erros do banco</a><a href="#seed">27. Seed</a><a href="#testdb">28. Banco de testes</a></div></details><details class="nav-group" ><summary>Arquitetura e prática</summary><div class="nav-links"><a href="#repository">29. Repository</a><a href="#money">30. Dinheiro</a><a href="#ownership">31. Isolamento por usuário</a><a href="#antipatterns">32. Erros comuns</a><a href="#edgecases">33. Edge cases</a><a href="#estrutura">34. Estrutura sugerida</a><a href="#integrado">35. Exemplo integrado</a><a href="#exercicios">36. Exercícios</a><a href="#projeto">37. Mini projeto</a><a href="#checklist">38. Checklist</a><a href="#referencias">39. Referências</a></div></details><div class="nav-progress"><strong>O que esta fase cobre</strong><span>Como transformar persistência em uma parte confiável do domínio, usando modelagem relacional, SQL, constraints, transações, concorrência e Prisma sem tratá-lo como caixa-preta.</span></div></nav></aside><main><div class="content">
+<section class="phase" id="fase9"><span class="tag">Fase 9</span><h1>Banco de dados, SQL e Prisma</h1><div class="meta"><span class="pill">PostgreSQL</span><span class="pill">Prisma ORM</span><span class="pill">Express 5</span><span class="pill">TypeScript</span><span class="pill">API financeira</span></div>
+<p>Persistência não é apenas trocar um array por uma chamada ao ORM. Um banco relacional aplica regras, coordena acessos concorrentes, mantém relações e precisa continuar correto quando duas requisições chegam quase ao mesmo tempo.</p>
+<div class="callout"><strong>Objetivo:</strong> compreender o modelo relacional antes do Prisma; modelar dados e restrições; escrever e interpretar SQL; usar migrations e Prisma Client; evitar N+1; paginar; trabalhar com transações; isolar testes; e construir operações financeiras atômicas.</div>
+<div class="pipeline">requisição validada
+    ↓
+service / regra de negócio
+    ↓
+repository
+    ↓
+Prisma Client
+    ↓
+SQL + transação + constraints
+    ↓
+PostgreSQL</div>
+
+<h3 id="modelo">1 — Modelo mental</h3><div class="flow"><div><strong>1.</strong> A aplicação solicita uma operação; o banco é um sistema independente.</div><div><strong>2.</strong> O schema define estruturas e invariantes que valem para qualquer cliente.</div><div><strong>3.</strong> O ORM traduz chamadas de alto nível para consultas ao banco.</div><div><strong>4.</strong> Uma transação agrupa mudanças que devem acontecer juntas.</div><div><strong>5.</strong> Concorrência significa que uma verificação pode ficar desatualizada antes da escrita.</div></div>
+<div class="danger"><strong>Regra central:</strong> validação no service melhora a mensagem; constraint no banco protege a verdade. Em dados importantes, você normalmente precisa das duas.</div>
+
+<h3 id="relacional">2 — O que é um banco relacional</h3><p>Um banco relacional organiza dados em relações — normalmente apresentadas como tabelas — e permite conectar registros por chaves. O banco não é um arquivo JSON sofisticado: ele possui linguagem de consulta, catálogo de schema, planejador, índices, transações, controle de concorrência, permissões e mecanismos de durabilidade.</p>
+<div class="grid"><div class="card"><h4>Aplicação</h4><p>Express, services e repositories expressam casos de uso e políticas.</p></div><div class="card"><h4>Banco</h4><p>Armazena dados, executa consultas e garante restrições mesmo diante de concorrência.</p></div></div>
+
+<h3 id="tabela">3 — Tabela, linha e coluna</h3><table><thead><tr><th>Conceito</th><th>Significado</th><th>Exemplo</th></tr></thead><tbody><tr><td>Tabela</td><td>Conjunto de registros do mesmo conceito.</td><td><code>accounts</code></td></tr><tr><td>Linha</td><td>Uma ocorrência do conceito.</td><td>Conta “Carteira”.</td></tr><tr><td>Coluna</td><td>Atributo com nome e tipo.</td><td><code>balance_cents</code></td></tr><tr><td>Schema</td><td>Estrutura e regras do banco; no PostgreSQL também pode ser namespace.</td><td><code>public.accounts</code></td></tr></tbody></table>
+<pre><code>CREATE TABLE accounts (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL,
+  name VARCHAR(80) NOT NULL,
+  balance_cents BIGINT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);</code></pre>
+
+<h3 id="tipos">4 — Tipos de dados</h3><p>O tipo influencia validação, armazenamento, ordenação, operações permitidas e representação no cliente. Use tipos que representem o domínio, não apenas os que parecem convenientes.</p>
+<ul><li><code>text</code>/<code>varchar</code> para texto.</li><li><code>integer</code>/<code>bigint</code> para inteiros.</li><li><code>numeric</code> para precisão decimal controlada.</li><li><code>boolean</code> para verdadeiro/falso.</li><li><code>date</code> para data civil e <code>timestamptz</code> para instante.</li><li><code>uuid</code> para identificadores UUID.</li><li><code>jsonb</code> para estruturas que realmente não pedem modelagem relacional.</li></ul>
+<div class="warning"><strong>JavaScript e BIGINT:</strong> valores acima de <code>Number.MAX_SAFE_INTEGER</code> não são seguros em <code>number</code>. Prisma pode devolver <code>bigint</code>, que também não é serializado por <code>JSON.stringify</code> sem conversão.</div>
+
+<h3 id="chaves">5 — Chave primária e chave estrangeira</h3><h4>5.1 — Primary key</h4><p>Identifica cada linha de maneira única e não nula. Deve ser estável. E-mail pode mudar; um identificador técnico costuma ser melhor.</p>
+<h4>5.2 — Foreign key</h4><p>Declara que um valor referencia uma linha existente em outra tabela, mantendo integridade referencial.</p>
+<pre><code>CREATE TABLE categories (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(80) NOT NULL
+);</code></pre>
+<p><code>ON DELETE</code> precisa ser uma decisão de domínio: <code>CASCADE</code>, <code>RESTRICT</code>, <code>SET NULL</code> ou outra estratégia não são intercambiáveis.</p>
+
+<h3 id="relacionamentos">6 — Relacionamentos</h3><div class="columns"><div class="card"><h4>Um para um</h4><p>Um usuário possui no máximo um perfil. A FK deve ser única.</p></div><div class="card"><h4>Um para muitos</h4><p>Um usuário possui muitas contas; cada conta pertence a um usuário.</p></div><div class="card"><h4>Muitos para muitos</h4><p>Muitos lançamentos podem ter muitas tags, usando tabela de junção.</p></div><div class="card"><h4>Autorrelacionamento</h4><p>Uma categoria pode ter categoria pai, ou um usuário pode indicar outro.</p></div></div>
+<div class="note"><strong>Pergunta de modelagem:</strong> “onde fica a foreign key?” Em um-para-muitos, ela normalmente fica no lado “muitos”.</div>
+
+<h3 id="constraints">7 — Constraints e invariantes</h3><table><thead><tr><th>Constraint</th><th>Protege</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>NOT NULL</code></td><td>Ausência indevida.</td><td>Conta sempre tem nome.</td></tr><tr><td><code>UNIQUE</code></td><td>Duplicidade.</td><td>Nome de categoria por usuário.</td></tr><tr><td><code>FOREIGN KEY</code></td><td>Referência inexistente.</td><td>Transação aponta para conta válida.</td></tr><tr><td><code>CHECK</code></td><td>Regra verificável na própria linha.</td><td>Valor diferente de zero.</td></tr><tr><td><code>DEFAULT</code></td><td>Valor inicial.</td><td>Data de criação.</td></tr></tbody></table>
+<pre><code>ALTER TABLE categories
+ADD CONSTRAINT categories_user_name_unique UNIQUE (user_id, name);
+
+ALTER TABLE transactions
+ADD CONSTRAINT transaction_amount_not_zero CHECK (amount_cents &lt;&gt; 0);</code></pre>
+<p>Uma constraint composta é essencial quando a unicidade depende do contexto. “Categoria Alimentação é única” costuma significar única para aquele usuário, não no sistema inteiro.</p>
+
+<h3 id="indices">8 — Índices</h3><p>Índice é uma estrutura auxiliar para localizar linhas sem percorrer a tabela inteira. Ele pode acelerar leitura, filtros, ordenação e joins, mas aumenta armazenamento e custo de escrita.</p>
+<pre><code>CREATE INDEX transactions_account_occurred_at_idx
+ON transactions (account_id, occurred_at DESC);</code></pre>
+<ul><li>A ordem das colunas em índice composto importa.</li><li>Índice deve refletir consultas reais.</li><li>Foreign key não implica automaticamente o índice ideal em todas as situações.</li><li><code>UNIQUE</code> normalmente é implementado por índice único, mas seu significado principal é integridade.</li><li>Use <code>EXPLAIN</code>/<code>EXPLAIN ANALYZE</code> antes de “otimizar no escuro”.</li></ul>
+
+<h3 id="sql">9 — SQL essencial</h3><pre><code>INSERT INTO accounts (id, user_id, name)
+VALUES ($1, $2, $3);
+
+SELECT id, name, balance_cents
+FROM accounts
+WHERE user_id = $1
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3;
+
+UPDATE accounts
+SET name = $1, updated_at = NOW()
+WHERE id = $2 AND user_id = $3;
+
+DELETE FROM categories
+WHERE id = $1 AND user_id = $2;</code></pre>
+<div class="danger"><strong>Nunca concatene entrada externa em SQL.</strong> Use parâmetros ou o query builder do ORM. Tipagem não impede SQL injection em uma raw query construída incorretamente.</div>
+
+<h3 id="joins">10 — JOINs</h3><p>JOIN combina linhas relacionadas. Entender JOIN ajuda a interpretar <code>include</code>, depurar consultas e reconhecer multiplicação de linhas.</p>
+<pre><code>SELECT
+  t.id,
+  t.amount_cents,
+  a.name AS account_name,
+  c.name AS category_name
+FROM transactions t
+JOIN accounts a ON a.id = t.account_id
+LEFT JOIN categories c ON c.id = t.category_id
+WHERE a.user_id = $1;</code></pre>
+<p><code>INNER JOIN</code> exige correspondência. <code>LEFT JOIN</code> preserva a linha da esquerda mesmo sem relação. Uma consulta com vários relacionamentos “muitos” pode gerar um produto de linhas e exigir outra estratégia.</p>
+
+<h3 id="transacoes">11 — Transações e ACID</h3><p>Uma transação define uma unidade de trabalho. Ou todas as operações confirmam com <code>COMMIT</code>, ou as alterações são desfeitas com <code>ROLLBACK</code>.</p>
+<div class="grid"><div class="card"><h4>Atomicidade</h4><p>O conjunto acontece por inteiro ou não acontece.</p></div><div class="card"><h4>Consistência</h4><p>Regras válidas continuam válidas ao fim.</p></div><div class="card"><h4>Isolamento</h4><p>Operações concorrentes não devem produzir anomalias proibidas.</p></div><div class="card"><h4>Durabilidade</h4><p>Depois do commit, o resultado deve sobreviver a falhas previstas.</p></div></div>
+<pre><code>BEGIN;
+UPDATE accounts SET balance_cents = balance_cents - 5000 WHERE id = $1;
+UPDATE accounts SET balance_cents = balance_cents + 5000 WHERE id = $2;
+INSERT INTO transfers (...) VALUES (...);
+COMMIT;</code></pre>
+
+<h3 id="concorrencia">12 — Concorrência e isolamento</h3><p>Duas requisições podem ler o mesmo saldo e ambas concluir que há dinheiro suficiente. O bug não aparece em testes sequenciais simples.</p>
+<pre><code>// Abordagem vulnerável: read → decide → write
+const account = await repository.findById(sourceId);
+if (account.balanceCents &lt; amountCents) throw new InsufficientFundsError();
+await repository.updateBalance(sourceId, account.balanceCents - amountCents);</code></pre>
+<p>Estratégias possíveis incluem atualização condicional, lock de linha, nível de isolamento mais forte, constraint e retry de falhas transitórias. A escolha depende do banco e do caso de uso.</p>
+<pre><code>UPDATE accounts
+SET balance_cents = balance_cents - $1
+WHERE id = $2 AND user_id = $3 AND balance_cents &gt;= $1;
+-- 0 linhas alteradas: inexistente, sem acesso ou saldo insuficiente.</code></pre>
+<div class="warning"><strong>Transação não é sinônimo automático de ausência de race condition.</strong> O nível de isolamento e a forma da consulta continuam importantes.</div>
+
+<h3 id="paginacao">13 — Paginação</h3><h4>13.1 — Offset</h4><pre><code>ORDER BY occurred_at DESC, id DESC
+LIMIT 20 OFFSET 40;</code></pre><p>É simples e permite pular páginas, mas offsets altos custam mais e inserções concorrentes podem deslocar resultados.</p>
+<h4>13.2 — Cursor</h4><pre><code>WHERE (occurred_at, id) &lt; ($cursorDate, $cursorId)
+ORDER BY occurred_at DESC, id DESC
+LIMIT 20;</code></pre><p>É mais estável para feeds e grandes volumes. A ordenação precisa ser determinística; um campo não único costuma exigir desempate pelo ID.</p>
+
+<h3 id="nmaisum">14 — Problema N+1</h3><pre><code>const accounts = await prisma.account.findMany();
+for (const account of accounts) {
+  account.transactions = await prisma.transaction.findMany({
+    where: { accountId: account.id },
+  });
+}</code></pre><p>Uma consulta carrega N contas e depois executa uma consulta para cada conta: 1 + N. Corrija carregando relações de forma adequada, agregando em lote ou redesenhando a resposta.</p>
+<div class="note"><strong>Nem todo carregamento em duas consultas é N+1.</strong> Uma estratégia em lote pode ser deliberada e eficiente.</div>
+
+<h3 id="orm">15 — O que Prisma resolve — e o que não resolve</h3><div class="columns"><div class="card"><h4>Ajuda</h4><ul><li>Client gerado e tipado.</li><li>Autocompletar de filtros e relações.</li><li>Mapeamento entre models e banco.</li><li>Migrations versionadas.</li><li>Composição de consultas.</li></ul></div><div class="card"><h4>Não substitui</h4><ul><li>Modelagem relacional.</li><li>Índices corretos.</li><li>Transações conscientes.</li><li>Autorização.</li><li>Análise de SQL e performance.</li></ul></div></div>
+
+<h3 id="instalacao">16 — Instalação e fluxo atual</h3><pre><code>npm install @prisma/client
+npm install -D prisma
+
+npx prisma init
+npx prisma migrate dev --name init
+npx prisma generate
+npx prisma db seed</code></pre>
+<p>Em versões atuais do Prisma ORM, geração do Client e seed devem ser tratados explicitamente no fluxo. Não dependa de comportamentos automáticos de tutoriais antigos.</p>
+<pre><code>// prisma.config.ts
+import "dotenv/config";
+import { defineConfig, env } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts",
+  },
+  datasource: {
+    url: env("DATABASE_URL"),
+  },
+});</code></pre>
+
+<h3 id="schema">17 — Prisma Schema</h3><pre><code>generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TransactionKind {
+  INCOME
+  EXPENSE
+  TRANSFER
+}</code></pre>
+<p>O schema descreve models, tipos, relations, constraints mapeadas e geração do Client. Ele não é a base em execução; o banco continua sendo a fonte persistente.</p>
+
+<h3 id="models">18 — Models e relations</h3><pre><code>model User {
+  id         String     @id @default(uuid()) @db.Uuid
+  email      String     @unique
+  accounts   Account[]
+  categories Category[]
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+model Account {
+  id           String        @id @default(uuid()) @db.Uuid
+  userId       String        @db.Uuid @map("user_id")
+  name         String        @db.VarChar(80)
+  balanceCents BigInt        @default(0) @map("balance_cents")
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@unique([userId, name])
+  @@index([userId, createdAt])
+  @@map("accounts")
+}</code></pre>
+<p>Campos de relação como <code>user</code> não são necessariamente colunas; <code>userId</code> é o campo escalar que armazena a FK. <code>@map</code> e <code>@@map</code> permitem nomes idiomáticos no TypeScript e no SQL.</p>
+
+<h3 id="migrations">19 — Migrations</h3><p>Migration é uma mudança versionada do schema do banco. Ela deve ser revisada como código, pois pode bloquear tabela, perder dados ou falhar em produção.</p>
+<pre><code>npx prisma migrate dev --name add_categories   # desenvolvimento
+npx prisma migrate deploy                      # produção/CI
+npx prisma migrate status
+npx prisma migrate diff ...</code></pre>
+<div class="warning"><strong><code>db push</code> não substitui migrations em um projeto que precisa de histórico confiável.</strong> É útil em protótipos e alguns workflows, mas produção pede mudanças revisáveis e reproduzíveis.</div>
+<h4>19.1 — Mudança incompatível</h4><p>Adicionar coluna obrigatória em tabela preenchida exige estratégia: adicionar nullable/default, preencher dados, validar e só depois tornar obrigatória.</p>
+
+<h3 id="client">20 — Prisma Client e ciclo de vida</h3><pre><code>import { PrismaClient } from "./generated/prisma/client";
+
+export const prisma = new PrismaClient();</code></pre>
+<p>Em um servidor de longa duração, normalmente existe uma instância compartilhada por processo. Criar um client por requisição pode multiplicar pools e conexões. O encerramento gracioso deve parar o servidor e desconectar quando apropriado.</p>
+<pre><code>process.on("SIGTERM", async () =&gt; {
+  await prisma.$disconnect();
+});</code></pre>
+
+<h3 id="crud">21 — CRUD com Prisma Client</h3><pre><code>const account = await prisma.account.create({
+  data: { userId, name, balanceCents: 0n },
+});
+
+const accounts = await prisma.account.findMany({
+  where: { userId },
+  orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+});
+
+const updated = await prisma.account.update({
+  where: { id: accountId },
+  data: { name },
+});
+
+await prisma.account.delete({ where: { id: accountId } });</code></pre>
+<p><code>findUnique</code> exige uma chave única. <code>findFirst</code> encontra a primeira linha compatível e precisa de ordenação quando “primeira” tem significado.</p>
+
+<h3 id="selectinclude">22 — <code>select</code> e <code>include</code></h3><div class="columns"><div class="card"><h4>select</h4><pre><code>select: {
+  id: true,
+  name: true,
+  balanceCents: true,
+}</code></pre><p>Escolhe campos e reduz vazamento acidental.</p></div><div class="card"><h4>include</h4><pre><code>include: {
+  transactions: {
+    take: 5,
+    orderBy: { occurredAt: "desc" },
+  },
+}</code></pre><p>Carrega relações.</p></div></div>
+<div class="danger"><strong>Não retorne modelos do banco diretamente por conveniência.</strong> Use DTOs/mappers para serializar <code>bigint</code>, ocultar campos e estabilizar o contrato.</div>
+
+<h3 id="filtros">23 — Filtros e ordenação</h3><pre><code>const items = await prisma.transaction.findMany({
+  where: {
+    account: { userId },
+    kind: kind ?? undefined,
+    categoryId: categoryId ?? undefined,
+    occurredAt: {
+      gte: from ?? undefined,
+      lte: to ?? undefined,
+    },
+    description: search
+      ? { contains: search, mode: "insensitive" }
+      : undefined,
+  },
+  orderBy: [{ occurredAt: "desc" }, { id: "desc" }],
+});</code></pre>
+<p>O filtro de ownership deve estar na própria consulta sempre que possível. Buscar por ID e só depois comparar usuário amplia o risco de esquecer a autorização.</p>
+
+<h3 id="prisma-pagination">24 — Paginação no Prisma</h3><h4>24.1 — Offset</h4><pre><code>skip: (page - 1) * limit,
+take: limit,</code></pre><h4>24.2 — Cursor</h4><pre><code>const rows = await prisma.transaction.findMany({
+  where: { account: { userId } },
+  take: limit + 1,
+  ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+  orderBy: { id: "desc" },
+});</code></pre><p>Um cursor simples por ID funciona quando a ordenação corresponde ao ID. Para ordenar por data com duplicatas, modele um cursor estável compatível com a ordem.</p>
+
+<h3 id="prisma-transactions">25 — Transações no Prisma</h3><h4>25.1 — Operações independentes</h4><pre><code>await prisma.$transaction([
+  prisma.category.create({ data: categoryData }),
+  prisma.account.update({ where: { id }, data: { updatedAt: new Date() } }),
+]);</code></pre><h4>25.2 — Interactive transaction</h4><pre><code>await prisma.$transaction(async tx =&gt; {
+  const source = await tx.account.findFirst({
+    where: { id: sourceId, userId },
+  });
+
+  if (!source) throw new AccountNotFoundError();
+  if (source.balanceCents &lt; amountCents) {
+    throw new InsufficientFundsError();
+  }
+
+  await tx.account.update({
+    where: { id: sourceId },
+    data: { balanceCents: { decrement: amountCents } },
+  });
+  await tx.account.update({
+    where: { id: destinationId },
+    data: { balanceCents: { increment: amountCents } },
+  });
+});</code></pre>
+<p>Mantenha transações curtas. Não faça HTTP, envio de e-mail ou espera desnecessária dentro delas. Para concorrência forte, complemente com estratégia de isolamento/lock/atualização condicional e retry.</p>
+
+<h3 id="erros">26 — Erros do banco e tradução</h3><p>O banco pode rejeitar operações por unicidade, foreign key, registro inexistente, conflito de serialização, timeout ou conexão. O repository/service traduz erros esperados para o vocabulário da aplicação, sem expor detalhes do driver.</p>
+<pre><code>try {
+  await prisma.category.create({ data: { userId, name } });
+} catch (error) {
+  if (isUniqueConstraintError(error)) {
+    throw new CategoryAlreadyExistsError();
+  }
+  throw error;
+}</code></pre>
+<p>Evite transformar todo erro do Prisma em 400. Falha de conexão e bug de query continuam sendo erros internos.</p>
+
+<h3 id="seed">27 — Seed</h3><p>Seed cria dados iniciais ou demonstrativos. Deve ser idempotente quando possível e não pode ser confundido com migration.</p>
+<pre><code>// prisma/seed.ts
+import { PrismaClient } from "../src/generated/prisma/client";
+
+const prisma = new PrismaClient();
+
+async function main() {
+  await prisma.user.upsert({
+    where: { email: "demo@example.com" },
+    update: {},
+    create: {
+      email: "demo@example.com",
+      accounts: { create: [{ name: "Carteira" }, { name: "Banco" }] },
+    },
+  });
+}
+
+main().finally(() =&gt; prisma.$disconnect());</code></pre>
+
+<h3 id="testdb">28 — Banco de testes</h3><p>Testes de integração precisam de banco isolado do desenvolvimento e produção. O schema deve ser migrado e o estado limpo de modo determinístico.</p>
+<div class="grid"><div class="card"><h4>Opções</h4><ul><li>Database dedicado por suíte.</li><li>Schema PostgreSQL por worker.</li><li>Container temporário.</li><li>Transação revertida, quando compatível.</li></ul></div><div class="card"><h4>Cuidados</h4><ul><li>Execução paralela.</li><li>Sequências e IDs.</li><li>FKs na limpeza.</li><li>Migrations reais.</li><li>DATABASE_URL protegida.</li></ul></div></div>
+<div class="danger"><strong>Proteção obrigatória:</strong> o script de limpeza deve abortar se a URL não indicar explicitamente ambiente de teste.</div>
+
+<h3 id="repository">29 — Repository com Prisma</h3><pre><code>export class PrismaAccountRepository {
+  async findOwnedById(userId: string, accountId: string) {
+    return prisma.account.findFirst({
+      where: { id: accountId, userId },
+    });
+  }
+
+  async listByUser(userId: string) {
+    return prisma.account.findMany({
+      where: { userId },
+      select: { id: true, name: true, balanceCents: true },
+      orderBy: { createdAt: "asc" },
+    });
+  }
+}</code></pre>
+<p>O repository encapsula persistência, mas não precisa esconder toda capacidade do Prisma atrás de métodos genéricos como <code>findAll</code>. Métodos orientados ao caso de uso preservam intenção.</p>
+
+<h3 id="money">30 — Modelando dinheiro</h3><p>Não use ponto flutuante para valores monetários que precisam de exatidão.</p>
+<pre><code>// R$ 12,34
+const amountCents = 1234n;</code></pre>
+<ul><li>Centavos inteiros são simples para uma moeda com duas casas.</li><li><code>Decimal</code>/<code>numeric</code> é melhor quando a escala varia ou cálculos exigem decimais.</li><li>Valor zero deve ser rejeitado.</li><li>Defina convenção de sinal: receita positiva e despesa negativa, ou tipo + valor sempre positivo.</li><li>Moeda deve ser explícita quando o sistema é multimoeda.</li></ul>
+<pre><code>function toMoneyResponse(value: bigint) {
+  return { amountCents: value.toString() };
+}</code></pre>
+
+<h3 id="ownership">31 — Isolamento por usuário</h3><pre><code>const transaction = await prisma.transaction.findFirst({
+  where: {
+    id: transactionId,
+    account: { userId: authenticatedUserId },
+  },
+});</code></pre>
+<p>Não confie em <code>userId</code> vindo do body. Use a identidade autenticada. Para evitar enumeração, muitos sistemas respondem 404 quando o recurso não existe ou pertence a outro usuário.</p>
+<div class="warning"><strong>Relação válida não prova autorização.</strong> Uma categoria existente pode pertencer a outro usuário; valide o vínculo no mesmo contexto.</div>
+
+<h3 id="antipatterns">32 — Erros comuns</h3><div class="grid"><div class="card"><h4>ORM como caixa-preta</h4><p>Sem SQL, índices e transações, bugs ficam invisíveis.</p></div><div class="card"><h4>Sem constraints</h4><p>O service sozinho perde corridas concorrentes.</p></div><div class="card"><h4>Client por requisição</h4><p>Cria pools e pressão de conexão.</p></div><div class="card"><h4><code>include</code> indiscriminado</h4><p>Respostas enormes e dados privados.</p></div><div class="card"><h4>Offset sem ordem</h4><p>Páginas não determinísticas.</p></div><div class="card"><h4>Transação longa</h4><p>Aumenta lock, contenção e timeout.</p></div><div class="card"><h4>Saldo calculado no JavaScript</h4><p>Read-modify-write vulnerável.</p></div><div class="card"><h4><code>db push</code> em produção</h4><p>Perde revisão e histórico de mudança.</p></div></div>
+
+<h3 id="edgecases">33 — Edge cases</h3>
+<details><summary>33.1 — Valor zero</summary><p>Uma transação financeira com zero costuma não representar movimento. Valide na aplicação e, quando possível, com CHECK.</p></details>
+<details><summary>33.2 — Origem igual ao destino</summary><p>Transferência para a mesma conta não altera patrimônio e pode criar registros sem sentido.</p></details>
+<details><summary>33.3 — Saldo muda após a leitura</summary><p>Duas transferências simultâneas podem consumir o mesmo saldo. Use operação atômica e estratégia de concorrência.</p></details>
+<details><summary>33.4 — Categoria de outro usuário</summary><p>O ID existe, mas não pertence ao usuário autenticado.</p></details>
+<details><summary>33.5 — Conta removida durante a operação</summary><p>A FK, ordem de locks e comportamento de exclusão precisam ser previstos.</p></details>
+<details><summary>33.6 — Retry e duplicidade</summary><p>Repetir a requisição após timeout pode duplicar transferência; idempotency key será aprofundada em fase avançada.</p></details>
+<details><summary>33.7 — BigInt no JSON</summary><p><code>JSON.stringify(1n)</code> falha. Converta para string ou contrato monetário.</p></details>
+<details><summary>33.8 — Data sem desempate</summary><p>Várias transações podem ter o mesmo timestamp; ordene também pelo ID.</p></details>
+<details><summary>33.9 — Cursor apagado</summary><p>Um cursor baseado em registro pode desaparecer. Defina política ou use cursor codificado com valores de ordenação.</p></details>
+<details><summary>33.10 — Migration com dados existentes</summary><p>Adicionar NOT NULL ou UNIQUE pode falhar por registros antigos.</p></details>
+<details><summary>33.11 — Nome com caixa e espaços</summary><p>“Mercado”, “ mercado ” e “MERCADO” podem ser duplicatas de negócio. Normalize e defina collation/índice adequado.</p></details>
+<details><summary>33.12 — Falha após commit</summary><p>A resposta HTTP pode falhar depois do commit. O cliente não sabe se a operação ocorreu; pense em idempotência e consulta posterior.</p></details>
+<details><summary>33.13 — Deadlock</summary><p>Transferências opostas podem bloquear contas em ordem inversa. Adote ordem consistente de acesso e retry.</p></details>
+<details><summary>33.14 — Testes paralelos</summary><p>Suites que limpam as mesmas tabelas interferem entre si. Isole bancos/schemas ou serialize conscientemente.</p></details>
+
+<h3 id="estrutura">34 — Estrutura sugerida</h3><pre><code>prisma/
+├── migrations/
+├── schema.prisma
+└── seed.ts
+src/
+├── generated/prisma/
+├── lib/prisma.ts
+├── modules/
+│   ├── accounts/
+│   │   ├── account.repository.ts
+│   │   ├── prisma-account.repository.ts
+│   │   ├── account.service.ts
+│   │   └── account.controller.ts
+│   ├── categories/
+│   └── transactions/
+└── tests/
+    ├── setup-database.ts
+    └── factories/</code></pre>
+
+<h3 id="integrado">35 — Exemplo integrado: transferência</h3><pre><code>type TransferInput = {
+  userId: string;
+  sourceAccountId: string;
+  destinationAccountId: string;
+  amountCents: bigint;
+};
+
+export async function transfer(input: TransferInput) {
+  if (input.amountCents &lt;= 0n) throw new InvalidAmountError();
+  if (input.sourceAccountId === input.destinationAccountId) {
+    throw new SameAccountTransferError();
+  }
+
+  return prisma.$transaction(async tx =&gt; {
+    const accounts = await tx.account.findMany({
+      where: {
+        userId: input.userId,
+        id: { in: [input.sourceAccountId, input.destinationAccountId] },
+      },
+      select: { id: true },
+    });
+
+    if (accounts.length !== 2) throw new AccountNotFoundError();
+
+    const debited = await tx.account.updateMany({
+      where: {
+        id: input.sourceAccountId,
+        userId: input.userId,
+        balanceCents: { gte: input.amountCents },
+      },
+      data: { balanceCents: { decrement: input.amountCents } },
+    });
+
+    if (debited.count !== 1) throw new InsufficientFundsError();
+
+    await tx.account.update({
+      where: { id: input.destinationAccountId },
+      data: { balanceCents: { increment: input.amountCents } },
+    });
+
+    return tx.transfer.create({
+      data: {
+        userId: input.userId,
+        sourceAccountId: input.sourceAccountId,
+        destinationAccountId: input.destinationAccountId,
+        amountCents: input.amountCents,
+      },
+      select: { id: true, amountCents: true, createdAt: true },
+    });
+  });
+}</code></pre>
+<p>Este exemplo melhora o read-modify-write ao fazer débito condicional. Em um sistema financeiro real, ainda seriam avaliados ledger imutável, isolamento, locks, retries, idempotência, auditoria e reconciliação.</p>
+
+<h3 id="exercicios">36 — Exercícios</h3><ol><li>Modele usuários, contas, categorias e transações em SQL antes do Prisma.</li><li>Explique onde ficam as FKs e quais exclusões devem ser restritas.</li><li>Crie constraints para nome de conta por usuário e valor diferente de zero.</li><li>Escreva JOIN que liste transações com conta e categoria.</li><li>Implemente filtros por período, tipo e categoria.</li><li>Compare paginação offset e cursor com inserções concorrentes.</li><li>Produza deliberadamente um N+1 e depois elimine-o.</li><li>Crie migration segura para adicionar uma coluna obrigatória em tabela preenchida.</li><li>Teste duas transferências concorrentes contra o mesmo saldo.</li><li>Traduza erro de unique para conflito HTTP sem vazar mensagem do banco.</li><li>Crie seed idempotente.</li><li>Configure banco de teste separado e proteção contra URL errada.</li></ol>
+
+<h3 id="projeto">37 — Mini projeto: API financeira</h3><pre><code>POST   /accounts
+GET    /accounts
+PATCH  /accounts/:accountId
+DELETE /accounts/:accountId
+
+POST   /categories
+GET    /categories
+PATCH  /categories/:categoryId
+DELETE /categories/:categoryId
+
+POST   /transactions
+GET    /transactions
+GET    /transactions/:transactionId
+DELETE /transactions/:transactionId
+
+POST   /transfers</code></pre>
+<h4>37.1 — Models</h4><ul><li>User.</li><li>Account.</li><li>Category.</li><li>Transaction.</li><li>Transfer ou lançamentos vinculados por identificador.</li></ul>
+<h4>37.2 — Regras obrigatórias</h4><ul><li>Valor não pode ser zero.</li><li>Transferência precisa ser atômica.</li><li>Conta de origem e destino devem ser diferentes.</li><li>Saldo insuficiente deve impedir toda a operação.</li><li>Categoria precisa pertencer ao usuário.</li><li>Usuário não acessa nem altera dados de outro usuário.</li><li>Listagens têm ordenação determinística e paginação.</li><li>Dinheiro não usa ponto flutuante.</li></ul>
+<h4>37.3 — Cenários de teste</h4><ul><li>Criação e listagem com sucesso.</li><li>Duplicidade de nome.</li><li>Recurso inexistente.</li><li>Recurso de outro usuário.</li><li>Transferência válida.</li><li>Saldo insuficiente.</li><li>Mesmo ID de origem e destino.</li><li>Falha no crédito com rollback do débito.</li><li>Duas transferências concorrentes.</li><li>Paginação sem duplicar ou perder ordem dentro da estratégia escolhida.</li></ul>
+
+<h3 id="checklist">38 — Checklist para avançar</h3><ul class="checklist"><li>Explico tabela, linha, coluna e schema.</li><li>Diferencio PK, FK, UNIQUE, NOT NULL e CHECK.</li><li>Modelo 1:1, 1:N e N:N.</li><li>Entendo custo e finalidade de índices.</li><li>Leio SQL básico e JOINs.</li><li>Explico ACID e por que transação não elimina toda race condition.</li><li>Diferencio paginação offset e cursor.</li><li>Reconheço N+1.</li><li>Consigo ler um Prisma Schema e identificar a FK real.</li><li>Sei criar, revisar e aplicar migrations.</li><li>Uso select/include conscientemente.</li><li>Traduzo erros esperados do banco.</li><li>Uso transação para transferência.</li><li>Modelo dinheiro sem float.</li><li>Filtro ownership na consulta.</li><li>Mantenho banco de testes isolado.</li></ul>
+
+<h3 id="referencias">39 — Referências</h3><div class="columns"><div><h4>Documentação oficial</h4><ul><li><a href="https://www.prisma.io/docs" target="_blank" rel="noopener">Prisma ORM — introdução</a></li><li><a href="https://www.prisma.io/docs/orm/prisma-schema" target="_blank" rel="noopener">Prisma Schema</a></li><li><a href="https://www.prisma.io/docs/orm/prisma-migrate" target="_blank" rel="noopener">Prisma Migrate</a></li><li><a href="https://www.prisma.io/docs/orm/prisma-client/queries/crud" target="_blank" rel="noopener">CRUD</a></li><li><a href="https://www.prisma.io/docs/orm/prisma-client/queries/relation-queries" target="_blank" rel="noopener">Relation queries</a></li><li><a href="https://www.prisma.io/docs/orm/prisma-client/queries/transactions" target="_blank" rel="noopener">Transactions</a></li><li><a href="https://www.prisma.io/docs/orm/prisma-client/testing/integration-testing" target="_blank" rel="noopener">Integration testing</a></li><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" target="_blank" rel="noopener">PostgreSQL — constraints</a></li><li><a href="https://www.postgresql.org/docs/current/indexes.html" target="_blank" rel="noopener">PostgreSQL — indexes</a></li><li><a href="https://www.postgresql.org/docs/current/transaction-iso.html" target="_blank" rel="noopener">PostgreSQL — transaction isolation</a></li></ul></div><div><h4>Livros</h4><ul><li><em>Learning SQL</em>, Alan Beaulieu.</li><li><em>SQL Antipatterns</em>, Bill Karwin.</li><li><em>Designing Data-Intensive Applications</em>, Martin Kleppmann.</li><li><em>Database Internals</em>, Alex Petrov.</li><li><em>PostgreSQL: Up and Running</em>, Regina Obe e Leo Hsu.</li><li><em>Fundamentals of Database Systems</em>, Elmasri e Navathe.</li></ul></div></div>
+<div class="callout"><strong>Resultado esperado:</strong> ao concluir esta fase, Prisma deixa de parecer “mágica”. Você deverá conseguir explicar qual estrutura existe no banco, quais invariantes estão protegidas, quais consultas serão executadas e por que uma operação continua correta sob falhas e concorrência.</div>
+</section><div class="footer-note">Fase 9 · Banco de dados, SQL e Prisma — Trilha Express 5 com TypeScript</div>
+</div></main></div><script>
+const links=[...document.querySelectorAll('#toc a')];
+const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));},{rootMargin:'-15% 0px -70% 0px',threshold:[0,.2,.5]});
+sections.forEach(s=>observer.observe(s));
+</script></body></html>

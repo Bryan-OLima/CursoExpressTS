@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fase 4 — Middlewares | Express 5 + TypeScript</title>
+<style>
+:root{--bg:#09111f;--panel:#101b2e;--panel2:#142239;--text:#e8edf7;--muted:#a8b4c8;--line:#283854;--accent:#68d391;--accent2:#63b3ed;--warn:#f6c85f;--danger:#fc8181;--code:#07101d;--shadow:0 18px 48px rgba(0,0,0,.25)}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:linear-gradient(135deg,#08101d,#0d1728 48%,#07111f);color:var(--text);font:16px/1.72 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.layout{display:grid;grid-template-columns:330px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:rgba(7,16,29,.96)}main{min-width:0;padding:34px 5vw 80px}.content{max-width:1080px;margin:auto}.brand{font-size:1.3rem;font-weight:800}.subtitle{color:var(--muted);font-size:.92rem;margin:4px 0 18px}.phase-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.phase-link{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);text-decoration:none;font-size:.82rem}.phase-link.active{border-color:var(--accent);color:var(--accent);background:rgba(104,211,145,.08)}nav>a,summary{color:var(--text)}nav>a{display:block;padding:9px 11px;margin:3px 0;border-radius:8px;text-decoration:none}nav>a:hover,.nav-links a:hover,.nav-links a.active{background:var(--panel2);color:var(--accent)}.nav-title{text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-size:.72rem;font-weight:800;margin:20px 10px 8px}.nav-group{border-top:1px solid rgba(40,56,84,.62)}summary{cursor:pointer;padding:12px 10px;font-weight:700}.nav-links{padding:0 0 9px 10px}.nav-links a{display:block;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:7px;font-size:.88rem}.nav-progress{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.nav-progress strong{display:block;color:var(--accent);margin-bottom:5px}.nav-progress span{font-size:.84rem;color:var(--muted)}section{padding:36px 0 14px}.phase{padding-top:0}.tag,.pill{display:inline-flex;border-radius:999px}.tag{padding:5px 10px;background:rgba(104,211,145,.12);color:var(--accent);font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px}.pill{padding:5px 10px;border:1px solid var(--line);color:var(--muted);font-size:.83rem}h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;margin:14px 0 18px;letter-spacing:-.045em}h2{font-size:1.7rem;margin-top:12px}h3{font-size:1.42rem;margin:48px 0 14px;padding-top:8px;border-top:1px solid var(--line)}h4{font-size:1.08rem;margin:28px 0 9px;color:#cfe2ff}p,li{color:#cbd5e5}strong{color:#f3f6fb}code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;color:#b5f4d0}pre{position:relative;overflow:auto;background:var(--code);border:1px solid var(--line);border-radius:13px;padding:18px 20px;box-shadow:var(--shadow);line-height:1.55}pre code{color:#d7e4f6}.bad{color:#ffc0c0}.good{color:#b5f4d0}.callout,.warning,.danger,.note{padding:16px 18px;margin:20px 0;border-radius:12px;border-left:4px solid}.callout{background:rgba(99,179,237,.08);border-color:var(--accent2)}.warning{background:rgba(246,200,95,.08);border-color:var(--warn)}.danger{background:rgba(252,129,129,.08);border-color:var(--danger)}.note{background:rgba(104,211,145,.08);border-color:var(--accent)}.grid,.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:18px}.card h4{margin-top:0}.flow{display:grid;gap:9px;margin:20px 0}.flow div{padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}table{width:100%;border-collapse:collapse;margin:18px 0;display:block;overflow:auto}th,td{text-align:left;padding:12px 13px;border:1px solid var(--line);min-width:150px}th{background:var(--panel2);color:#fff}td{color:#cbd5e5}.pipeline{font-family:monospace;text-align:center;white-space:pre;overflow:auto;background:var(--code);border:1px solid var(--line);padding:20px;border-radius:12px;color:#b5f4d0}.checklist{list-style:none;padding-left:0}.checklist li{padding:8px 0 8px 30px;position:relative}.checklist li:before{content:"□";position:absolute;left:3px;color:var(--accent);font-size:1.2rem}.footer-note{margin-top:55px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}a{color:#8ecdf7}@media(max-width:940px){.layout{grid-template-columns:1fr}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:28px 20px 60px}.grid,.columns{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="layout"><aside>
+<div class="brand">Express 5 + TypeScript</div><div class="subtitle">Curso detalhado focado em APIs.</div>
+<div class="phase-links"><a class="phase-link" href="trilha-express5-typescript-fase3.html">← Fase 3</a><a class="phase-link active" href="#fase4">Fase 4</a></div>
+<nav id="toc" aria-label="Mapa da Fase 4"><a href="#fase4"><strong>Visão geral da fase</strong></a><div class="nav-title">Mapa do conteúdo</div>
+<details class="nav-group" open><summary>Pipeline e execução</summary><div class="nav-links"><a href="#modelo-mental">1. Modelo mental</a><a href="#definicao">2. O que é middleware</a><a href="#assinatura">3. Assinatura</a><a href="#next">4. next()</a><a href="#encerrar">5. Continuar ou encerrar</a><a href="#ordem">6. Ordem de registro</a></div></details>
+<details class="nav-group" open><summary>Escopos e composição</summary><div class="nav-links"><a href="#global">7. Global</a><a href="#router">8. Por router</a><a href="#rota">9. Por rota</a><a href="#multiplos">10. Vários handlers</a><a href="#mount">11. Montagem e paths</a><a href="#built-in">12. Built-in e terceiros</a></div></details>
+<details class="nav-group"><summary>Contexto e observabilidade</summary><div class="nav-links"><a href="#locals">13. res.locals</a><a href="#request-id">14. Request ID</a><a href="#logging">15. Logging</a><a href="#tempo">16. Tempo de resposta</a><a href="#eventos">17. finish e close</a><a href="#contexto">18. Contexto da requisição</a></div></details>
+<details class="nav-group"><summary>Segurança e controle</summary><div class="nav-links"><a href="#authn">19. Autenticação</a><a href="#authz">20. Autorização</a><a href="#factory">21. Middleware factory</a><a href="#401-403">22. 401 vs 403</a><a href="#async">23. Async no Express 5</a><a href="#erros">24. Erros e next(error)</a></div></details>
+<details class="nav-group"><summary>Prática e consolidação</summary><div class="nav-links"><a href="#anti-patterns">25. Erros comuns</a><a href="#edge-cases">26. Edge cases</a><a href="#estrutura">27. Estrutura sugerida</a><a href="#exemplo">28. Exemplo integrado</a><a href="#exercicios">29. Exercícios</a><a href="#mini-projeto">30. Mini projeto</a><a href="#checklist">31. Checklist</a><a href="#referencias">32. Referências</a></div></details>
+<div class="nav-progress"><strong>O que esta fase cobre</strong><span>Como construir uma cadeia previsível de logging, identidade da requisição, autenticação, autorização e handlers sem deixar requisições penduradas.</span></div></nav></aside>
+<main><div class="content"><section class="phase" id="fase4"><span class="tag">Fase 4</span><h1>Middlewares e pipeline da requisição</h1><div class="meta"><span class="pill">Express 5</span><span class="pill">TypeScript</span><span class="pill">Observabilidade</span><span class="pill">Autenticação</span><span class="pill">API administrativa</span></div>
+<p>Middleware é uma função que participa do caminho de uma requisição dentro da aplicação. Ela pode observar dados, acrescentar contexto, transformar a requisição, encerrar a resposta ou entregar o controle para a próxima etapa.</p>
+<div class="callout"><strong>Objetivo da fase:</strong> ao final, você deverá conseguir visualizar a aplicação como uma pilha ordenada, escolher o escopo correto para cada middleware, usar <code>next()</code> de forma consciente, compartilhar contexto com <code>res.locals</code>, registrar logs de conclusão e separar autenticação de autorização.</div>
+<div class="pipeline">requisição
+    ↓
+request ID
+    ↓
+logger / cronômetro
+    ↓
+autenticação
+    ↓
+autorização
+    ↓
+validação
+    ↓
+controller
+    ↓
+resposta</div>
+
+<h3 id="modelo-mental">1 — O modelo mental desta fase</h3><div class="flow"><div><strong>1.</strong> O Express recebe uma requisição.</div><div><strong>2.</strong> Ele percorre camadas na ordem em que foram registradas.</div><div><strong>3.</strong> Cada camada decide se não combina, continua, responde ou encaminha um erro.</div><div><strong>4.</strong> Dados produzidos antes podem ser usados pelas etapas seguintes.</div><div><strong>5.</strong> Quando uma resposta termina, callbacks ligados à resposta podem registrar o resultado final.</div></div>
+<p>Uma rota não é um bloco isolado. Ela faz parte da mesma pilha que contém parsers, routers, autenticação, handlers e tratamento de erros.</p>
+
+<h3 id="definicao">2 — O que é um middleware</h3><p>Em Express, um middleware comum recebe <code>request</code>, <code>response</code> e <code>next</code>. O termo descreve uma posição no fluxo, não uma finalidade específica. Logger, autenticação, CORS, parsing de JSON e a própria função final de uma rota participam do processamento.</p>
+<pre><code>import type { NextFunction, Request, Response } from "express";
+
+export function exampleMiddleware(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  console.log(request.method, request.path);
+  next();
+}</code></pre>
+<div class="note"><strong>Mesmo que pareça óbvio:</strong> declarar a função não a executa. Ela somente entra no pipeline quando é registrada com <code>app.use()</code>, <code>router.use()</code> ou em uma rota.</div>
+
+<h3 id="assinatura">3 — A assinatura e o significado dos parâmetros</h3><table><thead><tr><th>Parâmetro</th><th>Função</th><th>Uso comum</th></tr></thead><tbody><tr><td><code>request</code></td><td>Representa a entrada HTTP.</td><td>Ler method, path, headers, params, query e body.</td></tr><tr><td><code>response</code></td><td>Representa a resposta em construção.</td><td>Definir status, headers, body e <code>res.locals</code>.</td></tr><tr><td><code>next</code></td><td>Entrega o controle ao próximo item compatível.</td><td><code>next()</code> ou <code>next(error)</code>.</td></tr></tbody></table>
+<p>Use <code>void</code> para middlewares síncronos que não precisam retornar uma Promise. Um <code>return response.status(...).json(...)</code> pode ser útil para interromper a execução da função, mas o valor retornado não vira a resposta por magia; quem envia é <code>response.json()</code>.</p>
+
+<h3 id="next">4 — O que <code>next()</code> realmente faz</h3><p><code>next()</code> pede ao Express que continue procurando a próxima camada compatível depois da camada atual. Ele não reinicia a aplicação, não chama obrigatoriamente a rota seguinte no arquivo e não encerra a função JavaScript.</p>
+<pre><code>export function attachMessage(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  response.locals.message = "Criado no middleware";
+  next();
+
+  // Este código ainda pode executar depois que as etapas seguintes terminarem.
+  console.log("A pilha retornou para attachMessage");
+}</code></pre>
+<h4>4.1 — <code>next()</code> não equivale a <code>return</code></h4><pre><code class="bad">next();
+console.log("Isto ainda executa");</code></pre><p>Quando nada deve acontecer depois, escreva <code>return next()</code> ou chame <code>next()</code> e encerre a função explicitamente. O objetivo é legibilidade e evitar fluxo acidental.</p>
+
+<h3 id="encerrar">5 — Toda etapa precisa continuar ou encerrar</h3><div class="grid"><div class="card"><h4>Continuar</h4><pre><code>next();</code></pre><p>Outra camada ficará responsável por responder.</p></div><div class="card"><h4>Encerrar</h4><pre><code>response.status(401).json({
+  error: "UNAUTHENTICATED",
+});</code></pre><p>A própria etapa conclui a resposta.</p></div></div>
+<pre><code class="bad">export function brokenMiddleware(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  console.log("Recebi a requisição");
+  // Não respondeu e não chamou next().
+}</code></pre>
+<div class="danger"><strong>Resultado:</strong> a conexão pode permanecer aguardando porque o pipeline não foi continuado nem encerrado. Esse é um dos bugs fundamentais desta fase.</div>
+
+<h3 id="ordem">6 — Ordem de registro</h3><p>A pilha do Express é ordenada. Em geral, uma camada registrada depois não consegue preparar algo necessário para uma camada que executou antes.</p>
+<pre><code>app.use(requestId);
+app.use(requestLogger);
+app.use(authenticate);
+app.use("/admin", requireRole("ADMIN"), adminRouter);
+app.use(notFoundHandler);
+app.use(errorHandler);</code></pre>
+<p>Nesse desenho, o logger já enxerga o request ID. A autenticação ocorre antes da autorização. O 404 fica depois das rotas. O middleware de erro fica no fim.</p>
+<h4>6.1 — Ordem dentro de uma rota</h4><pre><code>router.delete(
+  "/users/:userId",
+  authenticate,
+  requireRole("ADMIN"),
+  deleteUserController,
+);</code></pre>
+<p>Trocar autenticação e autorização pode fazer a autorização procurar um usuário que ainda não foi identificado.</p>
+
+<h3 id="global">7 — Middleware global</h3><p>Registrado no <code>app</code> sem path restritivo, participa de todas as requisições que chegam depois dele.</p>
+<pre><code>app.use(express.json());
+app.use(requestId);
+app.use(requestLogger);</code></pre>
+<p>É apropriado para responsabilidades realmente transversais: parsing, request ID, logs, headers gerais e configuração de segurança. “Global” não significa “deve conter todas as regras”.</p>
+<div class="warning"><strong>Custo global:</strong> uma operação cara adicionada globalmente afeta inclusive <code>/health</code>, rotas públicas e endpoints que não precisam dela.</div>
+
+<h3 id="router">8 — Middleware por router</h3><p>Um <code>Router</code> possui sua própria pilha. Isso permite aplicar uma política a um conjunto coerente de endpoints.</p>
+<pre><code>import { Router } from "express";
+
+export const adminRouter = Router();
+
+adminRouter.use(authenticate);
+adminRouter.use(requireRole("ADMIN"));
+
+adminRouter.get("/audit-logs", listAuditLogsController);
+adminRouter.delete("/users/:userId", deleteUserController);
+
+app.use("/admin", adminRouter);</code></pre>
+<p>Esse desenho reduz repetição e deixa explícito que o módulo administrativo compartilha uma fronteira de acesso.</p>
+
+<h3 id="rota">9 — Middleware por rota</h3><p>Use quando a regra pertence a uma operação específica, não ao router inteiro.</p>
+<pre><code>router.patch(
+  "/projects/:projectId",
+  authenticate,
+  requireProjectMembership,
+  updateProjectController,
+);</code></pre>
+<p>A verificação de participação no projeto depende do recurso do path; aplicá-la globalmente seria artificial.</p>
+
+<h3 id="multiplos">10 — Vários handlers e subpilhas</h3><p>Uma rota pode receber várias funções. O Express executa a sequência enquanto cada uma chama <code>next()</code>.</p>
+<pre><code>router.post(
+  "/reports",
+  authenticate,
+  requireRole("ADMIN"),
+  attachReportContext,
+  createReportController,
+);</code></pre>
+<p>Também é possível passar arrays, mas evite abstrações que escondam demais a ordem. Para quem lê a rota, a cadeia de responsabilidades deve permanecer compreensível.</p>
+
+<h3 id="mount">11 — Montagem, path e URLs</h3><p>Ao montar um router, o prefixo do <code>app.use()</code> combina com o path interno.</p>
+<pre><code>app.use("/api/v1/admin", adminRouter);
+
+// Dentro do router:
+adminRouter.get("/users", listUsersController);
+// Endpoint final: GET /api/v1/admin/users</code></pre>
+<table><thead><tr><th>Propriedade</th><th>Ideia</th></tr></thead><tbody><tr><td><code>request.originalUrl</code></td><td>URL original recebida, incluindo o prefixo de montagem.</td></tr><tr><td><code>request.baseUrl</code></td><td>Parte do path em que o router foi montado.</td></tr><tr><td><code>request.path</code></td><td>Path relativo percebido no contexto atual.</td></tr></tbody></table>
+<p>Em logs centrais, <code>originalUrl</code> costuma ser mais informativo que somente <code>path</code>.</p>
+
+<h3 id="built-in">12 — Middlewares built-in e de terceiros</h3><p>Nem todo middleware precisa ser escrito por você. <code>express.json()</code>, <code>express.urlencoded()</code> e <code>express.static()</code> são middlewares fornecidos pelo Express. Bibliotecas como CORS, compressão e loggers também podem fornecer middlewares.</p>
+<pre><code>app.use(express.json({ limit: "1mb" }));</code></pre>
+<div class="warning"><strong>Terceiros ainda fazem parte da sua aplicação:</strong> revise finalidade, configuração, manutenção e impacto. Instalar um middleware não elimina a necessidade de entender em que posição ele executa.</div>
+
+<h3 id="locals">13 — Compartilhando dados com <code>res.locals</code></h3><p><code>response.locals</code> é um objeto ligado à resposta atual. Ele serve para guardar dados produzidos por uma etapa e consumidos pelas seguintes, sem criar estado global compartilhado entre requisições.</p>
+<pre><code>type AuthenticatedUser = {
+  id: string;
+  role: "ADMIN" | "MEMBER";
+};
+
+export function authenticate(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  const user: AuthenticatedUser = {
+    id: "user-42",
+    role: "ADMIN",
+  };
+
+  response.locals.user = user;
+  next();
+}</code></pre>
+<h4>13.1 — Tipando locals</h4><pre><code>type RequestLocals = {
+  requestId: string;
+  user?: AuthenticatedUser;
+};
+
+type AppResponse = Response<unknown, RequestLocals>;</code></pre>
+<p>Para uma aplicação maior, você pode padronizar aliases ou fazer module augmentation. Nesta fase, prefira tipos explícitos e fáceis de rastrear.</p>
+<div class="danger"><strong>Evite:</strong> guardar o usuário atual em uma variável global. Requisições concorrentes poderiam sobrescrever o estado umas das outras.</div>
+
+<h3 id="request-id">14 — Request ID</h3><p>Um request ID identifica uma execução HTTP específica. Ele permite correlacionar as linhas de log produzidas por diferentes camadas da mesma requisição.</p>
+<pre><code>import { randomUUID } from "node:crypto";
+import type { NextFunction, Request, Response } from "express";
+
+export function requestId(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  const id = randomUUID();
+
+  response.locals.requestId = id;
+  response.setHeader("x-request-id", id);
+
+  next();
+}</code></pre>
+<h4>14.1 — Aceitar ID vindo do cliente?</h4><p>Pode ser útil para propagação entre serviços, mas não confie cegamente em qualquer tamanho ou formato. Uma estratégia segura é validar um header recebido ou gerar um valor interno e guardar separadamente IDs externos de correlação.</p>
+
+<h3 id="logging">15 — Logging de requisição</h3><p>Um bom log de acesso registra o desfecho, não apenas a chegada. Método, URL, status, duração e request ID formam uma base útil.</p>
+<pre><code>export function requestLogger(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): void {
+  const startedAt = performance.now();
+
+  response.on("finish", () =&gt; {
+    const durationMs = performance.now() - startedAt;
+
+    console.log({
+      requestId: response.locals.requestId,
+      method: request.method,
+      url: request.originalUrl,
+      statusCode: response.statusCode,
+      durationMs: Number(durationMs.toFixed(2)),
+    });
+  });
+
+  next();
+}</code></pre>
+<p>Em produção, um logger estruturado costuma ser preferível a strings montadas manualmente, pois facilita busca, filtros e ingestão por ferramentas.</p>
+<h4>15.1 — O que não registrar</h4><ul><li>Senhas, tokens completos, cookies de sessão e chaves.</li><li>Body inteiro por padrão.</li><li>Dados pessoais sem necessidade e política definida.</li><li>Headers indiscriminadamente.</li></ul>
+
+<h3 id="tempo">16 — Medindo tempo de resposta</h3><p><code>Date.now()</code> funciona para medidas simples. <code>performance.now()</code> é monotônico e apropriado para medir duração dentro do processo.</p>
+<pre><code>const startedAt = performance.now();
+// ...
+const durationMs = performance.now() - startedAt;</code></pre>
+<p>A duração observada pelo servidor não é exatamente a latência percebida pelo cliente: rede, proxy, TLS e download do corpo também contam do lado do cliente.</p>
+
+<h3 id="eventos">17 — Eventos <code>finish</code> e <code>close</code></h3><div class="grid"><div class="card"><h4><code>finish</code></h4><p>Indica que a resposta foi entregue ao sistema subjacente para envio. É o evento comum para registrar status e duração final.</p></div><div class="card"><h4><code>close</code></h4><p>Pode ocorrer quando a conexão é encerrada antes da conclusão normal. É útil para observar cancelamentos ou desconexões.</p></div></div>
+<pre><code>let finished = false;
+
+response.on("finish", () =&gt; {
+  finished = true;
+});
+
+response.on("close", () =&gt; {
+  if (!finished) {
+    console.warn("Resposta encerrada antes de finish");
+  }
+});</code></pre>
+<p>Evite registrar o mesmo acesso duas vezes. Defina claramente qual evento gera o log principal e qual gera somente um sinal complementar.</p>
+
+<h3 id="contexto">18 — Contexto por requisição</h3><p>Request ID, usuário autenticado, tenant e permissões são exemplos de contexto. <code>res.locals</code> funciona bem quando o dado é consumido no pipeline HTTP. Em sistemas maiores, <code>AsyncLocalStorage</code> pode propagar contexto sem passar o objeto manualmente, mas adiciona complexidade e não é necessário para aprender o modelo central.</p>
+<div class="note"><strong>Regra prática:</strong> comece com dependências explícitas. Adote contexto implícito somente quando o problema real justificar.</div>
+
+<h3 id="authn">19 — Autenticação: quem é você?</h3><p>Autenticação transforma uma credencial em uma identidade verificada. O middleware normalmente lê um header/cookie, valida a credencial e anexa o principal autenticado ao contexto.</p>
+<pre><code>type Role = "ADMIN" | "MEMBER";
+
+type AuthUser = {
+  id: string;
+  role: Role;
+};
+
+export function authenticate(
+  request: Request,
+  response: Response<unknown, { user?: AuthUser }>,
+  next: NextFunction,
+): void {
+  const authorization = request.header("authorization");
+
+  if (!authorization?.startsWith("Bearer ")) {
+    response.status(401).json({
+      error: "UNAUTHENTICATED",
+      message: "Credencial ausente.",
+    });
+    return;
+  }
+
+  // Simulação didática. Tokens reais serão estudados depois.
+  response.locals.user = {
+    id: "user-42",
+    role: authorization === "Bearer admin-token" ? "ADMIN" : "MEMBER",
+  };
+
+  next();
+}</code></pre>
+<div class="warning"><strong>Importante:</strong> este token fixo é somente uma simulação para estudar o pipeline. Não é uma estratégia de autenticação para produção.</div>
+
+<h3 id="authz">20 — Autorização: você pode fazer isto?</h3><p>Autorização ocorre depois da autenticação. Ela compara identidade, papel, permissão e relação com o recurso.</p>
+<pre><code>export function requireAdmin(
+  request: Request,
+  response: Response<unknown, { user?: AuthUser }>,
+  next: NextFunction,
+): void {
+  const user = response.locals.user;
+
+  if (!user) {
+    response.status(401).json({ error: "UNAUTHENTICATED" });
+    return;
+  }
+
+  if (user.role !== "ADMIN") {
+    response.status(403).json({ error: "FORBIDDEN" });
+    return;
+  }
+
+  next();
+}</code></pre>
+<p>Papéis são uma forma simples de autorização. Regras reais podem considerar propriedade do recurso, organização, estado, ação e permissões granulares.</p>
+
+<h3 id="factory">21 — Middleware factory</h3><p>Uma factory recebe configuração e devolve um middleware. É ideal para políticas parametrizadas.</p>
+<pre><code>type Role = "ADMIN" | "MEMBER";
+
+export function requireRole(...allowedRoles: Role[]) {
+  return function roleMiddleware(
+    request: Request,
+    response: Response<unknown, { user?: AuthUser }>,
+    next: NextFunction,
+  ): void {
+    const user = response.locals.user;
+
+    if (!user) {
+      response.status(401).json({ error: "UNAUTHENTICATED" });
+      return;
+    }
+
+    if (!allowedRoles.includes(user.role)) {
+      response.status(403).json({ error: "FORBIDDEN" });
+      return;
+    }
+
+    next();
+  };
+}</code></pre>
+<pre><code>router.get(
+  "/audit-logs",
+  authenticate,
+  requireRole("ADMIN"),
+  listAuditLogsController,
+);</code></pre>
+<p>O nome deve revelar que <code>requireRole(...)</code> cria uma função para uso posterior.</p>
+
+<h3 id="401-403">22 — 401 versus 403</h3><table><thead><tr><th>Status</th><th>Significado prático</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>401</code></td><td>A requisição não possui autenticação válida.</td><td>Token ausente, inválido ou expirado.</td></tr><tr><td><code>403</code></td><td>A identidade foi reconhecida, mas não possui acesso.</td><td>MEMBER tentando excluir outro usuário.</td></tr></tbody></table>
+<p>Não use 403 para esconder todo problema de autenticação por hábito. Também existem cenários em que retornar 404 evita revelar a existência de um recurso; essa decisão pertence ao modelo de ameaça e precisa ser consistente.</p>
+
+<h3 id="async">23 — Middlewares assíncronos no Express 5</h3><p>No Express 5, uma função async que rejeita uma Promise ou lança erro encaminha a falha ao pipeline de erros.</p>
+<pre><code>export async function loadUser(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): Promise&lt;void&gt; {
+  const user = await userRepository.findById(request.params.userId);
+
+  if (!user) {
+    response.status(404).json({ error: "USER_NOT_FOUND" });
+    return;
+  }
+
+  response.locals.userResource = user;
+  next();
+}</code></pre>
+<p>Isso reduz wrappers repetitivos para erros assíncronos. Ainda é necessário decidir quais falhas devem virar resposta local e quais devem seguir para o error handler.</p>
+
+<h3 id="erros">24 — <code>next(error)</code> e o pipeline de erros</h3><p><code>next(error)</code> pula os middlewares comuns restantes e procura um middleware de erro, identificado por quatro parâmetros.</p>
+<pre><code>import type { ErrorRequestHandler } from "express";
+
+export const errorHandler: ErrorRequestHandler = (
+  error,
+  request,
+  response,
+  next,
+) =&gt; {
+  console.error({
+    requestId: response.locals.requestId,
+    error,
+  });
+
+  if (response.headersSent) {
+    next(error);
+    return;
+  }
+
+  response.status(500).json({
+    error: "INTERNAL_SERVER_ERROR",
+    requestId: response.locals.requestId,
+  });
+};</code></pre>
+<p>O tratamento detalhado de erros terá uma fase própria. Aqui importa entender que a cadeia de erros é separada e também depende da ordem de registro.</p>
+
+<h3 id="anti-patterns">25 — Erros comuns e anti-patterns</h3><h4>25.1 — Não responder nem continuar</h4><pre><code class="bad">console.log("executou");
+// faltou next() ou response...</code></pre><h4>25.2 — Chamar <code>next()</code> depois de responder</h4><pre><code class="bad">response.status(401).json({ error: "UNAUTHENTICATED" });
+next(); // outra etapa pode tentar responder de novo</code></pre><h4>25.3 — Executar lógica depois de <code>next()</code> sem intenção</h4><pre><code class="bad">next();
+response.setHeader("x-late-header", "value");</code></pre><h4>25.4 — Ordem invertida</h4><pre><code class="bad">app.use("/admin", requireRole("ADMIN"));
+app.use(authenticate);</code></pre><h4>25.5 — Middleware “faz tudo”</h4><p>Uma função que autentica, consulta recursos, valida body, executa regra de negócio e responde perde reutilização e torna o fluxo difícil de testar.</p><h4>25.6 — Mutação sem contrato</h4><p>Adicionar propriedades arbitrárias em <code>request</code> ou <code>response.locals</code> sem tipo e convenção faz etapas posteriores dependerem de conhecimento oculto.</p>
+
+<h3 id="edge-cases">26 — Edge cases em middlewares</h3><p>Edge cases são situações nos limites do fluxo normal. Eles existem porque clientes interrompem conexões, headers podem faltar, middlewares podem responder cedo, credenciais expiram e múltiplas etapas podem disputar o controle.</p>
+<h4>26.1 — Continuação e resposta</h4><ul><li>Middleware chama <code>next()</code> duas vezes.</li><li>Responde e depois chama <code>next()</code>.</li><li>Chama <code>next()</code>, continua executando e tenta alterar headers tarde demais.</li><li>Uma condição não contemplada deixa a requisição pendurada.</li></ul>
+<h4>26.2 — Identidade e autorização</h4><ul><li>Header Authorization ausente, vazio, malformado ou repetido.</li><li>Token válido para usuário removido, bloqueado ou com papel alterado.</li><li>Usuário autenticado tenta acessar recurso de outro tenant.</li><li>ADMIN tenta remover a própria última conta administrativa.</li></ul>
+<h4>26.3 — Logging e observabilidade</h4><ul><li>Request ID recebido é enorme ou contém caracteres inesperados.</li><li>Resposta fecha antes do evento <code>finish</code>.</li><li>Logger lança erro e interfere no endpoint.</li><li>Logs expõem token ou dado pessoal.</li><li>Stream longo distorce a interpretação da duração.</li></ul>
+<h4>26.4 — Concorrência</h4><ul><li>Duas requisições simultâneas não podem compartilhar usuário ou request ID.</li><li>Variáveis globais mutáveis produzem vazamento entre requisições.</li><li>Listeners precisam ser adicionados uma vez por resposta, sem crescimento acidental.</li></ul>
+<div class="callout"><strong>Como usar edge cases:</strong> transforme cada item em teste mental ou automatizado. O objetivo não é criar paranoia, mas tornar explícito o que o sistema fará quando o caminho feliz não acontecer.</div>
+
+<h3 id="estrutura">27 — Estrutura sugerida nesta fase</h3><pre><code>src/
+├── app.ts
+├── server.ts
+├── http/
+│   ├── middlewares/
+│   │   ├── authenticate.ts
+│   │   ├── request-id.ts
+│   │   ├── request-logger.ts
+│   │   └── require-role.ts
+│   └── routers/
+│       └── admin-router.ts
+└── types/
+    └── auth.ts</code></pre>
+<p>Não crie uma pasta para cada conceito apenas por estética. Essa separação já se justifica porque os middlewares são reutilizados por routers e possuem responsabilidade transversal.</p>
+
+<h3 id="exemplo">28 — Exemplo integrado</h3><pre><code>import express from "express";
+import { randomUUID } from "node:crypto";
+import type { NextFunction, Request, Response } from "express";
+
+const app = express();
+
+type Role = "ADMIN" | "MEMBER";
+type User = { id: string; role: Role };
+type Locals = { requestId: string; user?: User };
+type AppResponse = Response&lt;unknown, Locals&gt;;
+
+app.use(express.json());
+
+app.use((request, response: AppResponse, next) =&gt; {
+  const requestId = randomUUID();
+  response.locals.requestId = requestId;
+  response.setHeader("x-request-id", requestId);
+  next();
+});
+
+app.use((request, response: AppResponse, next) =&gt; {
+  const startedAt = performance.now();
+
+  response.on("finish", () =&gt; {
+    console.log({
+      requestId: response.locals.requestId,
+      method: request.method,
+      url: request.originalUrl,
+      status: response.statusCode,
+      durationMs: performance.now() - startedAt,
+    });
+  });
+
+  next();
+});
+
+function authenticate(
+  request: Request,
+  response: AppResponse,
+  next: NextFunction,
+): void {
+  const token = request.header("authorization");
+
+  if (!token) {
+    response.status(401).json({ error: "UNAUTHENTICATED" });
+    return;
+  }
+
+  response.locals.user = {
+    id: token === "admin-token" ? "admin-1" : "member-1",
+    role: token === "admin-token" ? "ADMIN" : "MEMBER",
+  };
+
+  next();
+}
+
+function requireRole(...roles: Role[]) {
+  return (
+    request: Request,
+    response: AppResponse,
+    next: NextFunction,
+  ): void =&gt; {
+    const user = response.locals.user;
+
+    if (!user) {
+      response.status(401).json({ error: "UNAUTHENTICATED" });
+      return;
+    }
+
+    if (!roles.includes(user.role)) {
+      response.status(403).json({ error: "FORBIDDEN" });
+      return;
+    }
+
+    next();
+  };
+}
+
+app.get(
+  "/admin/dashboard",
+  authenticate,
+  requireRole("ADMIN"),
+  (request, response: AppResponse) =&gt; {
+    response.status(200).json({
+      requestId: response.locals.requestId,
+      user: response.locals.user,
+      metrics: { activeUsers: 128 },
+    });
+  },
+);</code></pre>
+<div class="warning"><strong>Limite didático:</strong> a autenticação é simulada. A finalidade do exemplo é visualizar ordem, escopo, locals e decisões de interrupção.</div>
+
+<h3 id="exercicios">29 — Exercícios orientados</h3><h4>Exercício 1 — Trace a ordem</h4><p>Receba uma aplicação com seis <code>app.use()</code> e duas rotas. Antes de executar, escreva quais funções rodam para <code>GET /public</code>, <code>GET /admin</code> e uma rota inexistente.</p><h4>Exercício 2 — Corrija o pipeline</h4><p>Encontre todos os caminhos de uma função condicional e marque se cada caminho responde, chama <code>next()</code> ou fica pendurado.</p><h4>Exercício 3 — Request ID</h4><p>Crie um middleware que gere UUID, grave em <code>res.locals</code>, devolva em <code>x-request-id</code> e faça o logger utilizá-lo.</p><h4>Exercício 4 — Matriz de acesso</h4><p>Implemente MEMBER e ADMIN. MEMBER lê o próprio perfil; ADMIN lista usuários e bloqueia contas. Decida quais regras pertencem ao router e quais pertencem à rota.</p><h4>Exercício 5 — Eventos de resposta</h4><p>Registre <code>finish</code> e <code>close</code> sem duplicar o log principal. Simule uma conexão encerrada.</p>
+<div class="note"><strong>Dicas progressivas:</strong> primeiro desenhe o pipeline em texto; depois identifique o dado produzido por cada etapa; por último escreva o código. Se a rota precisa “saber” como o token foi validado, as responsabilidades ainda estão misturadas.</div>
+
+<h3 id="mini-projeto">30 — Mini projeto: API administrativa</h3><p>Construa uma API em memória para administrar usuários, sessões e logs de auditoria. O projeto consolida os conceitos sem antecipar JWT, banco ou Zod.</p>
+<h4>30.1 — Papéis</h4><table><thead><tr><th>Ação</th><th>MEMBER</th><th>ADMIN</th></tr></thead><tbody><tr><td>Ver o próprio perfil</td><td>Sim</td><td>Sim</td></tr><tr><td>Editar o próprio nome</td><td>Sim</td><td>Sim</td></tr><tr><td>Listar todos os usuários</td><td>Não</td><td>Sim</td></tr><tr><td>Bloquear um usuário</td><td>Não</td><td>Sim</td></tr><tr><td>Ver logs de auditoria</td><td>Não</td><td>Sim</td></tr></tbody></table>
+<h4>30.2 — Endpoints sugeridos</h4><pre><code>GET    /me
+PATCH  /me
+GET    /admin/users
+PATCH  /admin/users/:userId/status
+GET    /admin/audit-logs
+GET    /health</code></pre>
+<h4>30.3 — Pipeline mínimo</h4><pre><code>express.json()
+→ requestId
+→ requestLogger
+→ rotas públicas
+→ authenticate nas rotas privadas
+→ requireRole nas rotas administrativas
+→ controller
+→ 404
+→ error handler</code></pre>
+<h4>30.4 — Contrato de contexto</h4><pre><code>type RequestLocals = {
+  requestId: string;
+  user?: {
+    id: string;
+    role: "ADMIN" | "MEMBER";
+  };
+};</code></pre>
+<h4>30.5 — Regras de negócio</h4><ul><li>Usuário bloqueado não acessa endpoints privados.</li><li>MEMBER só altera o próprio perfil.</li><li>Somente ADMIN pode bloquear contas.</li><li>Um ADMIN não pode bloquear a si próprio nesta versão.</li><li>Toda alteração administrativa cria evento de auditoria com request ID e actor ID.</li><li>Logs nunca guardam token completo.</li></ul>
+<h4>30.6 — Casos de teste mental</h4><ol><li>Acessar <code>/me</code> sem credencial.</li><li>MEMBER acessar <code>/admin/users</code>.</li><li>ADMIN bloquear a própria conta.</li><li>Token representa usuário que acabou de ser bloqueado.</li><li>Controller lança erro assíncrono.</li><li>Rota inexistente ainda recebe request ID e log.</li><li>Logger registra status 204 sem body.</li><li>Cliente encerra a conexão durante a resposta.</li></ol>
+<h4>30.7 — Sequência recomendada</h4><ol><li>Implemente request ID e confirme o header.</li><li>Implemente logger e confirme status/duração no <code>finish</code>.</li><li>Crie autenticação simulada e tipagem de locals.</li><li>Implemente a factory <code>requireRole</code>.</li><li>Separe router público, privado e administrativo.</li><li>Crie auditoria usando identidade e request ID.</li><li>Teste todos os caminhos que interrompem ou continuam.</li><li>Adicione 404 e error handler no final.</li></ol>
+
+<h3 id="checklist">31 — Checklist de domínio</h3><ul class="checklist"><li>Consigo explicar middleware como etapa do pipeline, não apenas como “função que roda antes”.</li><li>Sei que a ordem de registro altera o comportamento.</li><li>Consigo identificar todos os caminhos que respondem, continuam ou encaminham erro.</li><li>Sei que <code>next()</code> não encerra a função JavaScript.</li><li>Sei escolher middleware global, por router ou por rota.</li><li>Entendo a composição de vários handlers.</li><li>Sei usar <code>res.locals</code> para contexto específico da requisição.</li><li>Não uso variável global para armazenar usuário atual.</li><li>Consigo gerar e propagar request ID.</li><li>Registro logs no fim da resposta e evito dados sensíveis.</li><li>Conheço a diferença prática entre <code>finish</code> e <code>close</code>.</li><li>Separo autenticação de autorização.</li><li>Sei explicar 401 e 403.</li><li>Consigo criar uma middleware factory.</li><li>Entendo encaminhamento de rejeições assíncronas no Express 5.</li><li>Sei por que o error handler fica no final.</li></ul>
+
+<h3 id="referencias">32 — Referências e leituras</h3><div class="columns"><div><h4>Documentação principal</h4><ul><li><a href="https://expressjs.com/en/guide/using-middleware.html" target="_blank" rel="noopener">Express: Using middleware</a>.</li><li><a href="https://expressjs.com/en/5x/guide/writing-middleware.html" target="_blank" rel="noopener">Express 5: Writing middleware</a>.</li><li><a href="https://expressjs.com/en/5x/api.html#res.locals" target="_blank" rel="noopener">Express 5 API: res.locals</a>.</li><li><a href="https://expressjs.com/en/5x/guide/error-handling.html" target="_blank" rel="noopener">Express 5: Error handling</a>.</li><li><a href="https://nodejs.org/api/crypto.html#cryptorandomuuidoptions" target="_blank" rel="noopener">Node.js: crypto.randomUUID()</a>.</li></ul></div><div><h4>Livros recomendados</h4><ul><li><em>Node.js Design Patterns</em>, Mario Casciaro e Luciano Mammino.</li><li><em>Web API Security</em>, José Haro Peralta.</li><li><em>Designing Data-Intensive Applications</em>, Martin Kleppmann — contexto e observabilidade em sistemas.</li><li><em>Release It!</em>, Michael T. Nygard — falhas, produção e estabilidade.</li></ul></div></div>
+<div class="callout"><strong>Próxima fase:</strong> os middlewares já sabem onde a validação entra. Na Fase 5, Zod será usado para transformar dados externos desconhecidos em valores validados e tipados antes do controller.</div>
+</section><div class="footer-note">Fase 4 · Middlewares — Trilha Express 5 com TypeScript</div></div></main></div>
+<script>const links=[...document.querySelectorAll('#toc a')];const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));},{rootMargin:'-15% 0px -70% 0px',threshold:[0,.2,.5]});sections.forEach(s=>observer.observe(s));</script>
+</body></html>

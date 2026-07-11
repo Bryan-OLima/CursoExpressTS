@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Fase 2 do curso Aprendendo Express 5 com TypeScript: inferência, generics, tipos do Express, params, body, query, respostas, unknown, narrowing, DTOs e limites da tipagem estática."><title>Curso Express 5 + TypeScript — Fase 2: TypeScript</title><style>
+:root{--bg:#0a0f1f;--panel:#12192d;--panel2:#17213a;--text:#f4f7ff;--muted:#aeb8d0;--accent:#7c9cff;--accent2:#5eead4;--border:#2b3657;--code:#090e1b;--warning:#fbbf24;--danger:#fb7185;--success:#34d399}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at top right,#7c9cff18,transparent 27%),linear-gradient(180deg,#09101f,#0a0f1f);color:var(--text);line-height:1.72}.layout{display:grid;grid-template-columns:292px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:26px 20px;background:#080d1bf7;border-right:1px solid var(--border)}.brand{font-weight:900;font-size:1.15rem}.subtitle,.small{color:var(--muted);font-size:.9rem}.phase-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:16px}.phase-link{display:block;text-align:center;text-decoration:none;padding:8px 4px;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:.74rem}.phase-link:hover,.phase-link.active{color:var(--text);background:var(--panel2);border-color:#7c9cff80}nav{display:flex;flex-direction:column;gap:4px;margin-top:18px}.nav-title{margin:18px 8px 6px;color:var(--text);font-size:.78rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.nav-group{border:1px solid transparent;border-radius:10px}.nav-group summary{list-style:none;padding:7px 8px;color:#dce4fb;font-size:.86rem}.nav-group summary::-webkit-details-marker{display:none}.nav-group summary:before{content:"▸";display:inline-block;width:18px;color:var(--accent2)}.nav-group[open] summary:before{content:"▾"}.nav-group[open]{background:#ffffff04;border-color:#ffffff0b}.nav-links{display:flex;flex-direction:column;padding:0 4px 7px 22px}nav a{color:var(--muted);text-decoration:none;padding:5px 7px;border-radius:7px;font-size:.78rem;line-height:1.3}nav a:hover{background:var(--panel2);color:var(--text)}.nav-progress{margin-top:16px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#ffffff04}.nav-progress strong{display:block;font-size:.8rem}.nav-progress span{display:block;margin-top:4px;color:var(--muted);font-size:.75rem;line-height:1.45}main{width:min(1120px,100%);padding:42px;margin:auto}section{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:32px}.phase{position:relative;overflow:hidden}.phase:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--accent),var(--accent2))}.tag,.pill{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:4px 10px}.tag{color:var(--accent2);font-weight:800;background:#5eead410}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 22px}.pill{color:var(--muted);font-size:.82rem}h1,h2,h3,h4,h5{color:#f8fbff}h1{line-height:1.1}h2{font-size:2rem;margin:10px 0}h3{margin-top:38px;padding-top:10px;border-top:1px solid rgba(43,54,87,.7)}h4{margin-top:26px}h5{font-size:1rem;margin-bottom:6px}p,li{color:#d9def0}strong{color:#f3f6ff}code{font-family:Consolas,"Liberation Mono",monospace;background:var(--code);border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:#dce7ff}pre{overflow:auto;background:var(--code);border:1px solid var(--border);border-radius:12px;padding:18px;line-height:1.58}pre code{border:0;padding:0;background:transparent}.callout,.warning,.danger,.success{border-radius:14px;padding:16px 18px;margin:18px 0}.callout{background:#7c9cff14;border:1px solid #7c9cff40}.warning{background:#fbbf2414;border:1px solid #fbbf2440}.danger{background:#fb718514;border:1px solid #fb718540}.success{background:#34d39914;border:1px solid #34d39940}table{width:100%;border-collapse:collapse;margin:16px 0}th,td{border:1px solid var(--border);padding:10px 12px;vertical-align:top;text-align:left}th{background:var(--panel2)}details{background:#ffffff06;border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0}summary{cursor:pointer;font-weight:800}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:#ffffff05;border:1px solid var(--border);border-radius:14px;padding:16px}.flow{display:grid;gap:8px;margin:18px 0}.flow div{padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#ffffff04}.flow div:not(:last-child):after{content:"↓";display:block;text-align:center;color:var(--accent2);height:0;transform:translateY(11px)}a{color:#9eb3ff}.checklist{padding-left:22px}.footer-note{text-align:center;color:var(--muted);margin-top:26px;font-size:.88rem}.type-map{font-size:.9rem}.type-map td:first-child{white-space:nowrap}@media(max-width:900px){.layout{grid-template-columns:1fr}aside{position:static;height:auto}.grid{grid-template-columns:1fr}main{padding:18px}section{padding:22px}.phase-switch{max-width:430px}}
+</style></head><body><div class="layout">
+<aside>
+  <div class="brand">Express 5 + TypeScript</div>
+  <div class="subtitle">Fase 2 expandida — TypeScript aplicado aos contratos HTTP.</div>
+  <div class="phase-switch">
+    <a class="phase-link" href="trilha-express5-typescript-fase0-atualizada.html">Fase 0</a>
+    <a class="phase-link" href="trilha-express5-typescript-fase1.html">← Fase 1</a>
+    <a class="phase-link active" href="#fase2">Fase 2</a>
+  </div>
+  <nav aria-label="Mapa da Fase 2">
+    <a href="#fase2"><strong>Visão geral da fase</strong></a>
+    <div class="nav-title">Mapa do conteúdo</div>
+    <details class="nav-group" open><summary>Fundamentos de tipos</summary><div class="nav-links">
+      <a href="#modelo-mental">1. Modelo mental</a><a href="#inferencia">2. Inferência e anotação</a><a href="#type-interface">3. type e interface</a><a href="#estrutural">4. Tipagem estrutural</a>
+    </div></details>
+    <details class="nav-group" open><summary>Express tipado</summary><div class="nav-links">
+      <a href="#tipos-express">5. Tipos do Express</a><a href="#generics">6. Generics</a><a href="#params">7. Params</a><a href="#body">8. Body</a><a href="#query">9. Query</a><a href="#response">10. Resposta</a>
+    </div></details>
+    <details class="nav-group"><summary>Modelagem segura</summary><div class="nav-links">
+      <a href="#unknown-any">11. unknown vs any</a><a href="#narrowing">12. Narrowing</a><a href="#type-guards">13. Type guards</a><a href="#opcionais">14. Opcionais</a><a href="#unions">15. Unions e literais</a><a href="#readonly">16. Readonly</a><a href="#dtos">17. DTOs</a>
+    </div></details>
+    <details class="nav-group"><summary>Limites e prática</summary><div class="nav-links">
+      <a href="#runtime">18. Estático vs rede</a><a href="#exemplo-completo">19. Exemplo completo</a><a href="#erros-comuns">20. Erros comuns</a><a href="#edge-cases">21. Edge cases</a><a href="#exercicios">22. Exercícios</a><a href="#mini-projeto">23. Mini projeto</a><a href="#checklist">24. Checklist</a><a href="#referencias">25. Referências</a>
+    </div></details>
+    <div class="nav-progress"><strong>O que esta fase cobre</strong><span>Como modelar contratos no TypeScript, aplicar os generics do Express e reconhecer onde o compilador deixa de proteger a aplicação.</span></div>
+  </nav>
+</aside>
+<main>
+<section class="phase" id="fase2">
+  <span class="tag">Fase 2</span>
+  <h1>TypeScript aplicado ao Express</h1>
+  <div class="meta"><span class="pill">Nível: iniciante → intermediário</span><span class="pill">Express 5</span><span class="pill">TypeScript strict</span><span class="pill">Contratos HTTP</span><span class="pill">Sem validação externa ainda</span></div>
+  <p>O objetivo desta fase não é apenas “colocar tipos” em parâmetros. Vamos entender o que cada tipo comunica, quais erros o compilador consegue impedir, quais valores continuam inseguros e por que dados vindos da rede precisam de validação em runtime.</p>
+  <div class="callout"><strong>Objetivo da fase:</strong> ao final, você deverá conseguir tipar parâmetros de rota, query string, body e resposta; criar DTOs; usar unions, literais, opcionais, <code>readonly</code>, narrowing e type guards; e explicar com precisão por que uma anotação TypeScript não prova que o cliente enviou dados válidos.</div>
+
+  <h3 id="modelo-mental">1 — O modelo mental desta fase</h3>
+  <div class="flow"><div><strong>1.</strong> O cliente envia bytes pela rede.</div><div><strong>2.</strong> Express e seus parsers transformam partes da mensagem em valores JavaScript.</div><div><strong>3.</strong> As declarações de tipos dizem ao compilador como pretendemos usar esses valores.</div><div><strong>4.</strong> O TypeScript verifica nosso código durante desenvolvimento/compilação.</div><div><strong>5.</strong> Os tipos são apagados antes ou durante a execução.</div><div><strong>6.</strong> Em runtime, apenas verificações reais conseguem confirmar a forma do dado recebido.</div></div>
+  <div class="danger"><strong>Regra central:</strong> declarar <code>request.body</code> como <code>CreateTaskBody</code> não transforma, filtra nem valida o body. A declaração cria confiança para o compilador; ela não cria confiança na rede.</div>
+  <p>TypeScript protege principalmente a relação entre partes do nosso próprio código. A borda HTTP é diferente: o emissor não é controlado pelo compilador do backend. Pode ser um frontend antigo, um script, Postman, outro servidor ou alguém enviando uma requisição manualmente.</p>
+
+  <h3 id="inferencia">2 — Inferência e anotação</h3>
+  <h4>2.1 — Inferência</h4><p>Inferência ocorre quando o TypeScript deduz um tipo a partir do valor e do contexto.</p>
+  <pre><code>const port = 3000; // tipo inferido: 3000
+let attempts = 0;  // tipo inferido: number
+const task = {
+  id: "task-1",
+  title: "Estudar TypeScript",
+}; // { id: string; title: string }</code></pre>
+  <p>Inferência reduz ruído e acompanha mudanças melhor que anotações repetitivas. Em geral, prefira inferência para variáveis locais cujo tipo está óbvio.</p>
+  <h4>2.2 — Anotação</h4><p>Anotação é quando escrevemos explicitamente o tipo esperado. Ela é especialmente útil em fronteiras, parâmetros de função, contratos exportados e valores que precisam ser mais amplos que o valor inicial.</p>
+  <pre><code>let status: "pending" | "done" = "pending";
+
+type CreateTaskInput = {
+  title: string;
+};
+
+function createTask(input: CreateTaskInput) {
+  return {
+    id: crypto.randomUUID(),
+    title: input.title,
+  };
+}</code></pre>
+  <h4>2.3 — Anotação redundante</h4><pre><code>// Funciona, mas a anotação não acrescenta informação útil:
+const title: string = "Estudar Express";
+
+// Normalmente basta:
+const title = "Estudar Express";</code></pre>
+  <div class="warning">Não avalie qualidade pela quantidade de sintaxe TypeScript. O melhor tipo é o que expressa uma restrição relevante sem duplicar informação desnecessária.</div>
+
+  <h3 id="type-interface">3 — <code>type</code> e <code>interface</code></h3>
+  <p>Ambos podem descrever objetos. Para muitos DTOs simples, a escolha é de convenção do projeto.</p>
+  <pre><code>type CreateTaskBody = {
+  title: string;
+  description?: string;
+};
+
+interface CreateTaskResponse {
+  id: string;
+  title: string;
+  description: string | null;
+}</code></pre>
+  <table><thead><tr><th>Capacidade</th><th><code>type</code></th><th><code>interface</code></th></tr></thead><tbody><tr><td>Descrever objeto</td><td>Sim</td><td>Sim</td></tr><tr><td>Union</td><td>Sim</td><td>Não diretamente</td></tr><tr><td>Alias de primitivo/tupla</td><td>Sim</td><td>Não</td></tr><tr><td>Extensão</td><td>Interseção com <code>&amp;</code></td><td><code>extends</code></td></tr><tr><td>Declaration merging</td><td>Não</td><td>Sim</td></tr></tbody></table>
+  <pre><code>type TaskStatus = "pending" | "done";
+type Identifier = string;
+type Coordinates = readonly [number, number];
+
+interface Entity {
+  id: string;
+}
+interface Task extends Entity {
+  title: string;
+}</code></pre>
+  <div class="callout"><strong>Convenção sugerida para o curso:</strong> use <code>type</code> para DTOs, unions, literais e composições. Aprenda <code>interface</code> porque bibliotecas e declaration merging dependem dela, especialmente quando ampliarmos tipos do Express.</div>
+
+  <h3 id="estrutural">4 — Tipagem estrutural</h3>
+  <p>TypeScript compara principalmente a forma dos valores, não o nome do tipo. Dois tipos com a mesma estrutura são compatíveis.</p>
+  <pre><code>type CreateTaskBody = { title: string };
+type RenameProjectBody = { title: string };
+
+const body: CreateTaskBody = { title: "Nova tarefa" };
+const rename: RenameProjectBody = body; // compatível pela forma</code></pre>
+  <p>Isso é conveniente, mas significa que criar dois nomes não os torna automaticamente identidades distintas. Quando identidade semântica precisa ser preservada, são necessárias técnicas específicas, como branded types — assunto posterior.</p>
+  <h4>4.1 — Propriedades extras</h4><pre><code>type TaskInput = { title: string };
+
+// Object literal recebe verificação de excesso:
+const direct: TaskInput = {
+  title: "Estudar",
+  // priority: 1, // erro aqui
+};
+
+const raw = { title: "Estudar", priority: 1 };
+const indirect: TaskInput = raw; // permitido; a variável possui ao menos a forma exigida</code></pre>
+  <div class="warning">A tipagem estrutural não remove propriedades extras em runtime. Mesmo quando uma variável é vista como <code>TaskInput</code>, o objeto real pode continuar contendo outros campos.</div>
+
+  <h3 id="tipos-express">5 — Tipos do Express</h3>
+  <p>Express é escrito em JavaScript e sua experiência TypeScript depende das declarações de tipos mantidas no DefinitelyTyped. Os tipos mais usados nesta fase são:</p>
+  <pre><code>import type {
+  Request,
+  Response,
+  RequestHandler,
+  NextFunction,
+  Express,
+} from "express";</code></pre>
+  <table class="type-map"><thead><tr><th>Tipo</th><th>Representa</th></tr></thead><tbody><tr><td><code>Express</code></td><td>A aplicação criada por <code>express()</code>.</td></tr><tr><td><code>Request</code></td><td>A requisição e seus contratos de params, resposta relacionada, body, query e locals.</td></tr><tr><td><code>Response</code></td><td>A resposta, principalmente o body que poderá ser enviado e os locals.</td></tr><tr><td><code>RequestHandler</code></td><td>Uma função compatível com o pipeline do Express.</td></tr><tr><td><code>NextFunction</code></td><td>A função usada para continuar o pipeline ou encaminhar erro.</td></tr></tbody></table>
+  <h4>5.1 — <code>import type</code></h4><p>Quando um import existe apenas para verificação estática, <code>import type</code> comunica que ele não será necessário em runtime.</p>
+  <pre><code>import express from "express";
+import type { Request, Response } from "express";
+
+export const app = express();</code></pre>
+  <p>Não escreva <code>import type express from "express"</code> se você chama <code>express()</code>; essa função é um valor necessário em execução.</p>
+
+  <h3 id="generics">6 — Generics</h3>
+  <p>Generic é um parâmetro de tipo. Ele permite que uma estrutura reutilizável receba tipos específicos sem perder sua forma geral.</p>
+  <pre><code>type ApiResponse&lt;TData&gt; = {
+  data: TData;
+};
+
+type Task = { id: string; title: string };
+
+type TaskResponse = ApiResponse&lt;Task&gt;;
+type TaskListResponse = ApiResponse&lt;Task[]&gt;;</code></pre>
+  <p>No Express, <code>Request</code> possui parâmetros genéricos posicionais. A forma relevante é:</p>
+  <pre><code>Request&lt;
+  Params,
+  ResponseBody,
+  RequestBody,
+  Query,
+  Locals
+&gt;</code></pre>
+  <p>Na prática, frequentemente usamos os quatro primeiros. O segundo parâmetro parece estranho no <code>Request</code>, mas ajuda o Express a relacionar o handler com o tipo de resposta.</p>
+  <pre><code>type ProductParams = { productId: string };
+type ProductResponse = { id: string; name: string };
+type EmptyBody = Record&lt;string, never&gt;;
+type ProductQuery = { includeInactive?: string };
+
+type ProductRequest = Request&lt;
+  ProductParams,
+  ProductResponse,
+  EmptyBody,
+  ProductQuery
+&gt;;</code></pre>
+  <div class="warning">Como os generics são posicionais, trocar body e response pode produzir erros confusos. Use aliases bem nomeados e mantenha a ordem visível em handlers educacionais.</div>
+
+  <h3 id="params">7 — Tipagem de parâmetros de rota</h3>
+  <pre><code>type ProductParams = {
+  productId: string;
+};
+
+app.get(
+  "/products/:productId",
+  (request: Request&lt;ProductParams&gt;, response: Response) =&gt; {
+    const { productId } = request.params;
+    return response.json({ productId });
+  },
+);</code></pre>
+  <p>Parâmetros de URL chegam como texto. Tipar <code>productId</code> como <code>number</code> não converte o valor.</p>
+  <pre><code>// Incorreto como descrição do dado recebido:
+type ProductParams = { productId: number };
+
+// Correto na borda:
+type ProductParams = { productId: string };
+
+const parsedId = Number(request.params.productId);
+if (!Number.isInteger(parsedId) || parsedId &lt;= 0) {
+  return response.status(400).json({ error: "Invalid productId" });
+}</code></pre>
+  <h4>7.1 — Quando o ID é UUID</h4><p>Mesmo um UUID continua sendo <code>string</code> para o TypeScript. A restrição “é um UUID válido” é uma regra de runtime, não uma consequência do tipo primitivo.</p>
+
+  <h3 id="body">8 — Tipagem do body</h3>
+  <pre><code>type CreateTaskBody = {
+  title: string;
+  description?: string;
+};
+
+app.post(
+  "/tasks",
+  (request: Request&lt;Record&lt;string, never&gt;, unknown, CreateTaskBody&gt;, response: Response) =&gt; {
+    const { title, description } = request.body;
+    return response.status(201).json({ title, description });
+  },
+);</code></pre>
+  <p>Para <code>request.body</code> existir com JSON, a aplicação precisa registrar <code>express.json()</code> antes da rota.</p>
+  <pre><code>app.use(express.json());</code></pre>
+  <div class="danger">Mesmo com <code>CreateTaskBody</code>, um cliente pode enviar <code>{"title": 42}</code>, <code>{}</code>, <code>null</code> ou propriedades extras. Nesta fase, a tipagem documenta a intenção; na fase de validação, Zod verificará o valor real.</div>
+  <h4>8.1 — Body vazio não é sempre <code>{}</code></h4><p>Evite usar <code>{}</code> para significar “objeto sem propriedades”. Em TypeScript, <code>{}</code> aceita quase qualquer valor não nulo. Para um objeto realmente sem chaves conhecidas, prefira <code>Record&lt;string, never&gt;</code> nesta etapa.</p>
+
+  <h3 id="query">9 — Tipagem da query string</h3>
+  <pre><code>type ListProductsQuery = {
+  includeInactive?: string;
+  page?: string;
+};
+
+app.get(
+  "/products",
+  (
+    request: Request&lt;
+      Record&lt;string, never&gt;,
+      unknown,
+      Record&lt;string, never&gt;,
+      ListProductsQuery
+    &gt;,
+    response: Response,
+  ) =&gt; {
+    const includeInactive = request.query.includeInactive === "true";
+    const page = Number(request.query.page ?? "1");
+
+    return response.json({ includeInactive, page });
+  },
+);</code></pre>
+  <p>A URL não possui boolean ou number nativos. <code>?includeInactive=false</code> entrega o texto <code>"false"</code>, que é truthy em JavaScript. Por isso, <code>Boolean(request.query.includeInactive)</code> é uma conversão incorreta para esse caso.</p>
+  <pre><code>Boolean("false"); // true
+"false" === "true"; // false</code></pre>
+  <p>Dependendo da configuração de parsing e do formato da URL, queries também podem produzir arrays ou estruturas. O contrato escolhido precisa corresponder ao formato que a API decide aceitar e validar.</p>
+
+  <h3 id="response">10 — Tipagem da resposta</h3>
+  <pre><code>type CreateTaskResponse = {
+  id: string;
+  title: string;
+  description: string | null;
+};
+
+app.post(
+  "/tasks",
+  (
+    request: Request&lt;Record&lt;string, never&gt;, CreateTaskResponse, CreateTaskBody&gt;,
+    response: Response&lt;CreateTaskResponse&gt;,
+  ) =&gt; {
+    return response.status(201).json({
+      id: crypto.randomUUID(),
+      title: request.body.title,
+      description: request.body.description ?? null,
+    });
+  },
+);</code></pre>
+  <p><code>Response&lt;CreateTaskResponse&gt;</code> faz o compilador verificar o objeto enviado por métodos como <code>json()</code>. Isso protege nossa implementação contra omitir campos, trocar tipos ou devolver outra forma sem intenção.</p>
+  <h4>10.1 — Sucesso e erro possuem formas diferentes</h4><pre><code>type TaskCreated = {
+  id: string;
+  title: string;
+};
+
+type ErrorResponse = {
+  error: string;
+};
+
+type CreateTaskResponse = TaskCreated | ErrorResponse;</code></pre>
+  <p>Uma union permite ambas as formas, mas não relaciona automaticamente cada status HTTP à forma correta. Um contrato mais avançado pode separar handlers, helpers ou schemas; por enquanto, mantenha os caminhos explícitos.</p>
+
+  <h3 id="unknown-any">11 — <code>unknown</code> versus <code>any</code></h3>
+  <table><thead><tr><th>Tipo</th><th>Comportamento</th><th>Risco</th></tr></thead><tbody><tr><td><code>any</code></td><td>Desliga grande parte da verificação onde se propaga.</td><td>Erros passam pelo compilador e aparecem em runtime.</td></tr><tr><td><code>unknown</code></td><td>Representa um valor ainda não conhecido.</td><td>Obriga verificação antes do uso.</td></tr></tbody></table>
+  <pre><code>function unsafe(value: any) {
+  return value.user.profile.name.toUpperCase(); // compilador aceita
+}
+
+function safe(value: unknown) {
+  // value.user; // erro: primeiro precisamos verificar
+
+  if (typeof value === "string") {
+    return value.toUpperCase();
+  }
+
+  return "not a string";
+}</code></pre>
+  <div class="success"><strong>Regra prática:</strong> quando realmente não sabemos o formato de um valor externo, comece com <code>unknown</code>. Use <code>any</code> apenas como escape consciente, localizado e justificado.</div>
+  <p>Um type assertion como <code>value as CreateTaskBody</code> não valida nada; ele apenas manda o compilador confiar em você.</p>
+
+  <h3 id="narrowing">12 — Narrowing</h3>
+  <p>Narrowing é o refinamento de um tipo amplo para um tipo mais específico a partir de verificações de controle de fluxo.</p>
+  <pre><code>function normalizeDescription(value: string | null | undefined) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  return value.trim(); // aqui value é string
+}</code></pre>
+  <h4>12.1 — Ferramentas comuns</h4><ul><li><code>typeof</code> para primitivos;</li><li><code>Array.isArray()</code> para arrays;</li><li><code>instanceof</code> para instâncias reais;</li><li>operador <code>in</code> para presença de propriedade;</li><li>comparação de discriminantes literais;</li><li>checagens contra <code>null</code> e <code>undefined</code>.</li></ul>
+  <pre><code>function printValue(value: string | string[] | null) {
+  if (value === null) return "none";
+  if (Array.isArray(value)) return value.join(", ");
+  return value.trim();
+}</code></pre>
+
+  <h3 id="type-guards">13 — Type guards</h3>
+  <p>Um type guard definido pelo usuário é uma função cuja assinatura informa ao TypeScript que, ao retornar <code>true</code>, o valor possui determinado tipo.</p>
+  <pre><code>type CreateTaskBody = {
+  title: string;
+  description?: string;
+};
+
+function isRecord(value: unknown): value is Record&lt;string, unknown&gt; {
+  return typeof value === "object" &amp;&amp; value !== null;
+}
+
+function isCreateTaskBody(value: unknown): value is CreateTaskBody {
+  if (!isRecord(value)) return false;
+  if (typeof value.title !== "string") return false;
+
+  return (
+    value.description === undefined ||
+    typeof value.description === "string"
+  );
+}</code></pre>
+  <pre><code>const body: unknown = request.body;
+
+if (!isCreateTaskBody(body)) {
+  return response.status(400).json({ error: "Invalid body" });
+}
+
+// Depois do guard, body é CreateTaskBody.
+const title = body.title.trim();</code></pre>
+  <div class="warning">Guards manuais são educativos, mas tornam-se repetitivos e fáceis de deixar incompletos. Zod fará validação, inferência e mensagens de erro de forma mais sistemática em uma fase posterior.</div>
+
+  <h3 id="opcionais">14 — Tipos opcionais</h3>
+  <pre><code>type CreateTaskBody = {
+  title: string;
+  description?: string;
+};</code></pre>
+  <p><code>description?</code> significa que a propriedade pode estar ausente. Ao lê-la, o tipo normalmente inclui <code>undefined</code>.</p>
+  <pre><code>const description: string | undefined = request.body.description;
+const normalized = description?.trim() ?? null;</code></pre>
+  <h4>14.1 — Ausente, <code>undefined</code> e <code>null</code></h4><pre><code>{}                         // propriedade ausente
+{ description: undefined } // propriedade presente com undefined
+{ description: null }      // presente com null</code></pre>
+  <p>Esses estados podem ter significados diferentes, especialmente em PATCH. O contrato precisa decidir explicitamente se <code>null</code> limpa um valor, se ausência preserva o valor atual e se <code>undefined</code> será aceito.</p>
+  <h4>14.2 — Opcional não significa vazio</h4><p><code>title?: string</code> permite ausência, mas, quando presente, ainda aceita <code>""</code>. A regra “não pode ser vazio após trim” precisa de validação em runtime.</p>
+
+  <h3 id="unions">15 — Union types e tipos literais</h3>
+  <pre><code>type TaskStatus = "pending" | "in_progress" | "done";
+
+type Task = {
+  id: string;
+  title: string;
+  status: TaskStatus;
+};</code></pre>
+  <p>Uma union restringe o código a um conjunto conhecido de alternativas. Literais descrevem valores exatos, não apenas a categoria ampla <code>string</code>.</p>
+  <h4>15.1 — Union discriminada</h4><pre><code>type ApiResult&lt;T&gt; =
+  | { ok: true; data: T }
+  | { ok: false; error: string };
+
+function logResult(result: ApiResult&lt;Task&gt;) {
+  if (result.ok) {
+    console.log(result.data.title);
+  } else {
+    console.error(result.error);
+  }
+}</code></pre>
+  <p>A propriedade literal <code>ok</code> funciona como discriminante. Isso permite narrowing seguro e evita objetos impossíveis como <code>{ ok: true, error: "..." }</code>.</p>
+  <h4>15.2 — A rede ainda pode enviar outro literal</h4><p>Mesmo que <code>status</code> seja tipado como três literais, o cliente pode enviar <code>"archived"</code>. A union protege o código que já está tipado; a entrada externa ainda deve ser validada.</p>
+
+  <h3 id="readonly">16 — <code>readonly</code></h3>
+  <pre><code>type Task = {
+  readonly id: string;
+  title: string;
+};
+
+const task: Task = { id: "task-1", title: "Estudar" };
+// task.id = "task-2"; // erro de compilação
+task.title = "Estudar TypeScript"; // permitido</code></pre>
+  <p><code>readonly</code> impede atribuição pelo TypeScript naquele acesso. Não congela o objeto em runtime e não torna estruturas aninhadas profundamente imutáveis.</p>
+  <pre><code>type Project = {
+  readonly settings: {
+    theme: string;
+  };
+};
+
+project.settings.theme = "dark"; // permitido: readonly é superficial</code></pre>
+  <p>Para contratos de entrada, <code>Readonly&lt;T&gt;</code> pode comunicar que uma função não deve modificar o DTO recebido.</p>
+
+  <h3 id="dtos">17 — DTOs</h3>
+  <p>DTO significa <em>Data Transfer Object</em>: uma forma de dados usada para atravessar uma fronteira, como uma requisição ou resposta. DTO não precisa ser classe.</p>
+  <pre><code>type Task = {
+  id: string;
+  title: string;
+  description: string | null;
+  completed: boolean;
+  createdAt: Date;
+};
+
+type CreateTaskBody = {
+  title: string;
+  description?: string;
+};
+
+type UpdateTaskBody = {
+  title?: string;
+  description?: string | null;
+  completed?: boolean;
+};
+
+type TaskResponse = {
+  id: string;
+  title: string;
+  description: string | null;
+  completed: boolean;
+  createdAt: string;
+};</code></pre>
+  <p>Separar os tipos evita usar o modelo interno como contrato HTTP. A entidade interna possui <code>Date</code>; a resposta JSON usa string ISO. A criação não aceita <code>id</code> nem <code>createdAt</code>; esses valores pertencem ao servidor.</p>
+  <h4>17.1 — DTO não é entidade</h4><table><thead><tr><th>Forma</th><th>Responsabilidade</th></tr></thead><tbody><tr><td>Body de criação</td><td>O que o cliente pode solicitar na criação.</td></tr><tr><td>Body de atualização</td><td>Campos editáveis e semântica de ausência/null.</td></tr><tr><td>Entidade/modelo</td><td>Representação usada pela regra de negócio ou persistência.</td></tr><tr><td>Response DTO</td><td>O que a API expõe e como serializa.</td></tr></tbody></table>
+  <h4>17.2 — Utility types: úteis, mas com cuidado</h4><pre><code>type UpdateTaskBody = Partial&lt;Pick&lt;Task, "title" | "description" | "completed"&gt;&gt;;</code></pre>
+  <p>Essa composição é compacta, mas pode acoplar o contrato HTTP ao modelo interno. Para DTOs públicos, tipos explícitos frequentemente documentam melhor as decisões.</p>
+
+  <h3 id="runtime">18 — Tipo estático versus dado real recebido pela rede</h3>
+  <div class="grid"><div class="card"><h4>Tempo estático</h4><p>O TypeScript analisa o código, resolve tipos, aponta incompatibilidades e melhora autocomplete. O cliente HTTP não participa desse processo.</p></div><div class="card"><h4>Runtime</h4><p>JavaScript recebe valores reais. Tipos foram apagados. Apenas branches, parsers, schemas e outras verificações executáveis podem rejeitar dados inválidos.</p></div></div>
+  <pre><code>type CreateTaskBody = { title: string };
+
+// O compilador acredita no contrato declarado:
+const title = request.body.title;
+
+// Em runtime, title ainda pode ser number, undefined ou outra coisa.</code></pre>
+  <h4>18.1 — O que TypeScript garante aqui</h4><ul><li>nosso código tratará <code>title</code> como string;</li><li>um chamador TypeScript local será avisado ao fornecer forma incompatível;</li><li>a resposta tipada será verificada contra o contrato declarado;</li><li>refatorações terão mais apoio do compilador.</li></ul>
+  <h4>18.2 — O que TypeScript não garante</h4><ul><li>que o JSON recebido seja válido para o DTO;</li><li>que campos obrigatórios realmente existam;</li><li>que strings respeitem tamanho, formato ou domínio;</li><li>que números estejam em intervalos permitidos;</li><li>que propriedades extras sejam removidas;</li><li>que o banco devolva exatamente o formato anotado;</li><li>que uma assertion <code>as</code> seja verdadeira.</li></ul>
+  <div class="success"><strong>Fórmula mental:</strong> TypeScript descreve e verifica o programa; validação verifica o dado.</div>
+
+  <h3 id="exemplo-completo">19 — Exemplo completo: criação de tarefa</h3>
+  <pre><code>import express from "express";
+import type { Request, Response } from "express";
+
+export const app = express();
+app.use(express.json());
+
+type EmptyParams = Record&lt;string, never&gt;;
+
+type CreateTaskBody = {
+  title: string;
+  description?: string;
+};
+
+type CreateTaskResponse = {
+  id: string;
+  title: string;
+  description: string | null;
+};
+
+app.post(
+  "/tasks",
+  (
+    request: Request&lt;
+      EmptyParams,
+      CreateTaskResponse,
+      CreateTaskBody
+    &gt;,
+    response: Response&lt;CreateTaskResponse&gt;,
+  ) =&gt; {
+    const { title, description } = request.body;
+
+    return response.status(201).json({
+      id: crypto.randomUUID(),
+      title,
+      description: description ?? null,
+    });
+  },
+);</code></pre>
+  <h4>19.1 — O que cada generic significa</h4><ol><li><code>EmptyParams</code>: a rota não possui parâmetros como <code>:id</code>.</li><li><code>CreateTaskResponse</code>: forma que o handler deve enviar na resposta.</li><li><code>CreateTaskBody</code>: forma que o código assume para <code>request.body</code>.</li><li>Query foi omitida porque não é usada neste exemplo.</li></ol>
+  <h4>19.2 — Versão honesta antes de Zod</h4><p>Para representar a incerteza da rede com máxima honestidade, poderíamos manter o body como <code>unknown</code> e aplicar um guard manual. Isso é mais seguro em runtime, embora verboso.</p>
+  <pre><code>type ErrorResponse = { error: string };
+type RouteResponse = CreateTaskResponse | ErrorResponse;
+
+app.post(
+  "/tasks",
+  (
+    request: Request&lt;EmptyParams, RouteResponse, unknown&gt;,
+    response: Response&lt;RouteResponse&gt;,
+  ) =&gt; {
+    if (!isCreateTaskBody(request.body)) {
+      return response.status(400).json({ error: "Invalid body" });
+    }
+
+    return response.status(201).json({
+      id: crypto.randomUUID(),
+      title: request.body.title,
+      description: request.body.description ?? null,
+    });
+  },
+);</code></pre>
+
+  <h3 id="erros-comuns">20 — Erros comuns de tipagem</h3>
+  <details><summary>20.1 — Tipar params ou query como number/boolean</summary><p>A anotação não converte texto. Faça parsing e valide o resultado.</p></details>
+  <details><summary>20.2 — Usar <code>as</code> para “corrigir” erro</summary><p>Assertions podem silenciar o compilador sem tornar o valor verdadeiro. Prefira narrowing, guards ou validação.</p></details>
+  <details><summary>20.3 — Espalhar <code>any</code></summary><p>Um <code>any</code> atravessa propriedades e chamadas, eliminando verificações em cadeia. Contenha o escape na menor área possível.</p></details>
+  <details><summary>20.4 — Usar um único <code>Task</code> para tudo</summary><p>Body, entidade e resposta possuem permissões e representações diferentes. Separe DTOs.</p></details>
+  <details><summary>20.5 — Marcar tudo como opcional</summary><p>Isso evita erros do compilador à custa de perder o contrato. Modele os estados reais e trate cada possibilidade.</p></details>
+  <details><summary>20.6 — Confundir <code>?</code> com <code>null</code></summary><p>Opcional introduz ausência/<code>undefined</code>; <code>null</code> precisa ser declarado separadamente.</p></details>
+  <details><summary>20.7 — Acreditar que <code>readonly</code> congela objetos</summary><p>É uma restrição estática e superficial. <code>Object.freeze</code> é comportamento de runtime e também é superficial por padrão.</p></details>
+  <details><summary>20.8 — Anotar retornos sem necessidade ou omitir contratos públicos</summary><p>Funções locais simples podem usar inferência; fronteiras exportadas e contratos HTTP merecem tipos claros. O equilíbrio depende do papel da função.</p></details>
+
+  <h3 id="edge-cases">21 — Edge cases desta fase</h3>
+  <p>Edge cases são cenários de limite ou combinações menos comuns que desafiam o contrato idealizado. Em tipagem HTTP, muitos surgem porque a representação da URL/JSON é diferente da representação que queremos usar internamente.</p>
+  <details><summary>21.1 — Query ausente</summary><p><code>?page</code> pode estar ausente. Defina padrão e valide antes de usar.</p></details>
+  <details><summary>21.2 — Query repetida</summary><p><code>?tag=a&amp;tag=b</code> pode representar múltiplos valores dependendo do parser. Decida se aceita lista, último valor ou rejeita.</p></details>
+  <details><summary>21.3 — Boolean textual inesperado</summary><p><code>true</code>, <code>false</code>, <code>1</code>, <code>0</code>, maiúsculas e strings vazias precisam de uma política explícita.</p></details>
+  <details><summary>21.4 — Número vazio, decimal, negativo ou infinito</summary><p><code>Number("")</code> resulta em <code>0</code>; <code>parseInt("12abc")</code> produz <code>12</code>. Use regras que correspondam ao contrato.</p></details>
+  <details><summary>21.5 — JSON válido com forma inválida</summary><p><code>null</code>, array ou número podem ser JSON válido, mas não o objeto esperado pelo endpoint.</p></details>
+  <details><summary>21.6 — Propriedade herdada</summary><p>Checks ingênuos com <code>in</code> incluem a cadeia de protótipos. Em validações manuais sensíveis, considere propriedade própria.</p></details>
+  <details><summary>21.7 — String somente com espaços</summary><p>É <code>string</code>, mas pode violar a regra de negócio. Tipo primitivo não expressa sozinho “texto não vazio após trim”.</p></details>
+  <details><summary>21.8 — Objeto mutado depois do narrowing</summary><p>O valor pode ser alterado por outro código. Evite compartilhar objetos mutáveis sem necessidade e copie/normalize na fronteira.</p></details>
+  <details><summary>21.9 — Data serializada</summary><p>JSON não transporta instâncias <code>Date</code>; transporta strings. O DTO de resposta deve refletir a serialização.</p></details>
+  <details><summary>21.10 — Campos extras sensíveis</summary><p>Receber e espalhar todo o body em uma entidade pode permitir mass assignment. Selecione explicitamente campos permitidos.</p></details>
+
+  <h3 id="exercicios">22 — Exercícios orientados</h3>
+  <h4>22.1 — Tipar parâmetros e query</h4><p>Crie uma rota <code>GET /products/:productId</code> que recebe <code>includeInactive</code> na query.</p>
+  <pre><code>type ProductParams = {
+  productId: string;
+};
+
+type ProductQuery = {
+  includeInactive?: string;
+};</code></pre>
+  <p>Requisitos:</p><ol><li><code>productId</code> começa como string.</li><li>Converta para inteiro positivo.</li><li>Aceite apenas <code>includeInactive=true</code> ou <code>false</code> quando presente.</li><li>Retorne 400 para valores inválidos.</li><li>Defina um DTO de sucesso e um DTO de erro.</li></ol>
+  <details><summary>Uma solução possível</summary><pre><code>type ProductParams = { productId: string };
+type ProductQuery = { includeInactive?: string };
+type ProductResponse = {
+  id: number;
+  includeInactive: boolean;
+};
+type ErrorResponse = { error: string };
+type RouteResponse = ProductResponse | ErrorResponse;
+
+app.get(
+  "/products/:productId",
+  (
+    request: Request&lt;
+      ProductParams,
+      RouteResponse,
+      Record&lt;string, never&gt;,
+      ProductQuery
+    &gt;,
+    response: Response&lt;RouteResponse&gt;,
+  ) =&gt; {
+    const productId = Number(request.params.productId);
+
+    if (!Number.isInteger(productId) || productId &lt;= 0) {
+      return response.status(400).json({ error: "Invalid productId" });
+    }
+
+    const rawFlag = request.query.includeInactive;
+    if (rawFlag !== undefined &amp;&amp; rawFlag !== "true" &amp;&amp; rawFlag !== "false") {
+      return response.status(400).json({ error: "Invalid includeInactive" });
+    }
+
+    return response.status(200).json({
+      id: productId,
+      includeInactive: rawFlag === "true",
+    });
+  },
+);</code></pre></details>
+  <h4>22.2 — DTOs de tarefa</h4><p>Crie tipos separados para entidade, criação, atualização parcial, resposta e erro. Garanta que cliente não possa fornecer <code>id</code> ou datas no DTO de criação.</p>
+  <h4>22.3 — Union discriminada</h4><p>Modele um resultado que seja sucesso com dados ou falha com código e mensagem. Escreva uma função que trate todos os casos.</p>
+  <h4>22.4 — Guard manual</h4><p>Implemente <code>isCreateTaskBody(value: unknown)</code>, incluindo verificação de objeto não nulo, <code>title</code> string e <code>description</code> ausente ou string.</p>
+  <h4>22.5 — Refatoração contra <code>any</code></h4><p>Receba uma função com vários <code>any</code>, substitua por <code>unknown</code> e adicione narrowings até o compilador permitir as operações.</p>
+
+  <h3 id="mini-projeto">23 — Mini projeto: contratos tipados da API de tarefas</h3>
+  <p>Expanda a API em memória da fase anterior sem adicionar Zod ainda. O foco é modelar contratos e tornar os pontos inseguros visíveis.</p>
+  <h4>23.1 — Rotas</h4><ul><li><code>POST /tasks</code></li><li><code>GET /tasks</code> com <code>completed</code>, <code>page</code> e <code>limit</code></li><li><code>GET /tasks/:taskId</code></li><li><code>PATCH /tasks/:taskId</code></li><li><code>DELETE /tasks/:taskId</code></li></ul>
+  <h4>23.2 — Tipos mínimos</h4><pre><code>type Task = {
+  readonly id: string;
+  title: string;
+  description: string | null;
+  completed: boolean;
+  readonly createdAt: Date;
+  updatedAt: Date;
+};
+
+type CreateTaskBody = {
+  title: string;
+  description?: string;
+};
+
+type UpdateTaskBody = {
+  title?: string;
+  description?: string | null;
+  completed?: boolean;
+};
+
+type TaskResponse = {
+  id: string;
+  title: string;
+  description: string | null;
+  completed: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type ErrorResponse = {
+  error: string;
+};</code></pre>
+  <h4>23.3 — Mapper de resposta</h4><pre><code>function toTaskResponse(task: Readonly&lt;Task&gt;): TaskResponse {
+  return {
+    id: task.id,
+    title: task.title,
+    description: task.description,
+    completed: task.completed,
+    createdAt: task.createdAt.toISOString(),
+    updatedAt: task.updatedAt.toISOString(),
+  };
+}</code></pre>
+  <h4>23.4 — Regras de implementação</h4><ol><li>Não use <code>any</code>.</li><li>Não use <code>as</code> para fingir que dados externos são válidos.</li><li>Faça parsing explícito de params e query quando necessário.</li><li>Não espalhe <code>request.body</code> diretamente na entidade.</li><li>Separe entidade e resposta JSON.</li><li>Use <code>unknown</code> e guards manuais onde quiser segurança real antes da fase de Zod.</li><li>Registre em comentários quais verificações serão substituídas por schemas.</li></ol>
+
+  <h3 id="checklist">24 — Checklist para avançar</h3>
+  <ul class="checklist"><li>Consigo explicar inferência e anotação sem dizer que uma é sempre melhor.</li><li>Sei quando <code>type</code> e <code>interface</code> são equivalentes e uma diferença importante entre eles.</li><li>Entendo tipagem estrutural e propriedades extras.</li><li>Sei a ordem dos generics principais de <code>Request</code>.</li><li>Consigo tipar params, body, query e response.</li><li>Lembro que params e query começam como texto.</li><li>Sei explicar por que <code>Boolean("false")</code> é <code>true</code>.</li><li>Prefiro <code>unknown</code> a <code>any</code> para valores desconhecidos.</li><li>Consigo fazer narrowing com <code>typeof</code>, null check e <code>Array.isArray()</code>.</li><li>Consigo escrever e explicar um type guard simples.</li><li>Distingo propriedade opcional, <code>undefined</code> e <code>null</code>.</li><li>Uso unions e literais para estados conhecidos.</li><li>Entendo que <code>readonly</code> é estático e superficial.</li><li>Separo DTO de entrada, entidade e DTO de resposta.</li><li>Consigo listar pelo menos cinco coisas que TypeScript não valida na rede.</li></ul>
+  <div class="success"><strong>Critério para avançar:</strong> você deve conseguir olhar para um handler tipado e apontar quais garantias são do compilador, quais conversões acontecem em runtime e quais dados continuam não validados.</div>
+
+  <h3 id="referencias">25 — Referências e leituras</h3>
+  <h4>25.1 — Documentação oficial e definições</h4><ul><li><a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html" target="_blank" rel="noreferrer">TypeScript Handbook — Everyday Types</a></li><li><a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html" target="_blank" rel="noreferrer">TypeScript Handbook — Narrowing</a></li><li><a href="https://www.typescriptlang.org/docs/handbook/2/objects.html" target="_blank" rel="noreferrer">TypeScript Handbook — Object Types</a></li><li><a href="https://www.typescriptlang.org/docs/handbook/2/functions.html" target="_blank" rel="noreferrer">TypeScript Handbook — More on Functions</a></li><li><a href="https://www.typescriptlang.org/tsconfig/strict.html" target="_blank" rel="noreferrer">TSConfig — strict</a></li><li><a href="https://expressjs.com/en/5x/starter/installing.html" target="_blank" rel="noreferrer">Express 5 — instalação com TypeScript</a></li><li><a href="https://expressjs.com/en/5x/api/request.html" target="_blank" rel="noreferrer">Express 5 — Request API</a></li><li><a href="https://expressjs.com/en/5x/api/response.html" target="_blank" rel="noreferrer">Express 5 — Response API</a></li><li><a href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/express-serve-static-core/index.d.ts" target="_blank" rel="noreferrer">DefinitelyTyped — generics de Request e Response</a></li></ul>
+  <h4>25.2 — Ordem de leitura sugerida</h4><ol><li>Everyday Types: aliases, interfaces, unions e literais.</li><li>Narrowing: controle de fluxo e type predicates.</li><li>Object Types: opcionais, readonly e generics de objetos.</li><li>TSConfig strict: por que o curso assume verificações estritas.</li><li>Definições de <code>Request</code> e <code>Response</code>: leia os nomes e a ordem dos parâmetros genéricos.</li></ol>
+  <h4>25.3 — Livros recomendados</h4><ul><li><strong>Effective TypeScript</strong>, Dan Vanderkam — decisões práticas, armadilhas e uso responsável do sistema de tipos.</li><li><strong>Programming TypeScript</strong>, Boris Cherny — fundamentos e recursos avançados com progressão cuidadosa.</li><li><strong>TypeScript in 50 Lessons</strong>, Stefan Baumgartner — lições focadas em problemas reais do sistema de tipos.</li><li><strong>Learning TypeScript</strong>, Josh Goldberg — introdução moderna e didática.</li></ul>
+  <p class="footer-note">Fase 2 — Aprendendo Express 5 com TypeScript. Próxima etapa natural: parsing e validação em runtime com schemas.</p>
+</section>
+</main></div></body></html>
