@@ -665,8 +665,14 @@ section summary:before,
 
 .card h3,
 .card h4,
-.grid > div h3 {
+.grid > div h3,
+.grid > div h4,
+.comparison > div h3,
+.definitions h3 {
   margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  font-size: 1.05rem;
 }
 
 .metric {
