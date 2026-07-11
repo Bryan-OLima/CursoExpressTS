@@ -245,30 +245,56 @@
     const layout = document.querySelector(".layout, .page");
     if (!layout) return;
 
+    const mq = window.matchMedia("(max-width: 940px)");
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "nav-backdrop";
+
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "sidebar-toggle";
     btn.setAttribute("aria-label", "Mostrar ou esconder o menu");
 
-    function refresh() {
-      btn.textContent = layout.classList.contains("sidebar-collapsed") ? "☰" : "✕";
+    function isOpen() {
+      return mq.matches ? layout.classList.contains("nav-open") : !layout.classList.contains("sidebar-collapsed");
+    }
+
+    function setOpen(open) {
+      if (mq.matches) {
+        layout.classList.toggle("nav-open", open);
+        backdrop.classList.toggle("visible", open);
+      } else {
+        layout.classList.toggle("sidebar-collapsed", !open);
+        try {
+          localStorage.setItem("sidebarCollapsed", open ? "0" : "1");
+        } catch {
+          /* localStorage indisponível */
+        }
+      }
+      btn.textContent = open ? "✕" : "☰";
     }
 
     if (localStorage.getItem("sidebarCollapsed") === "1") {
       layout.classList.add("sidebar-collapsed");
     }
-    refresh();
+    btn.textContent = isOpen() ? "✕" : "☰";
 
-    btn.addEventListener("click", () => {
-      layout.classList.toggle("sidebar-collapsed");
-      try {
-        localStorage.setItem("sidebarCollapsed", layout.classList.contains("sidebar-collapsed") ? "1" : "0");
-      } catch {
-        /* localStorage indisponível */
-      }
-      refresh();
+    btn.addEventListener("click", () => setOpen(!isOpen()));
+    backdrop.addEventListener("click", () => setOpen(false));
+
+    document.querySelectorAll("aside a").forEach((a) => {
+      a.addEventListener("click", () => {
+        if (mq.matches) setOpen(false);
+      });
     });
 
+    mq.addEventListener("change", () => {
+      layout.classList.remove("nav-open");
+      backdrop.classList.remove("visible");
+      btn.textContent = isOpen() ? "✕" : "☰";
+    });
+
+    document.body.appendChild(backdrop);
     document.body.appendChild(btn);
   }
 

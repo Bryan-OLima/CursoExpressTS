@@ -951,6 +951,12 @@ footer,
 }
 
 /* ===== Responsivo ===== */
+/* ===== Fundo escurecido atrás do menu, em telas estreitas ===== */
+.nav-backdrop {
+  display: none;
+}
+
+/* ===== Tablet e celular: menu vira gaveta sobreposta, não empurra o conteúdo ===== */
 @media (max-width: 940px) {
   .layout,
   .page {
@@ -958,14 +964,63 @@ footer,
   }
 
   aside {
-    position: relative;
-    height: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    width: min(300px, 85vw);
+    z-index: 45;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: var(--shadow);
+  }
+
+  .nav-open aside {
+    transform: translateX(0);
+    opacity: 1;
+    padding: 70px 20px 26px;
+    pointer-events: auto;
+  }
+
+  .nav-backdrop.visible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 7, 14, 0.6);
+    z-index: 40;
   }
 
   main {
     padding: 24px 16px 60px;
+  }
+
+  .theme-block {
+    padding: 20px;
+  }
+
+  .page-nav {
+    flex-direction: column;
+  }
+
+  .page-nav .next {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .hero-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ===== Celular: uma coluna em tudo, botões ocupam a largura toda ===== */
+@media (max-width: 640px) {
+  main {
+    padding: 18px 12px 50px;
+  }
+
+  .theme-block {
+    padding: 16px;
   }
 
   .grid,
@@ -979,8 +1034,17 @@ footer,
     grid-template-columns: 1fr;
   }
 
-  .phase-switch,
-  .page-nav {
-    max-width: 100%;
+  .card-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cta-button {
+    justify-content: center;
+  }
+
+  .sidebar-toggle {
+    top: 12px;
+    left: 12px;
   }
 }
