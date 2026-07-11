@@ -4,54 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fase 11 — Segurança de APIs | Express 5 + TypeScript</title>
-  <style>
-    :root{
-      --bg:#08111f;--panel:#0d192b;--panel2:#12213a;--text:#e8eef8;--muted:#a8b6ca;
-      --line:#263a56;--accent:#60a5fa;--accent2:#a78bfa;--good:#34d399;--warn:#fbbf24;
-      --danger:#fb7185;--code:#07101d;--shadow:0 18px 44px rgba(0,0,0,.24)
-    }
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);
-      font:16px/1.68 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    a{color:#8ecdf7;text-decoration:none}a:hover{text-decoration:underline}
-    .layout{display:grid;grid-template-columns:310px minmax(0,1fr);min-height:100vh}
-    aside{position:sticky;top:0;height:100vh;overflow:auto;padding:25px 18px;background:#091525;border-right:1px solid var(--line)}
-    .brand{font-weight:800;font-size:1.15rem}.subtitle{color:var(--muted);font-size:.9rem;margin:4px 0 18px}
-    .phase-links{margin-bottom:18px}.phase-link{display:block;padding:10px 12px;border-radius:10px;background:var(--panel2);
-      border:1px solid #345175;font-weight:700}
-    .nav-title{margin:17px 8px 8px;color:#d3deed;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em}
-    #toc>a,.nav-links a{display:block;padding:7px 10px;border-radius:8px;color:#bfd0e5;font-size:.91rem}
-    #toc a:hover,#toc a.active{background:#152946;color:#fff;text-decoration:none}
-    .nav-group{border:1px solid #203650;border-radius:10px;margin:8px 0;background:rgba(255,255,255,.015)}
-    .nav-group summary{cursor:pointer;padding:10px;font-weight:700;color:#dce7f6}.nav-links{padding:0 5px 8px}
-    .nav-progress{margin-top:18px;padding:13px;border:1px solid #29415f;border-radius:12px;color:var(--muted);font-size:.86rem}
-    .nav-progress strong{display:block;color:var(--text);margin-bottom:4px}
-    main{min-width:0;padding:45px clamp(22px,5vw,78px) 80px}.content{max-width:1100px;margin:auto}
-    section{background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,.008));border:1px solid #1d3048;
-      border-radius:18px;padding:clamp(22px,4vw,46px);box-shadow:var(--shadow)}
-    h1{font-size:clamp(2.1rem,4.5vw,4rem);line-height:1.08;margin:.25em 0 .3em}
-    h2{font-size:1.75rem}h3{font-size:1.42rem;margin-top:2.6em;padding-top:.45em;border-top:1px solid #1d3048}
-    h4{font-size:1.1rem;margin-top:1.6em}.tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#1d4f82;color:#dcedff;font-weight:800}
-    .meta{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 24px}.pill{padding:5px 9px;border:1px solid #315071;border-radius:999px;color:#c5d6e9;font-size:.86rem}
-    p,li{max-width:82ch}.lead{font-size:1.14rem;color:#d6e1ef}.small{font-size:.9rem;color:var(--muted)}
-    .grid,.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:18px 0}
-    .cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
-    .card{padding:17px;border:1px solid #29415e;border-radius:13px;background:var(--panel)}.card h4{margin-top:0}
-    .callout,.success,.warning,.danger{padding:16px 18px;border-radius:12px;margin:18px 0;border-left:4px solid}
-    .callout{background:#10243b;border-color:var(--accent)}.success{background:#0c2d27;border-color:var(--good)}
-    .warning{background:#33280d;border-color:var(--warn)}.danger{background:#351522;border-color:var(--danger)}
-    pre{background:var(--code);border:1px solid #243955;border-radius:12px;padding:17px;overflow:auto;line-height:1.5}
-    code{font-family:"Cascadia Code","Fira Code",Consolas,monospace;font-size:.91em;color:#d9ebff}
-    :not(pre)>code{background:#132640;padding:.12em .36em;border-radius:5px}
-    table{width:100%;border-collapse:collapse;margin:18px 0;display:block;overflow:auto}
-    th,td{border:1px solid #2a405d;padding:11px 13px;text-align:left;vertical-align:top}th{background:#13253e}
-    .pipeline,.flow{white-space:pre-wrap;background:#0a1728;border:1px dashed #3a5a7d;border-radius:12px;padding:16px;margin:18px 0;color:#d4e6fb}
-    .checklist li{margin:.45em 0}.checklist li::marker{color:var(--good)}
-    details.exercise{border:1px solid #29415f;border-radius:12px;margin:12px 0;background:#0c1a2d}
-    details.exercise summary{cursor:pointer;padding:14px 16px;font-weight:750}.exercise>div{padding:0 16px 16px}
-    .footer-note{text-align:center;color:var(--muted);margin-top:25px;font-size:.9rem}
-    @media(max-width:940px){.layout{grid-template-columns:1fr}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}
-      main{padding:28px 17px 60px}.grid,.columns,.cards3{grid-template-columns:1fr}}
-  </style>
+  <link rel="stylesheet" href="../../global.css">
 </head>
 <body>
 <div class="layout">
@@ -719,5 +672,4 @@ const observer=new IntersectionObserver(entries=>{
 },{rootMargin:'-15% 0px -70% 0px',threshold:[0,.2,.5]});
 sections.forEach(s=>observer.observe(s));
 </script>
-</body>
-</html>
+<script src="../../app.js" defer></script></body></html>

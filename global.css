@@ -1,0 +1,870 @@
+/* Design system unificado — Curso Express 5 + TypeScript
+   Base visual: Fase 0 (layout, cartão único, sidebar)
+   Paleta: Fase 4 (verde de destaque)
+   Estendido para cobrir componentes usados nas demais fases. */
+
+:root {
+  --bg: #09111f;
+  --panel: #101b2e;
+  --panel2: #142239;
+  --text: #e8edf7;
+  --muted: #a8b4c8;
+  --line: #283854;
+  --accent: #68d391;
+  --accent2: #63b3ed;
+  --warn: #f6c85f;
+  --danger: #fc8181;
+  --code: #07101d;
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(104, 211, 145, 0.1), transparent 30%),
+    linear-gradient(180deg, #09101f 0%, #0a0f1f 100%);
+  color: var(--text);
+  font: 16px/1.72 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+a {
+  color: #8ecdf7;
+}
+
+/* ===== Layout de página (aceita .layout ou .page como wrapper) ===== */
+.layout,
+.page {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+aside {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  padding: 26px 20px;
+  background: rgba(8, 13, 27, 0.97);
+  border-right: 1px solid var(--line);
+}
+
+main {
+  width: min(1120px, 100%);
+  padding: 42px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.content {
+  max-width: 1080px;
+  margin: auto;
+}
+
+/* ===== Cabeçalho da sidebar ===== */
+.brand,
+aside h1 {
+  font-weight: 900;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(104, 211, 145, 0.14);
+  color: var(--accent);
+  font-weight: 900;
+  font-size: 0.85rem;
+  margin-right: 8px;
+}
+
+.subtitle,
+.small,
+.phase-label,
+aside p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+}
+
+/* ===== Botões prev/next (topo da sidebar e acima/abaixo do conteúdo) ===== */
+.phase-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 16px 0 0;
+}
+
+.phase-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.phase-link:hover,
+.phase-link.active {
+  color: var(--text);
+  background: var(--panel2);
+  border-color: var(--accent);
+}
+
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.page-nav a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.page-nav a:hover {
+  border-color: var(--accent);
+}
+
+.page-nav .dir {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.page-nav .label {
+  font-weight: 800;
+}
+
+.page-nav .next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.page-nav .home-link {
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ===== Navegação lateral (grupos colapsáveis, ids ou classes variam por página) ===== */
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 18px;
+}
+
+.nav-title,
+.toc-label {
+  margin: 18px 8px 6px;
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+aside details {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+aside summary {
+  list-style: none;
+  padding: 7px 8px;
+  color: #dce4fb;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+aside summary::-webkit-details-marker {
+  display: none;
+}
+
+aside summary:before {
+  content: "▸";
+  display: inline-block;
+  width: 18px;
+  color: var(--accent2);
+}
+
+aside details[open] summary:before {
+  content: "▾";
+}
+
+aside details[open] {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px 7px 22px;
+}
+
+aside details > a {
+  padding: 5px 7px 5px 22px;
+}
+
+nav a,
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 5px 7px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  display: block;
+}
+
+nav a:hover,
+nav a.active,
+.toc a:hover,
+.toc a.active {
+  background: var(--panel2);
+  color: var(--text);
+}
+
+.toc a .n {
+  display: inline-block;
+  width: 24px;
+  color: var(--accent2);
+  font-weight: 800;
+  font-size: 0.72rem;
+}
+
+/* ===== Caixa de progresso (curso/fase) ===== */
+.nav-progress {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.nav-progress strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+.nav-progress span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.progress-box {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.progress-box .progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.progress-box .progress-row span:last-child {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.progress-track,
+.progress-box .bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.progress-fill,
+.progress-box .bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 0.3s ease;
+}
+
+/* ===== Cartão único que envolve o conteúdo da fase ===== */
+section,
+main > header.hero {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
+  position: relative;
+}
+
+.phase,
+.lesson,
+.chapter {
+  overflow: hidden;
+}
+
+.phase:before,
+main > .phase-badge-bar {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(var(--accent), var(--accent2));
+}
+
+/* Páginas antigas que quebravam o conteúdo em várias seções soltas (.lesson)
+   herdam o mesmo tratamento visual de cartão, mas continuam empilhadas. */
+.lesson {
+  margin: 18px 0;
+}
+
+/* ===== Tag / pill / meta ===== */
+.tag,
+.pill,
+.chip,
+.phase-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.tag,
+.phase-badge {
+  color: var(--accent2);
+  font-weight: 800;
+  background: rgba(104, 211, 145, 0.1);
+}
+
+.meta,
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 22px;
+}
+
+.pill,
+.chip {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.eyebrow,
+.section-kicker {
+  color: var(--accent2);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+}
+
+/* ===== Tipografia ===== */
+h1,
+h2,
+h3,
+h4 {
+  color: #f8fbff;
+}
+
+h1,
+h1.hero {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.08;
+  margin: 14px 0 18px;
+}
+
+h2,
+.section-title {
+  font-size: 1.8rem;
+  margin: 10px 0 14px;
+}
+
+h3 {
+  font-size: 1.42rem;
+  margin-top: 38px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+h4 {
+  font-size: 1.08rem;
+  margin-top: 24px;
+  margin-bottom: 6px;
+  color: #cfe2ff;
+}
+
+p,
+li {
+  color: #d9def0;
+}
+
+.lead,
+.section-intro {
+  font-size: 1.05rem;
+  color: #cbd5ea;
+  max-width: 820px;
+}
+
+strong {
+  color: #f3f6ff;
+}
+
+/* ===== Código ===== */
+code,
+code.inline {
+  font-family: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 2px 6px;
+  color: #dce7ff;
+}
+
+pre {
+  position: relative;
+  overflow: auto;
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  line-height: 1.58;
+}
+
+pre code {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+pre .kw {
+  color: var(--accent);
+}
+
+pre .str {
+  color: var(--warn);
+}
+
+pre .num {
+  color: var(--accent2);
+}
+
+pre .comment {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.copy {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.copy:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ===== Callouts ===== */
+.callout,
+.warning,
+.danger,
+.success,
+.note {
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 18px 0;
+  border-left: 4px solid;
+}
+
+.callout {
+  background: rgba(104, 211, 145, 0.08);
+  border-color: var(--accent2);
+}
+
+.warning {
+  background: rgba(246, 200, 95, 0.08);
+  border-color: var(--warn);
+}
+
+.danger {
+  background: rgba(252, 129, 129, 0.08);
+  border-color: var(--danger);
+}
+
+.success,
+.note {
+  background: rgba(104, 211, 145, 0.08);
+  border-color: var(--accent);
+}
+
+.note {
+  color: var(--muted);
+  font-size: 0.92rem;
+  border-left-width: 2px;
+}
+
+.quote {
+  border-left: 3px solid var(--accent2);
+  padding: 10px 18px;
+  margin: 18px 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ===== Tabelas ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  display: block;
+  overflow: auto;
+}
+
+.table-wrap table {
+  display: table;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+th,
+td {
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  vertical-align: top;
+  text-align: left;
+  min-width: 120px;
+}
+
+th {
+  background: var(--panel2);
+  color: #fff;
+}
+
+td {
+  color: #cbd5e5;
+}
+
+/* ===== Details/summary no conteúdo (exercícios, edge cases) ===== */
+section details,
+.content details {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 10px 0;
+}
+
+section summary,
+.content summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: #e8eeff;
+  padding: 0;
+}
+
+section summary:before,
+.content summary:before {
+  content: none;
+}
+
+/* ===== Grades de cartões ===== */
+.grid,
+.columns,
+.comparison,
+.definitions,
+.matrix,
+.card-grid,
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.grid.three,
+.comparison,
+.cards3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hero-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+.card,
+.grid > div,
+.columns > div,
+.comparison > div,
+.definitions p,
+.exercise,
+.project,
+.questions {
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 0;
+}
+
+.card h3,
+.card h4,
+.grid > div h3 {
+  margin-top: 0;
+}
+
+.metric {
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.metric strong {
+  display: block;
+  font-size: 1.6rem;
+  color: var(--accent);
+}
+
+.metric span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.matrix div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.matrix span {
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ===== Fluxo em passos ===== */
+.flow {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.flow div {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+/* ===== Diagrama de pipeline (ASCII) ===== */
+.pipeline,
+.diagram {
+  font-family: monospace;
+  text-align: center;
+  white-space: pre;
+  overflow: auto;
+  background: var(--code);
+  border: 1px solid var(--line);
+  padding: 20px;
+  border-radius: 12px;
+  color: #b5f4d0;
+}
+
+/* ===== Checklist ===== */
+ul.checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul.checklist li {
+  padding: 8px 0 8px 30px;
+  position: relative;
+}
+
+ul.checklist li:before {
+  content: "□";
+  position: absolute;
+  left: 3px;
+  color: var(--accent);
+  font-size: 1.2rem;
+}
+
+div.checklist {
+  display: grid;
+  gap: 9px;
+  margin: 18px 0;
+}
+
+div.checklist label {
+  display: block;
+  background: var(--panel);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== Checkbox de progresso por tema (injetado via app.js) ===== */
+.theme-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 26px 0 6px;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.theme-check input {
+  flex: 0 0 auto;
+}
+
+.theme-check.done {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(104, 211, 145, 0.06);
+}
+
+.theme-check.partial {
+  border-style: solid;
+  border-color: var(--accent2);
+  color: var(--text);
+}
+
+/* ===== Referências ===== */
+ul.refs,
+ul.ref-list,
+ul.sources {
+  padding-left: 20px;
+}
+
+ul.refs li,
+ul.ref-list li,
+ul.sources li {
+  margin: 8px 0;
+  color: #d9def0;
+}
+
+/* ===== Rodapé ===== */
+footer,
+.footer-note {
+  margin-top: 55px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Botão de menu mobile (usado em algumas páginas): reservado para a fase
+   de adaptação tablet/mobile do roadmap, oculto por enquanto. */
+.menu-btn,
+.top-button {
+  display: none;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 940px) {
+  .layout,
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  aside {
+    position: relative;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  main {
+    padding: 24px 16px 60px;
+  }
+
+  .grid,
+  .columns,
+  .comparison,
+  .definitions,
+  .matrix,
+  .hero-grid,
+  .grid.three,
+  .cards3 {
+    grid-template-columns: 1fr;
+  }
+
+  .phase-switch,
+  .page-nav {
+    max-width: 100%;
+  }
+}
